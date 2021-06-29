@@ -1,18 +1,24 @@
 package net.eltown.servercore;
 
+import cn.nukkit.entity.Entity;
 import cn.nukkit.plugin.PluginBase;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.eltown.servercore.commands.defaults.PluginsCommand;
+import net.eltown.servercore.commands.npc.NpcCommand;
 import net.eltown.servercore.commands.teleportation.HomeCommand;
 import net.eltown.servercore.commands.teleportation.TpaCommand;
 import net.eltown.servercore.commands.teleportation.TpacceptCommand;
 import net.eltown.servercore.commands.teleportation.WarpCommand;
 import net.eltown.servercore.commands.ticketsystem.TicketCommand;
+import net.eltown.servercore.components.entities.HumanNPC;
 import net.eltown.servercore.components.forms.FormListener;
+import net.eltown.servercore.components.handlers.NpcHandler;
 import net.eltown.servercore.components.language.Language;
 import net.eltown.servercore.components.tinyrabbit.TinyRabbit;
+import net.eltown.servercore.listeners.ChairListener;
 import net.eltown.servercore.listeners.EventListener;
+import net.eltown.servercore.listeners.NpcListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -23,8 +29,14 @@ import java.util.Random;
 public class ServerCore extends PluginBase {
 
     private TinyRabbit tinyRabbit;
+    private NpcHandler npcHandler;
 
     private String serverName;
+
+    @Override
+    public void onLoad() {
+        Entity.registerEntity(HumanNPC.class.getSimpleName(), HumanNPC.class);
+    }
 
     @Override
     public void onEnable() {
@@ -40,10 +52,13 @@ public class ServerCore extends PluginBase {
     private void loadPlugin() {
         this.tinyRabbit = new TinyRabbit("localhost", "Core/Server");
         this.serverName = this.getConfig().getString("server-name");
+        this.npcHandler = new NpcHandler(this);
         Language.init(this);
 
         this.getServer().getPluginManager().registerEvents(new FormListener(), this);
         this.getServer().getPluginManager().registerEvents(new EventListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new NpcListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new ChairListener(), this);
 
         this.getServer().getCommandMap().register("servercore", new PluginsCommand(this));
 
@@ -53,6 +68,8 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new TpacceptCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new TicketCommand(this));
+
+        this.getServer().getCommandMap().register("servercore", new NpcCommand(this));
     }
 
     public String createId(final int i) {
