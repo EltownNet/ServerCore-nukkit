@@ -39,7 +39,8 @@ public class WarpCommand extends PluginCommand<ServerCore> {
         this.getPlugin().getTinyRabbit().sendAndReceive((delivery -> {
             switch (TeleportationCalls.valueOf(delivery.getKey().toUpperCase())) {
                 case CALLBACK_NULL:
-                    player.sendMessage(Language.get("home.no.homes"));
+                    player.sendMessage(Language.get("warp.no.warps"));
+                    if (player.isOp()) this.openAddWarp(player);
                     break;
                 case CALLBACK_ALL_WARPS:
                     final List<String> list = Arrays.asList(delivery.getData());

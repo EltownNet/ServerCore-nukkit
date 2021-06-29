@@ -8,6 +8,7 @@ import net.eltown.servercore.commands.teleportation.HomeCommand;
 import net.eltown.servercore.commands.teleportation.TpaCommand;
 import net.eltown.servercore.commands.teleportation.TpacceptCommand;
 import net.eltown.servercore.commands.teleportation.WarpCommand;
+import net.eltown.servercore.commands.ticketsystem.TicketCommand;
 import net.eltown.servercore.components.forms.FormListener;
 import net.eltown.servercore.components.language.Language;
 import net.eltown.servercore.components.tinyrabbit.TinyRabbit;
@@ -50,6 +51,8 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new WarpCommand(this));
         this.getServer().getCommandMap().register("servercore", new TpaCommand(this));
         this.getServer().getCommandMap().register("servercore", new TpacceptCommand(this));
+
+        this.getServer().getCommandMap().register("servercore", new TicketCommand(this));
     }
 
     public String createId(final int i) {

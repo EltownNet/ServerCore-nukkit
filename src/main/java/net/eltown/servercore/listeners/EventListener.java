@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerJoinEvent;
+import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.level.Location;
 import lombok.RequiredArgsConstructor;
 import net.eltown.servercore.ServerCore;
@@ -19,6 +20,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void on(final PlayerJoinEvent event) {
         final Player player = event.getPlayer();
+        event.setJoinMessage("");
 
         this.instance.getTinyRabbit().sendAndReceive((data) -> {
             switch (TeleportationCalls.valueOf(data.getKey().toUpperCase())) {
@@ -39,6 +41,11 @@ public class EventListener implements Listener {
                     break;
             }
         }, Queue.TELEPORTATION_CALLBACK, TeleportationCalls.REQUEST_CACHED_DATA.name(), player.getName());
+    }
+
+    @EventHandler
+    public void on(final PlayerQuitEvent event) {
+        event.setQuitMessage("");
     }
 
 }
