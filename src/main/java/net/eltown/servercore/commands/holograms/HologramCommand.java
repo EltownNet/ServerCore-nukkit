@@ -12,7 +12,6 @@ import net.eltown.servercore.components.language.Language;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 
 public class HologramCommand extends PluginCommand<ServerCore> {
 
@@ -62,6 +61,7 @@ public class HologramCommand extends PluginCommand<ServerCore> {
                             lines.add((x + 1) + ">:<" + h.getInputResponse(2 + x));
                         }
                         this.getPlugin().getHologramHandler().createHologram(player, name, h.getInputResponse(1), lines);
+                        player.sendMessage(Language.get("holograms.created", name));
                     });
                     form1.build().send(player);
                 })
@@ -71,6 +71,10 @@ public class HologramCommand extends PluginCommand<ServerCore> {
     }
 
     private void hologramSettings(final Player player) {
+        if (new ArrayList<>(this.getPlugin().getHologramHandler().particles.keySet()).size() == 0) {
+            player.sendMessage(Language.get("holograms.no.holograms"));
+            return;
+        }
         final CustomForm form = new CustomForm.Builder("§7» §8Hologramm bearbeiten")
                 .addElement(new ElementDropdown("Bitte wähle ein Hologramm aus, welches du bearbeiten möchtest.", new ArrayList<>(this.getPlugin().getHologramHandler().particles.keySet())))
                 .onSubmit((g, h) -> {
@@ -84,23 +88,15 @@ public class HologramCommand extends PluginCommand<ServerCore> {
                                             final String line = n.getInputResponse(0);
                                             if (!line.isEmpty()) {
                                                 this.getPlugin().getHologramHandler().addHologramLine(name, line);
+                                                player.sendMessage(Language.get("holograms.line.added"));
                                             }
                                         })
                                         .build();
                                 form2.send(g);
                             })
-                            .addButton(new ElementButton("§7» §fZeile entfernen"), d -> {
-                                final CustomForm form2 = new CustomForm.Builder("§7» §8Zeile entfernen")
-                                        .addElement(new ElementInput("Bitte gebe die Nummer der Zeile an.", "Zeile"))
-                                        .onSubmit((b, n) -> {
-                                            final int line = Integer.parseInt(n.getInputResponse(0));
-                                            final int size = this.getPlugin().getHologramHandler().config.getStringList("holograms." + name + ".lines").size();
-                                            if (size <= line && line > 0) {
-                                                this.getPlugin().getHologramHandler().removeLine(name, line);
-                                            }
-                                        })
-                                        .build();
-                                form2.send(g);
+                            .addButton(new ElementButton("§7» §fLetzte Zeile entfernen"), d -> {
+                                this.getPlugin().getHologramHandler().removeLastLine(name);
+                                player.sendMessage(Language.get("holograms.line.removed"));
                             })
                             .addButton(new ElementButton("§7» §fErweitert"), d -> {
                                 final CustomForm form2 = new CustomForm.Builder("§7» §8Erweitert")
@@ -112,9 +108,11 @@ public class HologramCommand extends PluginCommand<ServerCore> {
                                             if (!del) {
                                                 if (pos) {
                                                     this.getPlugin().getHologramHandler().moveHologram(name, player.getLocation());
+                                                    player.sendMessage(Language.get("holograms.moved"));
                                                 }
                                             } else {
                                                 this.getPlugin().getHologramHandler().deleteHologram(name);
+                                                player.sendMessage(Language.get("holograms.deleted"));
                                             }
                                         })
                                         .build();

@@ -80,9 +80,9 @@ public class HologramHandler {
         this.config.reload();
     }
 
-    public void removeLine(final String name, final int line) {
+    public void removeLastLine(final String name) {
         final List<String> lines = this.config.getStringList("holograms." + name + ".lines");
-        lines.removeIf(s -> s.startsWith(String.valueOf(line)));
+        lines.removeIf(s -> s.startsWith(String.valueOf(lines.size())));
 
         final StringBuilder builder = new StringBuilder();
         lines.forEach(e -> {
@@ -107,6 +107,8 @@ public class HologramHandler {
         this.config.set("holograms." + name + ".z", location.getZ());
         this.config.save();
         this.config.reload();
+
+        this.updateAllHolograms();
     }
 
     public void deleteHologram(final String name) {
@@ -118,6 +120,16 @@ public class HologramHandler {
         this.config.set("holograms", map);
         this.config.save();
         this.config.reload();
+
+        this.updateAllHolograms();
+    }
+
+    public void updateAllHolograms() {
+        this.serverCore.getServer().getOnlinePlayers().values().forEach(e -> {
+            this.particles.values().forEach(g -> {
+                e.getLevel().addParticle(g);
+            });
+        });
     }
 
 }
