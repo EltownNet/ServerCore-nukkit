@@ -16,6 +16,7 @@ public class HumanNPC extends EntityHuman {
     public HumanNPC(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
         this.setDataProperty(new FloatEntityData(DATA_SCALE, this.namedTag.getFloat("scale")));
+        this.setNameTagAlwaysVisible(false);
     }
 
     @Override
