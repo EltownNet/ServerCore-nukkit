@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import net.eltown.servercore.commands.defaults.PluginsCommand;
 import net.eltown.servercore.commands.npc.NpcCommand;
+import net.eltown.servercore.commands.holograms.HologramCommand;
 import net.eltown.servercore.commands.teleportation.HomeCommand;
 import net.eltown.servercore.commands.teleportation.TpaCommand;
 import net.eltown.servercore.commands.teleportation.TpacceptCommand;
@@ -14,11 +15,13 @@ import net.eltown.servercore.commands.ticketsystem.TicketCommand;
 import net.eltown.servercore.components.entities.HumanNPC;
 import net.eltown.servercore.components.forms.FormListener;
 import net.eltown.servercore.components.handlers.NpcHandler;
+import net.eltown.servercore.components.handlers.HologramHandler;
 import net.eltown.servercore.components.language.Language;
 import net.eltown.servercore.components.tinyrabbit.TinyRabbit;
 import net.eltown.servercore.listeners.ChairListener;
 import net.eltown.servercore.listeners.EventListener;
 import net.eltown.servercore.listeners.NpcListener;
+import net.eltown.servercore.listeners.HologramListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -32,6 +35,8 @@ public class ServerCore extends PluginBase {
     private NpcHandler npcHandler;
 
     private String serverName;
+
+    private HologramHandler hologramHandler;
 
     @Override
     public void onLoad() {
@@ -59,8 +64,11 @@ public class ServerCore extends PluginBase {
         this.getServer().getPluginManager().registerEvents(new EventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new NpcListener(this), this);
         this.getServer().getPluginManager().registerEvents(new ChairListener(), this);
+        this.getServer().getPluginManager().registerEvents(new HologramListener(this), this);
 
         this.getServer().getCommandMap().register("servercore", new PluginsCommand(this));
+
+        this.getServer().getCommandMap().register("servercore", new HologramCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new HomeCommand(this));
         this.getServer().getCommandMap().register("servercore", new WarpCommand(this));
@@ -70,6 +78,7 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new TicketCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new NpcCommand(this));
+        this.hologramHandler = new HologramHandler(this);
     }
 
     public String createId(final int i) {
