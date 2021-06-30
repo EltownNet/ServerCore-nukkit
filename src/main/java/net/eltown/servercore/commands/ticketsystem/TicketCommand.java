@@ -87,11 +87,18 @@ public class TicketCommand extends PluginCommand<ServerCore> {
                     list.forEach(e -> {
                         if (!e.equals(delivery.getKey().toLowerCase())) {
                             final String[] d = e.split(">>");
-                            form.addButton(new ElementButton(d[3]), g -> {
-                                this.openTicket(g, d);
-                            });
+                            if (d[8].equals("null")) {
+                                form.addButton(new ElementButton(d[3] + "\n§f" + d[2] + " §8| " + d[5]), g -> {
+                                    this.openTicket(g, d);
+                                });
+                            } else {
+                                form.addButton(new ElementButton(d[3] + "\n§f" + d[2] + " §8| §cGeschlossen"), g -> {
+                                    this.openTicket(g, d);
+                                });
+                            }
                         }
                     });
+                    form.addButton(new ElementButton("§7» §fZurück"), this::openMain);
                     form.build().send(player);
                     break;
             }
@@ -219,38 +226,41 @@ public class TicketCommand extends PluginCommand<ServerCore> {
                                 final List<String> mySupportTickets = Arrays.asList(delivery1.getData());
 
                                 final SimpleForm simpleForm = new SimpleForm.Builder("§7» §8Administration", "")
-                                        .addButton(new ElementButton("§7» §fOffene Tickets §8[§7" + (openedTickets.size() - 1) + "§8]"), e -> {
+                                        .addButton(new ElementButton("§7» §fOffene Tickets"), e -> {
                                             final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Offene Tickets", "Klicke auf eines deiner Tickets, um weitere Informationen zu erhalten.");
                                             try {
                                                 openedTickets.forEach(i -> {
                                                     if (!i.equals(delivery.getKey().toLowerCase())) {
                                                         final String[] d = i.split(">>");
-                                                        form.addButton(new ElementButton(d[3]), g -> {
+                                                        form.addButton(new ElementButton(d[0] + "\n§f" + d[2] + " §8| " + d[5]), g -> {
                                                             this.openTicket(g, d);
                                                         });
                                                     }
                                                 });
+                                                form.addButton(new ElementButton("§7» §fZurück"), this::openTicketAdministration);
                                                 form.build().send(player);
                                             } catch (final Exception exception) {
                                                 player.sendMessage(Language.get("ticket.no.tickets"));
                                             }
                                         })
-                                        .addButton(new ElementButton("§7» §fTickets unter meiner\nBearbeitung §8[§7" + (mySupportTickets.size() - 1) + "§8]"), e -> {
+                                        .addButton(new ElementButton("§7» §fTickets unter meiner\nBearbeitung"), e -> {
                                             final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Tickets, die ich bearbeite", "Klicke auf eines deiner Tickets, um weitere Informationen zu erhalten.");
                                             try {
                                                 mySupportTickets.forEach(i -> {
                                                     if (!i.equals(delivery1.getKey().toLowerCase())) {
                                                         final String[] d = i.split(">>");
-                                                        form.addButton(new ElementButton(d[3]), g -> {
+                                                        form.addButton(new ElementButton(d[0] + "\n§f" + d[2] + " §8| " + d[5]), g -> {
                                                             this.openTicket(g, d);
                                                         });
                                                     }
                                                 });
+                                                form.addButton(new ElementButton("§7» §fZurück"), this::openTicketAdministration);
                                                 form.build().send(player);
                                             } catch (final Exception exception) {
                                                 player.sendMessage(Language.get("ticket.no.tickets"));
                                             }
                                         })
+                                        .addButton(new ElementButton("§7» §fZurück"), this::openMain)
                                         .build();
                                 simpleForm.send(player);
                                 break;
