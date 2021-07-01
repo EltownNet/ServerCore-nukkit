@@ -3,7 +3,15 @@ package net.eltown.servercore.commands.giftkeys;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.PluginCommand;
+import cn.nukkit.form.element.ElementInput;
+import cn.nukkit.item.Item;
 import net.eltown.servercore.ServerCore;
+import net.eltown.servercore.components.data.giftkeys.Giftkey;
+import net.eltown.servercore.components.data.giftkeys.GiftkeyCalls;
+import net.eltown.servercore.components.forms.custom.CustomForm;
+import net.eltown.servercore.components.forms.modal.ModalForm;
+import net.eltown.servercore.components.language.Language;
+import net.eltown.servercore.components.tinyrabbit.Queue;
 
 import java.util.Arrays;
 
@@ -18,8 +26,88 @@ public class RedeemCommand extends PluginCommand<ServerCore> {
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (sender instanceof Player) {
-
+            this.openRedeemKey(((Player) sender).getPlayer());
         }
         return true;
+    }
+
+    private void openRedeemKey(final Player player) {
+        final CustomForm form = new CustomForm.Builder("§7» §8Key einlösen")
+                .addElement(new ElementInput("Bitte gebe den Code, um diesen einzulösen.", "XXXXXX"))
+                .onSubmit((g, h) -> {
+                    final String key = h.getInputResponse(0);
+
+                    if (key.isEmpty()) {
+                        player.sendMessage(Language.get("giftkey.invalid.input"));
+                        return;
+                    }
+
+                    this.getPlugin().getTinyRabbit().sendAndReceive(delivery -> {
+                        switch (GiftkeyCalls.valueOf(delivery.getKey().toUpperCase())) {
+                            case CALLBACK_NULL:
+                                player.sendMessage(Language.get("giftkey.invalid.key", key));
+                                break;
+                            case CALLBACK_KEY:
+                                final String[] d = delivery.getData()[1].split(">>");
+                                final Giftkey giftkey = new Giftkey(d[0], Integer.parseInt(d[1]), Arrays.asList(d[2].split(">:<")), Arrays.asList(d[3].split(">:<")));
+
+                                if (giftkey.getUses().contains(player.getName())) {
+                                    player.sendMessage(Language.get("giftkey.already.redeemed"));
+                                    return;
+                                }
+
+                                final ModalForm modalForm = new ModalForm.Builder("§7» §8Key einlösen", "Möchtest du diesen Key einlösen und die Blohnungen, die dahinter stecken erhalten? Jeder Key kann nur einmal von einer Person eingelöst werden.", "§7» §aEinlösen", "§7» §cAbbrechen")
+                                        .onYes(e -> {
+                                            this.getPlugin().getTinyRabbit().sendAndReceive(delivery1 -> {
+                                                switch (GiftkeyCalls.valueOf(delivery1.getKey().toUpperCase())) {
+                                                    case CALLBACK_ALREADY_REDEEMED:
+                                                        player.sendMessage(Language.get("giftkey.already.redeemed"));
+                                                        break;
+                                                    case CALLBACK_NULL:
+                                                        player.sendMessage(Language.get("giftkey.invalid.key", key));
+                                                        break;
+                                                    case CALLBACK_REDEEMED:
+                                                        giftkey.getRewards().forEach(reward -> {
+                                                            final String[] raw = reward.split(";");
+                                                            switch (raw[0]) {
+                                                                case "item":
+                                                                    final Item item = Item.get(Integer.parseInt(raw[1]));
+                                                                    item.setDamage(Integer.parseInt(raw[2]));
+                                                                    item.setCount(Integer.parseInt(raw[3]));
+                                                                    item.setCustomName(raw[4]);
+                                                                    player.getInventory().addItem(item);
+                                                                    player.sendMessage(Language.get("giftkey.reward.item"));
+                                                                    break;
+                                                                case "money":
+                                                                    final double amount = Double.parseDouble(raw[1]);
+                                                                    player.sendMessage(Language.get("giftkey.reward.money", amount));
+                                                                    break;
+                                                                case "levelxp":
+                                                                    final double xp = Double.parseDouble(raw[1]);
+                                                                    player.sendMessage(Language.get("giftkey.reward.xp", xp));
+                                                                    break;
+                                                                case "rank":
+                                                                    final String rank = raw[1];
+                                                                    player.sendMessage(Language.get("giftkey.reward.rank", rank));
+                                                                    break;
+                                                                default:
+                                                                    player.sendMessage("Fehler: RedeemCommand :: " + raw[0]);
+                                                                    break;
+                                                            }
+                                                        });
+                                                        break;
+                                                }
+                                            }, Queue.GIFTKEYS_CALLBACK, GiftkeyCalls.REQUEST_REDEEM_KEY.name(), key, player.getName());
+                                        })
+                                        .onNo(e -> {
+                                        })
+                                        .build();
+                                modalForm.send(g);
+                                break;
+                        }
+                    }, Queue.GIFTKEYS_CALLBACK, GiftkeyCalls.REQUEST_GET_KEY.name(), key);
+                })
+                .build();
+        form.send(player);
     }
 }
