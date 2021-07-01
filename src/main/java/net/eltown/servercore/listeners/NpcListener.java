@@ -18,6 +18,8 @@ import net.eltown.servercore.components.entities.HumanNPC;
 import net.eltown.servercore.components.forms.custom.CustomForm;
 import net.eltown.servercore.components.language.Language;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
@@ -25,6 +27,8 @@ public class NpcListener implements Listener {
 
     @Getter
     private final ServerCore plugin;
+
+    private final Map<String, Long> lastUpdate = new HashMap<>();
 
     @EventHandler
     public void on(final PlayerInteractEntityEvent event) {
@@ -79,7 +83,13 @@ public class NpcListener implements Listener {
     public void on(final PlayerMoveEvent event) {
         final Player player = event.getPlayer();
 
-        for (Entity e : player.getLevel().getNearbyEntities(player.getBoundingBox().clone().expand(16, 16, 16), player)) {
+        if (lastUpdate.containsKey(player.getName())) {
+            if (lastUpdate.get(player.getName()) + 300 > System.currentTimeMillis()) {
+                return;
+            } else lastUpdate.put(player.getName(), System.currentTimeMillis());
+        } else lastUpdate.put(player.getName(), System.currentTimeMillis());
+
+        for (Entity e : player.getLevel().getNearbyEntities(player.getBoundingBox().clone().expand(12, 12, 12), player)) {
             // check if entity is a npc that can rotate
             if (!(e instanceof HumanNPC))
                 continue;
