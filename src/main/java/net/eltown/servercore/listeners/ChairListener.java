@@ -8,9 +8,8 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.EntityMetadata;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
-import cn.nukkit.event.player.PlayerInteractEvent;
-import cn.nukkit.event.player.PlayerJumpEvent;
-import cn.nukkit.event.player.PlayerQuitEvent;
+import cn.nukkit.event.player.*;
+import cn.nukkit.event.vehicle.EntityExitVehicleEvent;
 import cn.nukkit.network.protocol.AddEntityPacket;
 import cn.nukkit.network.protocol.MoveEntityAbsolutePacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
@@ -19,12 +18,15 @@ import net.eltown.servercore.components.language.Language;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class ChairListener implements Listener {
 
     private final Map<String, Long> onChair = new HashMap<>();
     private final Map<String, Long> doubleTap = new HashMap<>();
     private final Map<String, Long> tagblock = new HashMap<>();
+    private final Map<String, int[]> posXZ = new HashMap<>();
+    private final Map<String, Long> cooldown = new HashMap<>();
     private Map<String, Object> messages;
     private final int[] faces = new int[]{90, 270, 180, 0, 90, 270, 180, 0};
 
@@ -134,6 +136,10 @@ public class ChairListener implements Listener {
                         target.dataPacket(setEntityLinkPacket);
                     });
 
+                    Server.getInstance().getScheduler().scheduleDelayedTask(() -> {
+                        this.posXZ.put(name, new int[]{player.getFloorX(), player.getFloorZ()});
+                    }, 5);
+
                     player.setDataFlag(Entity.DATA_FLAGS, Entity.DATA_FLAG_RIDING, true);
                     this.doubleTap.remove(name);
                 } else {
@@ -154,18 +160,32 @@ public class ChairListener implements Listener {
     }
 
     @EventHandler
-    public void on(PlayerJumpEvent event) {
-        String name = event.getPlayer().getName().toLowerCase();
-        if (this.onChair.containsKey(name)) {
-            RemoveEntityPacket removeEntityPacket = new RemoveEntityPacket();
-            removeEntityPacket.eid = this.onChair.remove(name);
-            RemoveEntityPacket removeTagblockPacket = new RemoveEntityPacket();
-            removeTagblockPacket.eid = this.tagblock.remove(name);
-            Server.getInstance().getOnlinePlayers().values().forEach((p) -> {
-                p.dataPacket(removeEntityPacket);
-                p.dataPacket(removeTagblockPacket);
-            });
-        }
+    public void on(final PlayerMoveEvent event) {
+        CompletableFuture.runAsync(() -> {
+            final Player player = event.getPlayer();
+            final String name = event.getPlayer().getName().toLowerCase();
+
+            if (this.onChair.containsKey(name)) {
+                if (this.posXZ.containsKey(name)) {
+
+                    final int[] poses = this.posXZ.get(name);
+
+                    if (poses[0] != player.getFloorX() && poses[1] != player.getFloorZ()) {
+
+                        RemoveEntityPacket removeEntityPacket = new RemoveEntityPacket();
+                        removeEntityPacket.eid = this.onChair.remove(name);
+                        RemoveEntityPacket removeTagblockPacket = new RemoveEntityPacket();
+                        removeTagblockPacket.eid = this.tagblock.remove(name);
+                        Server.getInstance().getOnlinePlayers().values().forEach((p) -> {
+                            p.dataPacket(removeEntityPacket);
+                            p.dataPacket(removeTagblockPacket);
+                        });
+
+                        this.posXZ.remove(name);
+                    }
+                }
+            }
+        });
     }
 
     @EventHandler
