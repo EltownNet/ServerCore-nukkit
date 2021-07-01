@@ -3,6 +3,7 @@ package net.eltown.servercore.listeners;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockSlab;
 import cn.nukkit.block.BlockStairs;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.EntityMetadata;
@@ -41,7 +42,7 @@ public class ChairListener implements Listener {
         Block block = event.getBlock();
 
         if (!this.onChair.containsKey(name)) {
-            if (block instanceof BlockStairs) {
+            if (block instanceof BlockStairs || block instanceof BlockSlab) {
                 if ((block.getDamage() & 4) != 0 || block.up().isSolid()) return;
 
                 if (!this.doubleTap.containsKey(name)) {
@@ -95,7 +96,9 @@ public class ChairListener implements Listener {
                     addEntityPacket.speedY = 0;
                     addEntityPacket.speedZ = 0;
                     addEntityPacket.pitch = 0;
-                    addEntityPacket.yaw = faces[event.getBlock().getDamage()];
+                    if (event.getBlock() instanceof BlockSlab) {
+                        addEntityPacket.yaw = faces[0];
+                    } else addEntityPacket.yaw = faces[event.getBlock().getDamage()];
                     addEntityPacket.x = (float) (block.getX() + 0.5);
                     addEntityPacket.y = (float) (block.getY() + 1.6);
                     addEntityPacket.z = (float) (block.getZ() + 0.5);
@@ -119,8 +122,13 @@ public class ChairListener implements Listener {
                     moveEntityPacket.x = (float) (block.getX() + 0.5);
                     moveEntityPacket.y = (float) (block.getY() + 1.6);
                     moveEntityPacket.z = (float) (block.getZ() + 0.5);
-                    moveEntityPacket.yaw = faces[event.getBlock().getDamage()];
-                    moveEntityPacket.headYaw = faces[event.getBlock().getDamage()];
+                    if (event.getBlock() instanceof BlockSlab) {
+                        moveEntityPacket.yaw = faces[0];
+                        moveEntityPacket.headYaw = faces[0];
+                    } else {
+                        moveEntityPacket.yaw = faces[event.getBlock().getDamage()];
+                        moveEntityPacket.headYaw = faces[event.getBlock().getDamage()];
+                    }
                     moveEntityPacket.pitch = 0;
 
                     SetEntityLinkPacket setEntityLinkPacket = new SetEntityLinkPacket();
