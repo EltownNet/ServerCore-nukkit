@@ -33,7 +33,7 @@ public class RedeemCommand extends PluginCommand<ServerCore> {
 
     private void openRedeemKey(final Player player) {
         final CustomForm form = new CustomForm.Builder("§7» §8Key einlösen")
-                .addElement(new ElementInput("Bitte gebe den Code, um diesen einzulösen.", "XXXXXX"))
+                .addElement(new ElementInput("Bitte gebe einen Code an, um diesen einzulösen.", "XXXXXX"))
                 .onSubmit((g, h) -> {
                     final String key = h.getInputResponse(0);
 
@@ -56,7 +56,7 @@ public class RedeemCommand extends PluginCommand<ServerCore> {
                                     return;
                                 }
 
-                                final ModalForm modalForm = new ModalForm.Builder("§7» §8Key einlösen", "Möchtest du diesen Key einlösen und die Blohnungen, die dahinter stecken erhalten? Jeder Key kann nur einmal von einer Person eingelöst werden.", "§7» §aEinlösen", "§7» §cAbbrechen")
+                                final ModalForm modalForm = new ModalForm.Builder("§7» §8Key einlösen", "Möchtest du diesen Key einlösen und die Belohnungen, die dahinter stecken erhalten? Jeder Key kann nur einmal von einer Person eingelöst werden.", "§7» §aEinlösen", "§7» §cAbbrechen")
                                         .onYes(e -> {
                                             this.getPlugin().getTinyRabbit().sendAndReceive(delivery1 -> {
                                                 switch (GiftkeyCalls.valueOf(delivery1.getKey().toUpperCase())) {
