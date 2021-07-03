@@ -63,3 +63,8 @@ teleport.teleported.xyz: "&7Du wurdest zu den Koordinaten &a[0]&7, &a[1]&7, &a[2
 teleport.teleported.xyz.other: "&a[0] &7wurde zu den Koordinaten &a[1]&7, &a[2]&7, &a[3] &7teleportiert."
 teleport.invalid.coordiantes: "&7Die Koordinaten sind ungültig. Bitte überprüfe deine Eingaben."
 teleport.usage: "&a/[0] <player|player1|x|player> </|player2|y|x> <z|y> <z>"
+speed.usage: "§a/speed <speed> <optional: spieler>"
+speed.invalid.number: "§cBitte gebe eine gültige Zahl an."
+speed.adjusted: "§7Deine Geschwindigkeit wurde auf §a[0] §7gesetzt."
+speed.set: "§a[0]'s §7Geschwindigkeit wurde auf §a[1]§7 gesetzt."
+speed.pnf: "§cSpieler konnte nicht gefunden werden."
