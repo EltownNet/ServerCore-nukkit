@@ -1,5 +1,6 @@
 package net.eltown.servercore;
 
+import cn.nukkit.command.SimpleCommandMap;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.plugin.PluginBase;
 import lombok.Getter;
@@ -9,10 +10,7 @@ import net.eltown.servercore.commands.giftkeys.GiftkeyCommand;
 import net.eltown.servercore.commands.giftkeys.RedeemCommand;
 import net.eltown.servercore.commands.npc.NpcCommand;
 import net.eltown.servercore.commands.holograms.HologramCommand;
-import net.eltown.servercore.commands.teleportation.HomeCommand;
-import net.eltown.servercore.commands.teleportation.TpaCommand;
-import net.eltown.servercore.commands.teleportation.TpacceptCommand;
-import net.eltown.servercore.commands.teleportation.WarpCommand;
+import net.eltown.servercore.commands.teleportation.*;
 import net.eltown.servercore.commands.ticketsystem.TicketCommand;
 import net.eltown.servercore.components.entities.HumanNPC;
 import net.eltown.servercore.components.forms.FormListener;
@@ -78,6 +76,7 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new NpcCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new HomeCommand(this));
+        this.getServer().getCommandMap().register("servercore", new TeleportCommand(this));
         this.getServer().getCommandMap().register("servercore", new WarpCommand(this));
         this.getServer().getCommandMap().register("servercore", new TpaCommand(this));
         this.getServer().getCommandMap().register("servercore", new TpacceptCommand(this));

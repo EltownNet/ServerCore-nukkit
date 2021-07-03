@@ -34,6 +34,10 @@ public class EventListener implements Listener {
                         final String[] p = d[1].split("==&");
                         player.teleport(new Location(Double.parseDouble(d[3]), Double.parseDouble(d[4]), Double.parseDouble(d[5]), Double.parseDouble(d[6]), Double.parseDouble(d[7]), this.instance.getServer().getLevelByName(d[2])));
                         player.sendMessage(Language.get("tpa.teleported", p[1]));
+                    } else if (d[1].startsWith("TP_NULL==&")) {
+                        final String[] p = d[1].split("==&");
+                        final Player target = this.instance.getServer().getPlayer(p[1]);
+                        if (target != null) player.teleport(target.getLocation());
                     } else {
                         player.teleport(new Location(Double.parseDouble(d[3]), Double.parseDouble(d[4]), Double.parseDouble(d[5]), Double.parseDouble(d[6]), Double.parseDouble(d[7]), this.instance.getServer().getLevelByName(d[2])));
                         player.sendMessage(Language.get("home.teleported", d[1]));
