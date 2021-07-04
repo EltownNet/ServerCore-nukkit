@@ -5,6 +5,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.plugin.PluginBase;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import net.eltown.servercore.commands.administrative.IdCommand;
 import net.eltown.servercore.commands.administrative.SpeedCommand;
 import net.eltown.servercore.commands.defaults.PluginsCommand;
 import net.eltown.servercore.commands.giftkeys.GiftkeyCommand;
@@ -67,6 +68,9 @@ public class ServerCore extends PluginBase {
         this.getServer().getPluginManager().registerEvents(new ChairListener(), this);
         this.getServer().getPluginManager().registerEvents(new HologramListener(this), this);
 
+        this.getServer().getCommandMap().register("servercore", new SpeedCommand(this));
+        this.getServer().getCommandMap().register("servercore", new IdCommand(this));
+
         this.getServer().getCommandMap().register("servercore", new PluginsCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new GiftkeyCommand(this));
@@ -83,8 +87,6 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new TpacceptCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new TicketCommand(this));
-
-        this.getServer().getCommandMap().register("speed", new SpeedCommand(this));
 
         this.hologramHandler = new HologramHandler(this);
     }
