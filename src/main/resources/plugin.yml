@@ -6,3 +6,5 @@ authors:
   - Proxma
 main: net.eltown.servercore.ServerCore
 description: Kernfunktionen für Eltown
+depend:
+  - Drivers

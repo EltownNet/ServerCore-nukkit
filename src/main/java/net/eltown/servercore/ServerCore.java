@@ -58,6 +58,7 @@ public class ServerCore extends PluginBase {
     @SneakyThrows
     private void loadPlugin() {
         this.tinyRabbit = new TinyRabbit("localhost", "Core/Server");
+        this.tinyRabbit.throwExceptions(true);
         this.serverName = this.getConfig().getString("server-name");
         this.npcHandler = new NpcHandler(this);
         Language.init(this);
