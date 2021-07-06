@@ -31,6 +31,8 @@ public class TeleportCommand extends PluginCommand<ServerCore> {
                 if (target != null) {
                     player.teleport(target.getLocation());
                     player.sendMessage(Language.get("teleport.teleported.target", target.getName()));
+
+                    PluginCommand.broadcastCommandMessage(sender, "Teleported to " + target.getName(), false);
                 } else {
                     this.getPlugin().getTinyRabbit().sendAndReceive(delivery -> {
                         switch (CoreCalls.valueOf(delivery.getKey().toUpperCase())) {
@@ -41,6 +43,8 @@ public class TeleportCommand extends PluginCommand<ServerCore> {
                                 this.getPlugin().getTinyRabbit().send(Queue.TELEPORTATION_RECEIVE, TeleportationCalls.REQUEST_TELEPORT.name(), "TP_NULL==&" + args[0], player.getName(), "null", args[0],
                                         "0", "0", "0", "0", "0");
                                 player.sendMessage(Language.get("teleport.teleported.target", args[0]));
+
+                                PluginCommand.broadcastCommandMessage(sender, "Teleported to " + args[0], false);
                                 break;
                         }
                     }, Queue.CORE_CALLBACK, CoreCalls.REQUEST_IS_PLAYER_ONLINE.name(), args[0]);
@@ -50,7 +54,9 @@ public class TeleportCommand extends PluginCommand<ServerCore> {
                 final Player to = this.getPlugin().getServer().getPlayer(args[1]);
                 if (from != null && to != null) {
                     from.teleport(to.getLocation());
-                    player.sendMessage(Language.get("teleport.teleported.others", args[0], args[1]));
+                    player.sendMessage(Language.get("teleport.teleported.others", from.getName(), to.getName()));
+
+                    PluginCommand.broadcastCommandMessage(sender, "Teleported " + from.getName() + " to " + to.getName(), false);
                 } else {
                     this.getPlugin().getTinyRabbit().sendAndReceive(delivery -> {
                         switch (CoreCalls.valueOf(delivery.getKey().toUpperCase())) {
@@ -67,6 +73,8 @@ public class TeleportCommand extends PluginCommand<ServerCore> {
                                             this.getPlugin().getTinyRabbit().send(Queue.TELEPORTATION_RECEIVE, TeleportationCalls.REQUEST_TELEPORT.name(), "TP_NULL==&" + args[1], args[0], "null", args[1],
                                                     "0", "0", "0", "0", "0");
                                             player.sendMessage(Language.get("teleport.teleported.others", args[0], args[1]));
+
+                                            PluginCommand.broadcastCommandMessage(sender, "Teleported " + args[0] + " to " + args[1], false);
                                             break;
                                     }
                                 }, Queue.CORE_CALLBACK, CoreCalls.REQUEST_IS_PLAYER_ONLINE.name(), args[1]);
@@ -81,6 +89,8 @@ public class TeleportCommand extends PluginCommand<ServerCore> {
                     final int z = Integer.parseInt(args[2]);
                     player.teleport(new Location(x, y, z, player.getLevel()));
                     player.sendMessage(Language.get("teleport.teleported.xyz", x, y, z));
+
+                    PluginCommand.broadcastCommandMessage(sender, "Teleported to " + x + ", " + y + ", " + z, false);
                 } catch (final Exception ignored) {
                     player.sendMessage(Language.get("teleport.invalid.coordiantes"));
                 }
@@ -96,6 +106,8 @@ public class TeleportCommand extends PluginCommand<ServerCore> {
                     final int z = Integer.parseInt(args[3]);
                     target.teleport(new Location(x, y, z, target.getLevel()));
                     player.sendMessage(Language.get("teleport.teleported.xyz.other", target.getName(), x, y, z));
+
+                    PluginCommand.broadcastCommandMessage(sender, "Teleported " + target.getName() + " to " + x + ", " + y + ", " + z, false);
                 } catch (final Exception ignored) {
                     player.sendMessage(Language.get("teleport.invalid.coordiantes"));
                 }
