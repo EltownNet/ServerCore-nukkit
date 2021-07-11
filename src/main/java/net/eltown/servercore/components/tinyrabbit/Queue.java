@@ -10,5 +10,6 @@ public class Queue {
     public static final String TICKET_CALLBACK = "tickets.callback";
     public static final String GIFTKEYS_RECEIVE = "giftkeys.receive";
     public static final String GIFTKEYS_CALLBACK = "giftkeys.callback";
+    public static final String DISCORD_AUTH = "discord.bot.auth";
 
 }

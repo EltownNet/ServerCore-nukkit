@@ -6,6 +6,7 @@ import cn.nukkit.command.PluginCommand;
 import cn.nukkit.form.element.ElementButton;
 import cn.nukkit.form.element.ElementDropdown;
 import cn.nukkit.form.element.ElementInput;
+import cn.nukkit.form.element.ElementToggle;
 import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.data.ticketsystem.Ticket;
 import net.eltown.servercore.components.data.ticketsystem.TicketCalls;
@@ -48,27 +49,33 @@ public class TicketCommand extends PluginCommand<ServerCore> {
                 .addElement(new ElementDropdown("Wähle einen Bereich deines Anliegens aus.", Arrays.asList("Spielerbeschwerde", "Fehlermeldung", "Hilfe benötigt", "Feedback / Vorschläge", "Sonstiges"), 0))
                 .addElement(new ElementInput("Verfasse eine Nachricht, welche dein Anliegen näher erklärt.", "Nachricht (ca. 80 Zeichen)"))
                 .addElement(new ElementDropdown("Priorität des Tickets.", Arrays.asList("§cHoch", "§6Normal", "§eGering"), 1))
+                .addElement(new ElementToggle("Dieses Ticket im Discord-Server direkt öffnen.\n§cDiese Option ist nur möglich, wenn dein Discord-Account mit deinem Ingame-Account verknüpft ist. §8[§b/auth§8]", false))
                 .onSubmit((g, h) -> {
                     final String subject = h.getInputResponse(0);
                     final String section = h.getDropdownResponse(1).getElementContent();
                     final String message = h.getInputResponse(2);
                     final String priority = h.getDropdownResponse(3).getElementContent();
+                    final boolean discord = h.getToggleResponse(4);
 
                     if (subject.isEmpty() || message.isEmpty()) {
                         player.sendMessage(Language.get("ticket.input.invalid"));
                         return;
                     }
 
-                    this.getPlugin().getTinyRabbit().sendAndReceive(delivery -> {
-                        switch (TicketCalls.valueOf(delivery.getKey().toUpperCase())) {
-                            case CALLBACK_TOO_MANY_TICKETS:
-                                player.sendMessage(Language.get("ticket.too.many"));
-                                break;
-                            case CALLBACK_NULL:
-                                player.sendMessage(Language.get("ticket.created"));
-                                break;
-                        }
-                    }, Queue.TICKET_CALLBACK, TicketCalls.REQUEST_OPEN_TICKET.name(), player.getName(), subject, section, priority, message);
+                    if (discord) {
+
+                    } else {
+                        this.getPlugin().getTinyRabbit().sendAndReceive(delivery -> {
+                            switch (TicketCalls.valueOf(delivery.getKey().toUpperCase())) {
+                                case CALLBACK_TOO_MANY_TICKETS:
+                                    player.sendMessage(Language.get("ticket.too.many"));
+                                    break;
+                                case CALLBACK_NULL:
+                                    player.sendMessage(Language.get("ticket.created"));
+                                    break;
+                            }
+                        }, Queue.TICKET_CALLBACK, TicketCalls.REQUEST_OPEN_TICKET.name(), player.getName(), subject, section, priority, message);
+                    }
                 })
                 .build();
         form.send(player);
@@ -116,6 +123,7 @@ public class TicketCommand extends PluginCommand<ServerCore> {
         final StringBuilder content = new StringBuilder();
         if (!ticket.getDateClosed().equals("null")) content.append("§cDieses Ticket ist bereits geschlossen!\n\n");
         content.append("§fTicket von: §a").append(ticket.getCreator()).append("\n");
+        content.append("§fBetreff: §e").append(ticket.getSubject()).append("\n");
         content.append("§fSupporter: §b").append(ticket.getSupporter().replace("null", "Keiner")).append("\n");
         content.append("§fPriorität: §7").append(ticket.getPriority()).append("\n\n");
         content.append("§f§l- Nachrichten: -§f§r\n");
@@ -227,7 +235,7 @@ public class TicketCommand extends PluginCommand<ServerCore> {
 
                                 final SimpleForm simpleForm = new SimpleForm.Builder("§7» §8Administration", "")
                                         .addButton(new ElementButton("§7» §fOffene Tickets"), e -> {
-                                            final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Offene Tickets", "Klicke auf eines deiner Tickets, um weitere Informationen zu erhalten.");
+                                            final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Offene Tickets", "Klicke auf eines der Tickets, um weitere Informationen zu erhalten.");
                                             try {
                                                 openedTickets.forEach(i -> {
                                                     if (!i.equals(delivery.getKey().toLowerCase())) {
@@ -244,7 +252,7 @@ public class TicketCommand extends PluginCommand<ServerCore> {
                                             }
                                         })
                                         .addButton(new ElementButton("§7» §fTickets unter meiner\nBearbeitung"), e -> {
-                                            final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Tickets, die ich bearbeite", "Klicke auf eines deiner Tickets, um weitere Informationen zu erhalten.");
+                                            final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Tickets, die ich bearbeite", "Klicke auf eines der Tickets, um weitere Informationen zu erhalten.");
                                             try {
                                                 mySupportTickets.forEach(i -> {
                                                     if (!i.equals(delivery1.getKey().toLowerCase())) {
