@@ -5,6 +5,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.plugin.PluginBase;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import net.eltown.servercore.commands.administrative.EnchantCommand;
 import net.eltown.servercore.commands.administrative.IdCommand;
 import net.eltown.servercore.commands.administrative.SpeedCommand;
 import net.eltown.servercore.commands.defaults.PluginsCommand;
@@ -14,6 +15,7 @@ import net.eltown.servercore.commands.npc.NpcCommand;
 import net.eltown.servercore.commands.holograms.HologramCommand;
 import net.eltown.servercore.commands.teleportation.*;
 import net.eltown.servercore.commands.ticketsystem.TicketCommand;
+import net.eltown.servercore.components.enchantments.CustomEnchantment;
 import net.eltown.servercore.components.entities.HumanNPC;
 import net.eltown.servercore.components.forms.FormListener;
 import net.eltown.servercore.components.handlers.HologramHandler;
@@ -34,11 +36,13 @@ import java.util.Random;
 public class ServerCore extends PluginBase {
 
     private TinyRabbit tinyRabbit;
-    private NpcHandler npcHandler;
 
     private String serverName;
 
     private HologramHandler hologramHandler;
+    private NpcHandler npcHandler;
+
+    private CustomEnchantment customEnchantment;
 
     @Override
     public void onLoad() {
@@ -60,7 +64,6 @@ public class ServerCore extends PluginBase {
         this.tinyRabbit = new TinyRabbit("localhost", "Core/Server");
         this.tinyRabbit.throwExceptions(true);
         this.serverName = this.getConfig().getString("server-name");
-        this.npcHandler = new NpcHandler(this);
         Language.init(this);
 
         this.getServer().getPluginManager().registerEvents(new FormListener(), this);
@@ -69,6 +72,7 @@ public class ServerCore extends PluginBase {
         this.getServer().getPluginManager().registerEvents(new ChairListener(), this);
         this.getServer().getPluginManager().registerEvents(new HologramListener(this), this);
 
+        this.getServer().getCommandMap().register("servercore", new EnchantCommand(this));
         this.getServer().getCommandMap().register("servercore", new SpeedCommand(this));
         this.getServer().getCommandMap().register("servercore", new IdCommand(this));
 
@@ -90,6 +94,9 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new TicketCommand(this));
 
         this.hologramHandler = new HologramHandler(this);
+        this.npcHandler = new NpcHandler(this);
+
+        this.customEnchantment = new CustomEnchantment(this);
     }
 
     public String createId(final int i) {
