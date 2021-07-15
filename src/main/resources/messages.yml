@@ -69,3 +69,8 @@ speed.adjusted: "§7Deine Geschwindigkeit wurde auf §a[0] §7gesetzt."
 speed.set: "§a[0]'s §7Geschwindigkeit wurde auf §a[1]§7 gesetzt."
 speed.pnf: "§cSpieler konnte nicht gefunden werden."
 id.info: "Die ID des Items in deiner Hand lautet &a[0]:[1]&7."
+
+roleplay.shop.item.bought: "&7Du hast &a[0]x &7das Item &a[1] &7für &a$[2] &7gekauft."
+roleplay.shop.item.not.enough.money: "&7Du hast zu wenig Geld, um dir dieses Item kaufen zu können."
+roleplay.shop.item.inventory.full: "&7Bitte schaffe in deinem Inventar platz, damit du dieses Item kaufen kannst."
+roleplay.shop.item.invalid.amount: "&7Bitte gebe eine gültige Anzahl an."

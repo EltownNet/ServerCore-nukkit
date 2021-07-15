@@ -21,6 +21,8 @@ import net.eltown.servercore.components.forms.FormListener;
 import net.eltown.servercore.components.handlers.HologramHandler;
 import net.eltown.servercore.components.handlers.NpcHandler;
 import net.eltown.servercore.components.language.Language;
+import net.eltown.servercore.components.roleplay.jobs.JobRoleplay;
+import net.eltown.servercore.components.roleplay.shops.ShopRoleplay;
 import net.eltown.servercore.components.tinyrabbit.TinyRabbit;
 import net.eltown.servercore.listeners.ChairListener;
 import net.eltown.servercore.listeners.EventListener;
@@ -43,6 +45,9 @@ public class ServerCore extends PluginBase {
     private NpcHandler npcHandler;
 
     private CustomEnchantment customEnchantment;
+
+    private ShopRoleplay shopRoleplay;
+    private JobRoleplay jobRoleplay;
 
     @Override
     public void onLoad() {
@@ -97,6 +102,9 @@ public class ServerCore extends PluginBase {
         this.npcHandler = new NpcHandler(this);
 
         this.customEnchantment = new CustomEnchantment(this);
+
+        this.shopRoleplay = new ShopRoleplay(this);
+        this.jobRoleplay = new JobRoleplay(this);
     }
 
     public String createId(final int i) {

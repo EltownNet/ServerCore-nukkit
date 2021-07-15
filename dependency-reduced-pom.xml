@@ -20,24 +20,107 @@
       </plugin>
     </plugins>
   </build>
-  <repositories>
-    <repository>
-      <id>nukkit-repo</id>
-      <url>https://repo.nukkitx.com/maven-snapshots</url>
-    </repository>
-  </repositories>
   <dependencies>
     <dependency>
-      <groupId>cn.nukkit</groupId>
-      <artifactId>nukkit</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <groupId>org.powernukkit</groupId>
+      <artifactId>powernukkit</artifactId>
+      <version>1.5.0.0-PN</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>raknet</artifactId>
+          <groupId>org.powernukkit.bedrock.network</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>fastutil-lite</artifactId>
+          <groupId>org.powernukkit.fastutil</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>guava</artifactId>
+          <groupId>com.google.guava</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>gson</artifactId>
+          <groupId>com.google.code.gson</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>snakeyaml</artifactId>
+          <groupId>org.yaml</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>bedrock-leveldb</artifactId>
+          <groupId>org.powernukkit.bedrock.leveldb</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>sentry</artifactId>
+          <groupId>io.sentry</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>sentry-log4j2</artifactId>
+          <groupId>io.sentry</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>nimbus-jose-jwt</artifactId>
+          <groupId>com.nimbusds</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>log4j-api</artifactId>
+          <groupId>org.apache.logging.log4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>log4j-core</artifactId>
+          <groupId>org.apache.logging.log4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jopt-simple</artifactId>
+          <groupId>net.sf.jopt-simple</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>terminalconsoleappender</artifactId>
+          <groupId>net.minecrell</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jline-terminal</artifactId>
+          <groupId>org.jline</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jline-terminal-jna</artifactId>
+          <groupId>org.jline</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jline-reader</artifactId>
+          <groupId>org.jline</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jsr305</artifactId>
+          <groupId>com.google.code.findbugs</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.rabbitmq</groupId>
+      <artifactId>amqp-client</artifactId>
+      <version>5.10.0</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.18.8</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.eltown.economy</groupId>
+      <artifactId>Economy</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/lib/Economy-1.0.0-SNAPSHOT.jar</systemPath>
     </dependency>
   </dependencies>
   <properties>
