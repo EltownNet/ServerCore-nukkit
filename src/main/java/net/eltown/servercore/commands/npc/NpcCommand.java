@@ -32,7 +32,7 @@ public class NpcCommand extends PluginCommand<ServerCore> {
         new SimpleForm.Builder("§8» §fNPC", "Hier kannst du NPCs erstellen und verwalten.")
                 .addButton(new ElementButton("§8» §fNPC erstellen"), this::createForm)
                 .addButton(new ElementButton("§8» §fNPC bearbeiten"), (p) -> {
-                    this.getPlugin().getNpcHandler().getManagers().add(p.getName());
+                    this.getPlugin().getNpcAPI().getManagers().add(p.getName());
                     p.sendMessage(Language.get("npc.click"));
                 })
                 .build().send(player);

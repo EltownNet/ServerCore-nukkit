@@ -51,7 +51,7 @@ public class HologramCommand extends PluginCommand<ServerCore> {
                     form1.onSubmit((g, h) -> {
                         final String name = h.getInputResponse(0);
 
-                        if (name.isEmpty() || this.getPlugin().getHologramHandler().hologramExists(name)) {
+                        if (name.isEmpty() || this.getPlugin().getHologramAPI().hologramExists(name)) {
                             player.sendMessage(Language.get("holograms.invalid.input"));
                             return;
                         }
@@ -60,7 +60,7 @@ public class HologramCommand extends PluginCommand<ServerCore> {
                         for (int x = 0; x < Integer.parseInt(o.getStepSliderResponse(0).getElementContent()); x++) {
                             lines.add((x + 1) + ">:<" + h.getInputResponse(2 + x));
                         }
-                        this.getPlugin().getHologramHandler().createHologram(player, name, h.getInputResponse(1), lines);
+                        this.getPlugin().getHologramAPI().createHologram(player, name, h.getInputResponse(1), lines);
                         player.sendMessage(Language.get("holograms.created", name));
                     });
                     form1.build().send(player);
@@ -71,12 +71,12 @@ public class HologramCommand extends PluginCommand<ServerCore> {
     }
 
     private void hologramSettings(final Player player) {
-        if (new ArrayList<>(this.getPlugin().getHologramHandler().particles.keySet()).size() == 0) {
+        if (new ArrayList<>(this.getPlugin().getHologramAPI().particles.keySet()).size() == 0) {
             player.sendMessage(Language.get("holograms.no.holograms"));
             return;
         }
         final CustomForm form = new CustomForm.Builder("§7» §8Hologramm bearbeiten")
-                .addElement(new ElementDropdown("Bitte wähle ein Hologramm aus, welches du bearbeiten möchtest.", new ArrayList<>(this.getPlugin().getHologramHandler().particles.keySet())))
+                .addElement(new ElementDropdown("Bitte wähle ein Hologramm aus, welches du bearbeiten möchtest.", new ArrayList<>(this.getPlugin().getHologramAPI().particles.keySet())))
                 .onSubmit((g, h) -> {
                     final String name = h.getDropdownResponse(0).getElementContent();
 
@@ -87,7 +87,7 @@ public class HologramCommand extends PluginCommand<ServerCore> {
                                         .onSubmit((b, n) -> {
                                             final String line = n.getInputResponse(0);
                                             if (!line.isEmpty()) {
-                                                this.getPlugin().getHologramHandler().addHologramLine(name, line);
+                                                this.getPlugin().getHologramAPI().addHologramLine(name, line);
                                                 player.sendMessage(Language.get("holograms.line.added"));
                                             }
                                         })
@@ -95,7 +95,7 @@ public class HologramCommand extends PluginCommand<ServerCore> {
                                 form2.send(g);
                             })
                             .addButton(new ElementButton("§7» §fLetzte Zeile entfernen"), d -> {
-                                this.getPlugin().getHologramHandler().removeLastLine(name);
+                                this.getPlugin().getHologramAPI().removeLastLine(name);
                                 player.sendMessage(Language.get("holograms.line.removed"));
                             })
                             .addButton(new ElementButton("§7» §fErweitert"), d -> {
@@ -107,11 +107,11 @@ public class HologramCommand extends PluginCommand<ServerCore> {
                                             final boolean del = n.getToggleResponse(1);
                                             if (!del) {
                                                 if (pos) {
-                                                    this.getPlugin().getHologramHandler().moveHologram(name, player.getLocation());
+                                                    this.getPlugin().getHologramAPI().moveHologram(name, player.getLocation());
                                                     player.sendMessage(Language.get("holograms.moved"));
                                                 }
                                             } else {
-                                                this.getPlugin().getHologramHandler().deleteHologram(name);
+                                                this.getPlugin().getHologramAPI().deleteHologram(name);
                                                 player.sendMessage(Language.get("holograms.deleted"));
                                             }
                                         })

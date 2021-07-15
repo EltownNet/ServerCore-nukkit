@@ -15,7 +15,7 @@ public class HologramListener implements Listener {
     @EventHandler
     public void on(final PlayerJoinEvent event) {
         final Player player = event.getPlayer();
-        this.serverCore.getHologramHandler().particles.values().forEach(e -> {
+        this.serverCore.getHologramAPI().particles.values().forEach(e -> {
             player.getLevel().addParticle(e);
         });
     }

@@ -20,7 +20,6 @@ import net.eltown.servercore.components.language.Language;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 public class NpcListener implements Listener {
@@ -33,11 +32,11 @@ public class NpcListener implements Listener {
     @EventHandler
     public void on(final PlayerInteractEntityEvent event) {
         final Player player = event.getPlayer();
-        if (this.getPlugin().getNpcHandler().getManagers().contains(player.getName())) {
+        if (this.getPlugin().getNpcAPI().getManagers().contains(player.getName())) {
             if (event.getEntity() instanceof HumanNPC) {
 
                 final HumanNPC npc = (HumanNPC) event.getEntity();
-                this.getPlugin().getNpcHandler().getManagers().remove(player.getName());
+                this.getPlugin().getNpcAPI().getManagers().remove(player.getName());
 
                 new CustomForm.Builder("§8» §fNPC bearbeiten")
                         .addElement(new ElementInput("NPC ID", npc.getNpcID(), npc.getNpcID()))

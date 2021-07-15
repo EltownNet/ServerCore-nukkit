@@ -1,4 +1,4 @@
-package net.eltown.servercore.components.handlers;
+package net.eltown.servercore.components.api.intern;
 
 import cn.nukkit.Player;
 import cn.nukkit.level.Location;
@@ -11,14 +11,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class HologramHandler {
+public class HologramAPI {
 
     private ServerCore serverCore;
     public final Config config;
 
     public HashMap<String, FloatingTextParticle> particles = new HashMap<>();
 
-    public HologramHandler(final ServerCore serverCore) {
+    public HologramAPI(final ServerCore serverCore) {
         this.serverCore = serverCore;
         this.config = new Config(serverCore.getDataFolder() + "/components/holograms.yml", Config.YAML);
 

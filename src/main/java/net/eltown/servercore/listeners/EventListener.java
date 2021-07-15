@@ -44,7 +44,6 @@ public class EventListener implements Listener {
                     }
                     break;
                 default:
-
                     break;
             }
         }, Queue.TELEPORTATION_CALLBACK, TeleportationCalls.REQUEST_CACHED_DATA.name(), player.getName());

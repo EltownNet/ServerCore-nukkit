@@ -1,6 +1,5 @@
 package net.eltown.servercore;
 
-import cn.nukkit.command.SimpleCommandMap;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.plugin.PluginBase;
 import lombok.Getter;
@@ -11,23 +10,23 @@ import net.eltown.servercore.commands.administrative.SpeedCommand;
 import net.eltown.servercore.commands.defaults.PluginsCommand;
 import net.eltown.servercore.commands.giftkeys.GiftkeyCommand;
 import net.eltown.servercore.commands.giftkeys.RedeemCommand;
+import net.eltown.servercore.commands.level.LevelCommand;
 import net.eltown.servercore.commands.npc.NpcCommand;
 import net.eltown.servercore.commands.holograms.HologramCommand;
 import net.eltown.servercore.commands.teleportation.*;
 import net.eltown.servercore.commands.ticketsystem.TicketCommand;
+import net.eltown.servercore.components.api.ServerCoreAPI;
+import net.eltown.servercore.components.api.intern.LevelAPI;
 import net.eltown.servercore.components.enchantments.CustomEnchantment;
 import net.eltown.servercore.components.entities.HumanNPC;
 import net.eltown.servercore.components.forms.FormListener;
-import net.eltown.servercore.components.handlers.HologramHandler;
-import net.eltown.servercore.components.handlers.NpcHandler;
+import net.eltown.servercore.components.api.intern.HologramAPI;
+import net.eltown.servercore.components.api.intern.NpcAPI;
 import net.eltown.servercore.components.language.Language;
 import net.eltown.servercore.components.roleplay.jobs.JobRoleplay;
 import net.eltown.servercore.components.roleplay.shops.ShopRoleplay;
 import net.eltown.servercore.components.tinyrabbit.TinyRabbit;
-import net.eltown.servercore.listeners.ChairListener;
-import net.eltown.servercore.listeners.EventListener;
-import net.eltown.servercore.listeners.HologramListener;
-import net.eltown.servercore.listeners.NpcListener;
+import net.eltown.servercore.listeners.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -41,8 +40,9 @@ public class ServerCore extends PluginBase {
 
     private String serverName;
 
-    private HologramHandler hologramHandler;
-    private NpcHandler npcHandler;
+    private HologramAPI hologramAPI;
+    private NpcAPI npcAPI;
+    private LevelAPI levelAPI;
 
     private CustomEnchantment customEnchantment;
 
@@ -59,8 +59,10 @@ public class ServerCore extends PluginBase {
         try {
             this.saveDefaultConfig();
             this.loadPlugin();
+            this.getLogger().info("§aServerCore erfolgreich initialisiert.");
         } catch (final Exception e) {
             e.printStackTrace();
+            this.getLogger().error("§4Fehler beim initialisieren des ServerCores.");
         }
     }
 
@@ -76,6 +78,7 @@ public class ServerCore extends PluginBase {
         this.getServer().getPluginManager().registerEvents(new NpcListener(this), this);
         this.getServer().getPluginManager().registerEvents(new ChairListener(), this);
         this.getServer().getPluginManager().registerEvents(new HologramListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new LevelListener(this), this);
 
         this.getServer().getCommandMap().register("servercore", new EnchantCommand(this));
         this.getServer().getCommandMap().register("servercore", new SpeedCommand(this));
@@ -88,6 +91,8 @@ public class ServerCore extends PluginBase {
 
         this.getServer().getCommandMap().register("servercore", new HologramCommand(this));
 
+        this.getServer().getCommandMap().register("servercore", new LevelCommand(this));
+
         this.getServer().getCommandMap().register("servercore", new NpcCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new HomeCommand(this));
@@ -98,13 +103,16 @@ public class ServerCore extends PluginBase {
 
         this.getServer().getCommandMap().register("servercore", new TicketCommand(this));
 
-        this.hologramHandler = new HologramHandler(this);
-        this.npcHandler = new NpcHandler(this);
+        this.hologramAPI = new HologramAPI(this);
+        this.npcAPI = new NpcAPI(this);
+        this.levelAPI = new LevelAPI(this);
 
         this.customEnchantment = new CustomEnchantment(this);
 
         this.shopRoleplay = new ShopRoleplay(this);
         this.jobRoleplay = new JobRoleplay(this);
+
+        new ServerCoreAPI(this);
     }
 
     public String createId(final int i) {
