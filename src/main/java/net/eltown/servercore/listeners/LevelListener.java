@@ -28,22 +28,6 @@ public class LevelListener implements Listener {
     private final ServerCore instance;
 
     @EventHandler
-    public void on(final PlayerLocallyInitializedEvent event) {
-        final Player player = event.getPlayer();
-        this.instance.getTinyRabbit().sendAndReceive(delivery -> {
-            switch (LevelCalls.valueOf(delivery.getKey().toUpperCase())) {
-                case CALLBACK_LEVEL:
-                    this.instance.getLevelAPI().cachedData.put(player.getName(), new Level(
-                            delivery.getData()[1],
-                            Integer.parseInt(delivery.getData()[2]),
-                            Double.parseDouble(delivery.getData()[3])
-                    ));
-                    break;
-            }
-        }, Queue.LEVEL_CALLBACK, LevelCalls.REQUEST_GET_LEVEL.name(), player.getName());
-    }
-
-    @EventHandler
     public void on(final PlayerQuitEvent event) {
         final Player player = event.getPlayer();
         final Level level = this.instance.getLevelAPI().getLevel(player.getName());
@@ -79,7 +63,7 @@ public class LevelListener implements Listener {
         final Block block = event.getBlock();
         if (!this.placed.contains(block)) {
             blocks.stream().filter(e -> e.id == block.getId() && e.meta == block.getDamage()).findFirst().ifPresent((experienceBlock) -> {
-                this.instance.getLevelAPI().addExperience(event.getPlayer().getName(), experienceBlock.getExperience());
+                this.instance.getLevelAPI().addExperience(event.getPlayer(), experienceBlock.getExperience());
             });
         }
     }

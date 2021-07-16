@@ -8,10 +8,21 @@ import cn.nukkit.event.player.PlayerLocallyInitializedEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.level.Location;
 import lombok.RequiredArgsConstructor;
+import net.eltown.economy.Economy;
+import net.eltown.economy.components.economy.event.MoneyChangeEvent;
 import net.eltown.servercore.ServerCore;
+import net.eltown.servercore.components.api.intern.ScoreboardAPI;
+import net.eltown.servercore.components.data.level.Level;
+import net.eltown.servercore.components.data.level.LevelCalls;
 import net.eltown.servercore.components.data.teleportation.TeleportationCalls;
 import net.eltown.servercore.components.language.Language;
+import net.eltown.servercore.components.scoreboard.network.DisplayEntry;
+import net.eltown.servercore.components.scoreboard.network.DisplaySlot;
+import net.eltown.servercore.components.scoreboard.network.Scoreboard;
+import net.eltown.servercore.components.scoreboard.network.ScoreboardDisplay;
 import net.eltown.servercore.components.tinyrabbit.Queue;
+
+import java.util.HashMap;
 
 @RequiredArgsConstructor
 public class EventListener implements Listener {
@@ -47,6 +58,45 @@ public class EventListener implements Listener {
                     break;
             }
         }, Queue.TELEPORTATION_CALLBACK, TeleportationCalls.REQUEST_CACHED_DATA.name(), player.getName());
+
+        this.instance.getTinyRabbit().sendAndReceive(delivery -> {
+            switch (LevelCalls.valueOf(delivery.getKey().toUpperCase())) {
+                case CALLBACK_LEVEL:
+                    this.instance.getLevelAPI().cachedData.put(player.getName(), new Level(
+                            delivery.getData()[1],
+                            Integer.parseInt(delivery.getData()[2]),
+                            Double.parseDouble(delivery.getData()[3])
+                    ));
+                    player.setScoreTag("§gLevel §l" + Integer.parseInt(delivery.getData()[2]));
+                    break;
+            }
+        }, Queue.LEVEL_CALLBACK, LevelCalls.REQUEST_GET_LEVEL.name(), player.getName());
+
+        Economy.getAPI().getMoney(player, money -> {
+            final ScoreboardDisplay scoreboard = ScoreboardAPI.createScoreboard().addDisplay(DisplaySlot.SIDEBAR, "eltown", "§2§lEltown.net");
+            scoreboard.addLine("§1", 0);
+            scoreboard.addLine(" §8» §0Bargeld", 1);
+            final DisplayEntry economyEntry = scoreboard.addLine("   §f$" + Economy.getAPI().getMoneyFormat().format(money), 2);
+            scoreboard.addLine("§1§1", 3);
+            scoreboard.addLine(" §8» §0Level", 4);
+            final DisplayEntry levelEntry = scoreboard.addLine("   §f" + this.instance.getLevelAPI().getLevel(player.getName()).getLevel() + " §8[" + this.instance.getLevelAPI().getLevelDisplay(player) + "§8]  ", 5);
+            scoreboard.addLine("§1§1§1", 6);
+
+            ScoreboardAPI.setScoreboard(player, scoreboard.getScoreboard());
+            ScoreboardAPI.cachedData.put(player.getName(), scoreboard);
+            ScoreboardAPI.cachedDisplayEntries.put(player.getName() + "/economy", economyEntry);
+            ScoreboardAPI.cachedDisplayEntries.put(player.getName() + "/level", levelEntry);
+        });
+    }
+
+    @EventHandler
+    public void on(final MoneyChangeEvent event) {
+        final ScoreboardDisplay scoreboardDisplay = ScoreboardAPI.cachedData.get(event.getPlayer().getName());
+        final DisplayEntry displayEntry = ScoreboardAPI.cachedDisplayEntries.get(event.getPlayer().getName() + "/economy");
+        scoreboardDisplay.removeEntry(displayEntry);
+
+        final DisplayEntry economyEntry = scoreboardDisplay.addLine("   §f$" + Economy.getAPI().getMoneyFormat().format(event.getMoney()), 2);
+        ScoreboardAPI.cachedDisplayEntries.put(event.getPlayer().getName() + "/economy", economyEntry);
     }
 
     @EventHandler
@@ -57,6 +107,9 @@ public class EventListener implements Listener {
     @EventHandler
     public void on(final PlayerQuitEvent event) {
         event.setQuitMessage("");
+
+        ScoreboardAPI.cachedDisplayEntries.remove(event.getPlayer().getName() + "/economy");
+        ScoreboardAPI.cachedDisplayEntries.remove(event.getPlayer().getName() + "/level");
     }
 
 }
