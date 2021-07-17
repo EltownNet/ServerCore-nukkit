@@ -8,7 +8,6 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.player.PlayerFishEvent;
-import cn.nukkit.event.player.PlayerLocallyInitializedEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,22 +48,24 @@ public class LevelListener implements Listener {
             new ExperienceBlock(BlockID.REDSTONE_ORE, 0, 0.9),
             new ExperienceBlock(BlockID.DIAMOND_ORE, 0, 2.5),
             new ExperienceBlock(BlockID.GOLD_ORE, 0, 1.2),
-            new ExperienceBlock(BlockID.EMERALD_ORE, 0, 1.5),
+            new ExperienceBlock(BlockID.EMERALD_ORE, 0, 3),
             new ExperienceBlock(BlockID.ANCIENT_DERBRIS, 0, 5),
             new ExperienceBlock(BlockID.GLOWSTONE, 0, 0.5),
             new ExperienceBlock(BlockID.WARPED_STEM, 0, 0.8),
             new ExperienceBlock(BlockID.CRIMSON_STEM, 0, 0.8),
-            new ExperienceBlock(BlockID.NETHER_GOLD_ORE, 0, 0.4),
-            new ExperienceBlock(BlockID.QUARTZ_ORE, 0, 0.4)
+            new ExperienceBlock(BlockID.NETHER_GOLD_ORE, 0, 0.6),
+            new ExperienceBlock(BlockID.QUARTZ_ORE, 0, 0.6)
     ));
 
     @EventHandler
     public void on(final BlockBreakEvent event) {
         final Block block = event.getBlock();
-        if (!this.placed.contains(block)) {
-            blocks.stream().filter(e -> e.id == block.getId() && e.meta == block.getDamage()).findFirst().ifPresent((experienceBlock) -> {
-                this.instance.getLevelAPI().addExperience(event.getPlayer(), experienceBlock.getExperience());
-            });
+        if (!event.getBlock().getLocation().getLevel().getName().equals("plots")) {
+            if (!this.placed.contains(block)) {
+                blocks.stream().filter(e -> e.id == block.getId() && e.meta == block.getDamage()).findFirst().ifPresent((experienceBlock) -> {
+                    this.instance.getLevelAPI().addExperience(event.getPlayer(), experienceBlock.getExperience());
+                });
+            }
         }
     }
 
@@ -79,7 +80,7 @@ public class LevelListener implements Listener {
 
     @EventHandler
     public void on(final PlayerFishEvent event) {
-
+        this.instance.getLevelAPI().addExperience(event.getPlayer(), 2);
     }
 
     @AllArgsConstructor

@@ -5,6 +5,7 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.PluginCommand;
 import cn.nukkit.form.element.ElementInput;
 import cn.nukkit.item.Item;
+import net.eltown.economy.Economy;
 import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.data.giftkeys.Giftkey;
 import net.eltown.servercore.components.data.giftkeys.GiftkeyCalls;
@@ -80,10 +81,12 @@ public class RedeemCommand extends PluginCommand<ServerCore> {
                                                                     break;
                                                                 case "money":
                                                                     final double amount = Double.parseDouble(raw[1]);
+                                                                    Economy.getAPI().addMoney(player, amount);
                                                                     player.sendMessage(Language.get("giftkey.reward.money", amount));
                                                                     break;
                                                                 case "levelxp":
                                                                     final double xp = Double.parseDouble(raw[1]);
+                                                                    this.getPlugin().getLevelAPI().addExperience(player, xp);
                                                                     player.sendMessage(Language.get("giftkey.reward.xp", xp));
                                                                     break;
                                                                 case "rank":
