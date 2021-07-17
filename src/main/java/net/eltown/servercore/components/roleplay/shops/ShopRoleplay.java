@@ -51,8 +51,8 @@ public class ShopRoleplay {
                         if (i <= 0) throw new Exception("Invalid item amount");
 
                         Economy.getShopAPI().getCurrentPrice(id, i, finalPrice -> {
-                            final ModalForm modalForm = new ModalForm.Builder("§7» §8Kaufbestätigung", "Möchtest du §a" + i + "x " + Item.get(id[0], id[1]).getName() + " §ffür"
-                                    + " §a$" + Economy.getAPI().getMoneyFormat().format(finalPrice) + " §fkaufen?", "§7» §aKaufen", "§7» §cAbbrechen")
+                            final ModalForm modalForm = new ModalForm.Builder("§7» §8Kaufbestätigung", "Möchtest du §9" + i + "x " + Item.get(id[0], id[1]).getName() + " §ffür"
+                                    + " §9$" + Economy.getAPI().getMoneyFormat().format(finalPrice) + " §fkaufen?", "§7» §aKaufen", "§7» §cAbbrechen")
                                     .onYes(l -> {
                                         if (!player.getInventory().canAddItem(Item.get(id[0], id[1], i))) {
                                             player.sendMessage(Language.get("roleplay.shop.item.inventory.full"));
@@ -318,13 +318,13 @@ public class ShopRoleplay {
     }
 
     private final List<ChainMessage> blacksmithTalks = new ArrayList<>(Arrays.asList(
-            new ChainMessage("", 5),
-            new ChainMessage("", 3),
-            new ChainMessage("", 3),
-            new ChainMessage("", 3),
-            new ChainMessage("", 3),
-            new ChainMessage("", 3),
-            new ChainMessage("", 3)
+            new ChainMessage("Hallo §a%p§7! Ich bin Ben, der Schmied! Schau dir doch mal mein Angebot an, wenn du möchtest.", 5),
+            new ChainMessage("Meine Angebote sind der Hammer, oder?", 3),
+            new ChainMessage("Falls du Fragen zu Verzauberungen hast, frag!", 3),
+            new ChainMessage("Ich garantiere, dass jede Verzauberung funktioniert!", 3),
+            new ChainMessage("Mein Stand ist vom Amt geprüft, da kannst du dir sicher sein!", 4),
+            new ChainMessage("Dieser Job ist ein echter Knochenjob!", 3),
+            new ChainMessage("Kauf ruhig, ich habe Zeit!", 2)
     ));
 
     public void openBlacksmithShopByNpc(final Player player) {
@@ -358,9 +358,36 @@ public class ShopRoleplay {
 
         });
         form.addButton(new ElementButton("§7» §fReparatur Service", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/anvil.png")), e -> {
-
+            final Item item = e.getInventory().getItemInHand();
+            if (item.isArmor() || item.isTool() || item.isShears()) {
+                if (item.getDamage() != 0) {
+                    final double costs = (item.getDamage() * 1.30) + 60;
+                    final ModalForm modalForm = new ModalForm.Builder("§7» §8Item reparieren", "§fLasse das Item in deiner Hand hier reparieren." +
+                            "\n\n§fGrundgebühr: §9$60\n§fSchadensbehebung: §9$" + Economy.getAPI().getMoneyFormat().format(item.getDamage() * 1.30) + "\n§fBenötigte XP-Level: §95" +
+                            "\n\n§f§lZu zahlen: §r§9$" + Economy.getAPI().getMoneyFormat().format(costs) + " §fund §95 XP-Level",
+                            "§7» §aJetzt reparieren", "§7» §cAbbrechen")
+                            .onYes(h -> {
+                                if (h.getExperienceLevel() >= 5) {
+                                    Economy.getAPI().getMoney(h, money -> {
+                                        if (money >= costs) {
+                                            h.setExperience(h.getExperience(), h.getExperienceLevel() - 5);
+                                            Economy.getAPI().reduceMoney(h, costs);
+                                            item.setDamage(0);
+                                            h.getInventory().setItemInHand(item);
+                                            h.sendMessage("Item repariert.");
+                                        } else h.sendMessage("Nicht genug Geld");
+                                    });
+                                } else h.sendMessage("Nicht genug XP.");
+                            })
+                            .onNo(h -> {
+                            })
+                            .build();
+                    modalForm.send(e);
+                } else e.sendMessage("Item muss nicht repariert werden.");
+            } else {
+                e.sendMessage("Falsches Item.");
+            }
         });
-
         form.build().send(player);
     }
 
