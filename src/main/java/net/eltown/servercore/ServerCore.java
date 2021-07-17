@@ -4,9 +4,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.plugin.PluginBase;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import net.eltown.servercore.commands.administrative.EnchantCommand;
-import net.eltown.servercore.commands.administrative.IdCommand;
-import net.eltown.servercore.commands.administrative.SpeedCommand;
+import net.eltown.servercore.commands.administrative.*;
 import net.eltown.servercore.commands.defaults.PluginsCommand;
 import net.eltown.servercore.commands.giftkeys.GiftkeyCommand;
 import net.eltown.servercore.commands.giftkeys.RedeemCommand;
@@ -83,6 +81,18 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new EnchantCommand(this));
         this.getServer().getCommandMap().register("servercore", new SpeedCommand(this));
         this.getServer().getCommandMap().register("servercore", new IdCommand(this));
+        this.getServer().getCommandMap().register("servercore", new BanCommand(this));
+        this.getServer().getCommandMap().register("servercore", new BanlogCommand(this));
+        this.getServer().getCommandMap().register("servercore", new UnbanCommand(this));
+        this.getServer().getCommandMap().register("servercore", new CheckbanCommand(this));
+        this.getServer().getCommandMap().register("servercore", new GetbanCommand(this));
+        this.getServer().getCommandMap().register("servercore", new UnbanlogCommand(this));
+        this.getServer().getCommandMap().register("servercore", new MuteCommand(this));
+        this.getServer().getCommandMap().register("servercore", new MutelogCommand(this));
+        this.getServer().getCommandMap().register("servercore", new UnmuteCommand(this));
+        this.getServer().getCommandMap().register("servercore", new CheckmuteCommand(this));
+        this.getServer().getCommandMap().register("servercore", new GetmuteCommand(this));
+        this.getServer().getCommandMap().register("servercore", new UnmutelogCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new PluginsCommand(this));
 
