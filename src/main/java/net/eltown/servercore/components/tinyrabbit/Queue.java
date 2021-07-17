@@ -14,5 +14,6 @@ public class Queue {
     public static final String LEVEL_RECEIVE = "level.receive";
     public static final String LEVEL_CALLBACK = "level.callback";
     public static final String GUARDIAN = "guardian";
+    public static final String GROUPS = "groups";
 
 }

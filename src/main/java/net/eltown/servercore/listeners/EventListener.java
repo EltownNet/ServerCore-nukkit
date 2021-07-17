@@ -7,11 +7,13 @@ import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.event.player.PlayerLocallyInitializedEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.level.Location;
+import cn.nukkit.permission.PermissionAttachment;
 import lombok.RequiredArgsConstructor;
 import net.eltown.economy.Economy;
 import net.eltown.economy.components.economy.event.MoneyChangeEvent;
 import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.api.intern.ScoreboardAPI;
+import net.eltown.servercore.components.data.groupmanager.GroupCalls;
 import net.eltown.servercore.components.data.level.Level;
 import net.eltown.servercore.components.data.level.LevelCalls;
 import net.eltown.servercore.components.data.teleportation.TeleportationCalls;
@@ -29,10 +31,15 @@ public class EventListener implements Listener {
 
     private final ServerCore instance;
 
+    private final HashMap<String, PermissionAttachment> attachments = new HashMap<>();
+
     @EventHandler
     public void on(final PlayerLocallyInitializedEvent event) {
         final Player player = event.getPlayer();
 
+        /*
+         * Teleportation
+         */
         this.instance.getTinyRabbit().sendAndReceive((data) -> {
             switch (TeleportationCalls.valueOf(data.getKey().toUpperCase())) {
                 case CALLBACK_CACHED_DATA:
@@ -59,6 +66,31 @@ public class EventListener implements Listener {
             }
         }, Queue.TELEPORTATION_CALLBACK, TeleportationCalls.REQUEST_CACHED_DATA.name(), player.getName());
 
+        /*
+         * Groups
+         */
+        this.instance.getTinyRabbit().sendAndReceive((delivery -> {
+            switch (GroupCalls.valueOf(delivery.getKey().toUpperCase())) {
+                case CALLBACK_FULL_GROUP_PLAYER:
+                    final String prefix = delivery.getData()[2];
+                    final String[] permissions = delivery.getData()[3].split("#");
+
+                    this.attachments.remove(player.getName());
+                    this.attachments.put(player.getName(), player.addAttachment(this.instance));
+                    final PermissionAttachment attachment = this.attachments.get(player.getName());
+
+                    for (final String p : permissions) {
+                        attachment.setPermission(p, true);
+                    }
+
+                    player.setNameTag(prefix.replace("%p", player.getName()));
+                    break;
+            }
+        }), Queue.GROUPS, GroupCalls.REQUEST_FULL_GROUP_PLAYER.name(), player.getName());
+
+        /*
+         * Level
+         */
         this.instance.getTinyRabbit().sendAndReceive(delivery -> {
             switch (LevelCalls.valueOf(delivery.getKey().toUpperCase())) {
                 case CALLBACK_LEVEL:
@@ -72,6 +104,9 @@ public class EventListener implements Listener {
             }
         }, Queue.LEVEL_CALLBACK, LevelCalls.REQUEST_GET_LEVEL.name(), player.getName());
 
+        /*
+         * Scoreboard
+         */
         Economy.getAPI().getMoney(player, money -> {
             final ScoreboardDisplay scoreboard = ScoreboardAPI.createScoreboard().addDisplay(DisplaySlot.SIDEBAR, "eltown", "§2§lEltown.net");
             scoreboard.addLine("§1", 0);
