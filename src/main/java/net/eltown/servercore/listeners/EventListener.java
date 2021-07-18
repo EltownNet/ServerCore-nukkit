@@ -36,6 +36,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void on(final PlayerLocallyInitializedEvent event) {
         final Player player = event.getPlayer();
+        player.setCheckMovement(false);
 
         /*
          * Teleportation

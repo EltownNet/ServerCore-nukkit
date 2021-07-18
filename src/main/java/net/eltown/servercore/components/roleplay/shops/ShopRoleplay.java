@@ -52,7 +52,7 @@ public class ShopRoleplay {
 
                         Economy.getShopAPI().getCurrentPrice(id, i, finalPrice -> {
                             final ModalForm modalForm = new ModalForm.Builder("§7» §8Kaufbestätigung", "Möchtest du §9" + i + "x " + Item.get(id[0], id[1]).getName() + " §ffür"
-                                    + " §9$" + Economy.getAPI().getMoneyFormat().format(finalPrice) + " §fkaufen?", "§7» §aKaufen", "§7» §cAbbrechen")
+                                    + " §a$" + Economy.getAPI().getMoneyFormat().format(finalPrice) + " §fkaufen?", "§7» §aKaufen", "§7» §cAbbrechen")
                                     .onYes(l -> {
                                         if (!player.getInventory().canAddItem(Item.get(id[0], id[1], i))) {
                                             player.sendMessage(Language.get("roleplay.shop.item.inventory.full"));
@@ -125,7 +125,7 @@ public class ShopRoleplay {
         final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Holzfäller Darick", "§7Wähle eines der aufgelisteten Items aus, welches du kaufen möchtest.");
         this.woodShop.forEach(id -> {
             Economy.getShopAPI().getCurrentPrice(id, 1, price -> {
-                form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§2§l1x §r§f$" + Economy.getAPI().getMoneyFormat().format(price), new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
+                form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§a§l1x §r§f$" + Economy.getAPI().getMoneyFormat().format(price), new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
                     this.openItemShop(e, id);
                 });
             });
@@ -363,8 +363,8 @@ public class ShopRoleplay {
                 if (item.getDamage() != 0) {
                     final double costs = (item.getDamage() * 1.30) + 60;
                     final ModalForm modalForm = new ModalForm.Builder("§7» §8Item reparieren", "§fLasse das Item in deiner Hand hier reparieren." +
-                            "\n\n§fGrundgebühr: §9$60\n§fSchadensbehebung: §9$" + Economy.getAPI().getMoneyFormat().format(item.getDamage() * 1.30) + "\n§fBenötigte XP-Level: §95" +
-                            "\n\n§f§lZu zahlen: §r§9$" + Economy.getAPI().getMoneyFormat().format(costs) + " §fund §95 XP-Level",
+                            "\n\n§fGrundgebühr: §a$60\n§fSchadensbehebung: §a$" + Economy.getAPI().getMoneyFormat().format(item.getDamage() * 1.30) + "\n§fBenötigte XP-Level: §a5" +
+                            "\n\n§f§lZu zahlen: §r§a$" + Economy.getAPI().getMoneyFormat().format(costs) + " §fund §a5 XP-Level",
                             "§7» §aJetzt reparieren", "§7» §cAbbrechen")
                             .onYes(h -> {
                                 if (h.getExperienceLevel() >= 5) {
