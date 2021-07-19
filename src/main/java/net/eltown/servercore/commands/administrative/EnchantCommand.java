@@ -35,7 +35,7 @@ public class EnchantCommand extends PluginCommand<ServerCore> {
                         player.sendMessage(Language.get("enchant.invalid.arguments"));
                     }
                 } else player.sendMessage(Language.get("enchant.player.not.found"));
-            } else player.sendMessage(Language.get("enchant.usage", this.getName()));
+            } else player.sendMessage(Language.get("enchant.usage"));
         }
         return true;
     }
