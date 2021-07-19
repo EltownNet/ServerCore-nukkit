@@ -126,6 +126,12 @@ group.player.already.in.group: "&7[0] &cist bereits in der Gruppe &7[1]&c."
 group.player.group.set: "&7[0] &aist nun in der Gruppe &7[1] &afür &e[2]&a."
 group.player.not.exists: "&cDer Spieler &7[0] &ckonnte nicht gefunden werden."
 
+level.levelup: "§2§lLEVEL UP! §r§7Du bist nun Level [0]!"
+level.reward: "§0Belohnung: &7[0]"
+level.settings.updated: "Die Einstellungen wurden geändert."
+level.settings.created: "Die Einstellungen wurden gespeichert."
+level.settings.invalid.input: "Fehlerhafte Eingaben. Bitte überprüfe diese."
+
 roleplay.shop.item.bought: "&7Du hast &a[0]x &7das Item &a[1] &7für &a$[2] &7gekauft."
 roleplay.shop.item.not.enough.money: "&7Du hast zu wenig Geld, um dir dieses Item kaufen zu können."
 roleplay.shop.item.inventory.full: "&7Bitte schaffe in deinem Inventar platz, damit du dieses Item kaufen kannst."

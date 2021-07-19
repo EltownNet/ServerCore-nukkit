@@ -4,8 +4,11 @@ import cn.nukkit.Player;
 import lombok.RequiredArgsConstructor;
 import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.data.level.Level;
+import net.eltown.servercore.components.data.level.LevelCalls;
+import net.eltown.servercore.components.language.Language;
 import net.eltown.servercore.components.scoreboard.network.DisplayEntry;
 import net.eltown.servercore.components.scoreboard.network.ScoreboardDisplay;
+import net.eltown.servercore.components.tinyrabbit.Queue;
 
 import java.util.HashMap;
 
@@ -41,12 +44,17 @@ public class LevelAPI {
         final Level level = this.cachedData.get(player.getName());
         level.setLevel(level.getLevel() + 1);
 
-        final String num = String.valueOf(level.getLevel());
-        final int lastChar = Integer.parseInt(String.valueOf(num.charAt(num.length() - 1)));
-
-        if (lastChar == 5 || lastChar == 0) {
-
-        }
+        player.sendMessage(" ");
+        player.sendMessage(Language.get("level.levelup", level.getLevel()));
+        this.instance.getTinyRabbit().sendAndReceive(delivery -> {
+            switch (LevelCalls.valueOf(delivery.getKey().toUpperCase())) {
+                case CALLBACK_LEVEL_REWARD:
+                    final String levelReward = delivery.getData()[1];
+                    player.sendMessage(Language.get("level.reward", levelReward));
+                    break;
+            }
+        }, Queue.LEVEL_CALLBACK, LevelCalls.REQUEST_LEVEL_REWARD.name(), String.valueOf(level.getLevel()));
+        player.sendMessage(" ");
 
         player.setScoreTag("§gLevel §l" + level.getLevel());
 
