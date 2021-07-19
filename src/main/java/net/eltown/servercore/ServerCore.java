@@ -97,6 +97,7 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new CreategroupCommand(this));
         this.getServer().getCommandMap().register("servercore", new GroupmetaCommand(this));
         this.getServer().getCommandMap().register("servercore", new HealCommand(this));
+        this.getServer().getCommandMap().register("servercore", new ClearCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new PluginsCommand(this));
 
