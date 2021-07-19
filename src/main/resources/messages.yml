@@ -86,6 +86,8 @@ gamemode.set.other: "&a[0]'s &7Spielmodus wurde auf &a[1] &7gesetzt."
 gamemode.player.not.found: "Der angegebene Spieler konnte nicht gefunden werden."
 gamemode.usage: "&a/gamemode <modus> <optional: spieler>"
 gamemode.mode.invalid: "Der angegebene Spielmodus ist ungültig."
+repair.repaired: "Das Item in deiner Hand wurde repariert."
+repair.invalid.item: "Das Item in deiner Hand kann nicht repariert werden."
 
 guardian.invalid.input: "&cFehlerhafte Eingaben. Bitte überprüfe diese."
 guardian.ban.executed: "&7[0] &awurde erfolgreich mit dem Grund &7[1] &agebannt. &7[&e[2]&7]"

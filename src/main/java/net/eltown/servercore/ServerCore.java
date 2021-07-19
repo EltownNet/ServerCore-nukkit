@@ -99,6 +99,7 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new HealCommand(this));
         this.getServer().getCommandMap().register("servercore", new ClearCommand(this));
         this.getServer().getCommandMap().register("servercore", new GamemodeCommand(this));
+        this.getServer().getCommandMap().register("servercore", new RepairCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new PluginsCommand(this));
 
