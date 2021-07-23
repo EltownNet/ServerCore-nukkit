@@ -30,7 +30,7 @@ public class GetmuteCommand extends PluginCommand<ServerCore> {
             if (args.length >= 1) input = args[0];
 
             final CustomForm formWindowCustom = new CustomForm.Builder("§7» §8Getmute")
-                    .addElement(new ElementInput("§8» §7ID des aktiven Bans", "B-XXXXX", input))
+                    .addElement(new ElementInput("§8» §7ID des aktiven Mutes", "M-XXXXX", input))
                     .onSubmit((e, r) -> {
                         final String id = r.getInputResponse(0);
 
