@@ -14,4 +14,9 @@ public class EnchantmentRunner extends Enchantment {
     public String getName() {
         return this.name;
     }
+
+    @Override
+    public int getMaxLevel() {
+        return 3;
+    }
 }

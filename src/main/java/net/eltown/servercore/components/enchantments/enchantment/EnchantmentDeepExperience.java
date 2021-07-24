@@ -14,4 +14,9 @@ public class EnchantmentDeepExperience extends Enchantment {
     public String getName() {
         return this.name;
     }
+
+    @Override
+    public int getMaxLevel() {
+        return 2;
+    }
 }
