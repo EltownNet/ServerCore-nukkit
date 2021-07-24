@@ -363,17 +363,23 @@ public class ShopRoleplay {
                         final ModalForm buyModal = new ModalForm.Builder("§7» §8Kaufbestätigung", "Möchtest du das Item in deiner Hand wirklich mit §9" + enchantmentID.enchantment() + "§f (§9Level " + (int) c[1] + "§f) verzaubern?" +
                                 "\n\nDie Kosten dafür betragen §a$" + c[2] + "§f.", "§8» §aKaufen", "§8» §cAbbrechen")
                                 .onYes(g -> {
-                                    Economy.getAPI().getMoney(player, money -> {
-                                        if (money >= c[2]) {
-                                            Economy.getAPI().reduceMoney(player, c[2]);
-                                            this.serverCore.getCustomEnchantment().enchantItem(player, enchantmentID, 1);
-                                            player.sendMessage(Language.get("roleplay.blacksmith.enchantment.bought", enchantmentID.enchantment(), (int) c[1], c[2]));
-                                            this.playSound(player, Sound.UI_STONECUTTER_TAKE_RESULT);
-                                        } else {
-                                            player.sendMessage(Language.get("roleplay.blacksmith.enchantment.not.enough.money"));
-                                            this.playSound(player, Sound.NOTE_BASS);
-                                        }
-                                    });
+                                    final Item item = player.getInventory().getItemInHand();
+                                    if (this.checkCanEnchant(item, enchantment)) {
+                                        Economy.getAPI().getMoney(player, money -> {
+                                            if (money >= c[2]) {
+                                                Economy.getAPI().reduceMoney(player, c[2]);
+                                                this.serverCore.getCustomEnchantment().enchantItem(player, enchantmentID, 1);
+                                                player.sendMessage(Language.get("roleplay.blacksmith.enchantment.bought", enchantmentID.enchantment(), (int) c[1], c[2]));
+                                                this.playSound(player, Sound.RANDOM_ANVIL_USE);
+                                            } else {
+                                                player.sendMessage(Language.get("roleplay.blacksmith.enchantment.not.enough.money"));
+                                                this.playSound(player, Sound.NOTE_BASS);
+                                            }
+                                        });
+                                    } else {
+                                        player.sendMessage(Language.get("roleplay.blacksmith.enchantment.invalid.tool"));
+                                        this.playSound(player, Sound.NOTE_BASS);
+                                    }
                                 })
                                 .onNo(g -> {
                                     this.openBlacksmithShop(player);
@@ -391,17 +397,23 @@ public class ShopRoleplay {
                                     final ModalForm buyModal = new ModalForm.Builder("§7» §8Kaufbestätigung", "Möchtest du das Item in deiner Hand wirklich mit §9" + enchantmentID.enchantment() + "§f (§9Level " + level + "§f) verzaubern?" +
                                             "\n\nDie Kosten dafür betragen §a$" + Economy.getAPI().getMoneyFormat().format(needed) + "§f.", "§8» §aKaufen", "§8» §cAbbrechen")
                                             .onYes(z -> {
-                                                Economy.getAPI().getMoney(player, money -> {
-                                                    if (money >= needed) {
-                                                        Economy.getAPI().reduceMoney(player, needed);
-                                                        this.serverCore.getCustomEnchantment().enchantItem(player, enchantmentID, level);
-                                                        player.sendMessage(Language.get("roleplay.blacksmith.enchantment.bought", enchantmentID.enchantment(), level, Economy.getAPI().getMoneyFormat().format(needed)));
-                                                        this.playSound(player, Sound.UI_STONECUTTER_TAKE_RESULT);
-                                                    } else {
-                                                        player.sendMessage(Language.get("roleplay.blacksmith.enchantment.not.enough.money"));
-                                                        this.playSound(player, Sound.NOTE_BASS);
-                                                    }
-                                                });
+                                                final Item item = player.getInventory().getItemInHand();
+                                                if (this.checkCanEnchant(item, enchantment)) {
+                                                    Economy.getAPI().getMoney(player, money -> {
+                                                        if (money >= needed) {
+                                                            Economy.getAPI().reduceMoney(player, needed);
+                                                            this.serverCore.getCustomEnchantment().enchantItem(player, enchantmentID, level);
+                                                            player.sendMessage(Language.get("roleplay.blacksmith.enchantment.bought", enchantmentID.enchantment(), level, Economy.getAPI().getMoneyFormat().format(needed)));
+                                                            this.playSound(player, Sound.RANDOM_ANVIL_USE);
+                                                        } else {
+                                                            player.sendMessage(Language.get("roleplay.blacksmith.enchantment.not.enough.money"));
+                                                            this.playSound(player, Sound.NOTE_BASS);
+                                                        }
+                                                    });
+                                                } else {
+                                                    player.sendMessage(Language.get("roleplay.blacksmith.enchantment.invalid.tool"));
+                                                    this.playSound(player, Sound.NOTE_BASS);
+                                                }
                                             })
                                             .onNo(z -> {
                                                 this.openBlacksmithShop(player);
@@ -436,21 +448,60 @@ public class ShopRoleplay {
                                             Economy.getAPI().reduceMoney(h, costs);
                                             item.setDamage(0);
                                             h.getInventory().setItemInHand(item);
-                                            h.sendMessage("Item repariert.");
-                                        } else h.sendMessage("Nicht genug Geld");
+                                            h.sendMessage(Language.get("roleplay.blacksmith.repair.repaired", Economy.getAPI().getMoneyFormat().format(costs)));
+                                            this.playSound(h, Sound.RANDOM_ANVIL_USE);
+                                        } else {
+                                            h.sendMessage(Language.get("roleplay.blacksmith.repair.not.enough.money"));
+                                            this.playSound(h, Sound.NOTE_BASS);
+                                        }
                                     });
-                                } else h.sendMessage("Nicht genug XP.");
+                                } else {
+                                    h.sendMessage(Language.get("roleplay.blacksmith.repair.not.enough.xp"));
+                                    this.playSound(h, Sound.NOTE_BASS);
+                                }
                             })
-                            .onNo(h -> {
-                            })
+                            .onNo(this::openBlacksmithShop)
                             .build();
                     modalForm.send(e);
-                } else e.sendMessage("Item muss nicht repariert werden.");
+                } else {
+                    e.sendMessage(Language.get("roleplay.blacksmith.repair.invalid.damage"));
+                    this.playSound(e, Sound.NOTE_BASS);
+                }
             } else {
-                e.sendMessage("Falsches Item.");
+                e.sendMessage(Language.get("roleplay.blacksmith.repair.invalid.item"));
+                this.playSound(e, Sound.NOTE_BASS);
             }
         });
         form.build().send(player);
+    }
+
+    private boolean checkCanEnchant(final Item item, final Enchantment enchantment) {
+        switch (enchantment.type) {
+            case ARMOR:
+                if (item.isArmor()) return true;
+                break;
+            case DIGGER:
+                if (item.isTool()) return true;
+                break;
+            case SWORD:
+                if (item.isSword()) return true;
+                break;
+            case ARMOR_HEAD:
+                if (item.isHelmet()) return true;
+                break;
+            case ARMOR_TORSO:
+                if (item.isChestplate()) return true;
+                break;
+            case ARMOR_LEGS:
+                if (item.isLeggings()) return true;
+                break;
+            case ARMOR_FEET:
+                if (item.isBoots()) return true;
+                break;
+            default:
+                return false;
+        }
+        return false;
     }
 
     final Cooldown playerTalks = new Cooldown(TimeUnit.MINUTES.toMillis(15));
