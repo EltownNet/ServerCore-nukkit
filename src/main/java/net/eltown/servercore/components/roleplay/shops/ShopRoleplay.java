@@ -6,15 +6,15 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.player.PlayerInteractEntityEvent;
-import cn.nukkit.form.element.ElementButton;
-import cn.nukkit.form.element.ElementButtonImageData;
-import cn.nukkit.form.element.ElementInput;
+import cn.nukkit.form.element.*;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.Sound;
 import cn.nukkit.network.protocol.PlaySoundPacket;
 import lombok.RequiredArgsConstructor;
 import net.eltown.economy.Economy;
 import net.eltown.servercore.ServerCore;
+import net.eltown.servercore.components.enchantments.CustomEnchantment.EnchantmentID;
 import net.eltown.servercore.components.forms.custom.CustomForm;
 import net.eltown.servercore.components.forms.modal.ModalForm;
 import net.eltown.servercore.components.forms.simple.SimpleForm;
@@ -345,14 +345,76 @@ public class ShopRoleplay {
         });
     }
 
-    private final List<int[]> blacksmithEnchantments = new ArrayList<>(Arrays.asList(
-            new int[]{128, 1, 300}
+    private final List<double[]> blacksmithEnchantments = new ArrayList<>(Arrays.asList(
+            new double[]{128, 1, 499.95}, new double[]{129, 1, 199.95}, new double[]{130, 1, 199.95}, new double[]{131, 1, 699.95}, new double[]{132, 1, 1399.95},
+            new double[]{133, 1, 99.95}, new double[]{134, 1, 199.95}, new double[]{135, 1, 399.95}, new double[]{136, 1, 99.95}, new double[]{137, 1, 999.95}
     ));
 
     public void openBlacksmithShop(final Player player) {
         final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Schmied Ben", "§7Wähle eine der aufgelisteten Kategorien aus, um fortzufahren.");
         form.addButton(new ElementButton("§7» §fBen's spezielle\n§fVerzauberungen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/enchanted_book.png")), e -> {
+            final SimpleForm.Builder enchantmentForm = new SimpleForm.Builder("§7» §8Meine Verzauberungen", "§7Wähle eines der aufgelisteten Verzauberungen aus, um fortzufahren.");
+            this.blacksmithEnchantments.forEach(c -> {
+                final EnchantmentID enchantmentID = this.serverCore.getCustomEnchantment().enchantmentId.get((int) c[0]);
+                enchantmentForm.addButton(new ElementButton("§8" + enchantmentID.enchantment() + "\n§9Level: §f" + (int) c[1] + " §8| §f$" + c[2]), k -> {
 
+                    final Enchantment enchantment = Enchantment.getEnchantment((int) c[0]);
+                    if (enchantment.getMaxLevel() == 1) {
+                        final ModalForm buyModal = new ModalForm.Builder("§7» §8Kaufbestätigung", "Möchtest du das Item in deiner Hand wirklich mit §9" + enchantmentID.enchantment() + "§f (§9Level " + (int) c[1] + "§f) verzaubern?" +
+                                "\n\nDie Kosten dafür betragen §a$" + c[2] + "§f.", "§8» §aKaufen", "§8» §cAbbrechen")
+                                .onYes(g -> {
+                                    Economy.getAPI().getMoney(player, money -> {
+                                        if (money >= c[2]) {
+                                            Economy.getAPI().reduceMoney(player, c[2]);
+                                            this.serverCore.getCustomEnchantment().enchantItem(player, enchantmentID, 1);
+                                            player.sendMessage(Language.get("roleplay.blacksmith.enchantment.bought", enchantmentID.enchantment(), (int) c[1], c[2]));
+                                            this.playSound(player, Sound.UI_STONECUTTER_TAKE_RESULT);
+                                        } else {
+                                            player.sendMessage(Language.get("roleplay.blacksmith.enchantment.not.enough.money"));
+                                            this.playSound(player, Sound.NOTE_BASS);
+                                        }
+                                    });
+                                })
+                                .onNo(g -> {
+                                    this.openBlacksmithShop(player);
+                                })
+                                .build();
+                        buyModal.send(player);
+                    } else {
+                        final CustomForm selectForm = new CustomForm.Builder("§7» §8Verzauberungslevel wählen")
+                                .addElement(new ElementLabel("§7Bei dieser Verzauberung kannst du ein Level wählen. Die Kosten für das erste Level betragen §a$" + c[2] + "§7.\n" +
+                                        "Die Level werden mit dem genannten Preis multipliziert."))
+                                .addElement(new ElementSlider("Level", 1, enchantment.getMaxLevel(), 1, 1))
+                                .onSubmit((g, h) -> {
+                                    final int level = (int) h.getSliderResponse(1);
+                                    final double needed = c[2] * level;
+                                    final ModalForm buyModal = new ModalForm.Builder("§7» §8Kaufbestätigung", "Möchtest du das Item in deiner Hand wirklich mit §9" + enchantmentID.enchantment() + "§f (§9Level " + level + "§f) verzaubern?" +
+                                            "\n\nDie Kosten dafür betragen §a$" + Economy.getAPI().getMoneyFormat().format(needed) + "§f.", "§8» §aKaufen", "§8» §cAbbrechen")
+                                            .onYes(z -> {
+                                                Economy.getAPI().getMoney(player, money -> {
+                                                    if (money >= needed) {
+                                                        Economy.getAPI().reduceMoney(player, needed);
+                                                        this.serverCore.getCustomEnchantment().enchantItem(player, enchantmentID, level);
+                                                        player.sendMessage(Language.get("roleplay.blacksmith.enchantment.bought", enchantmentID.enchantment(), level, Economy.getAPI().getMoneyFormat().format(needed)));
+                                                        this.playSound(player, Sound.UI_STONECUTTER_TAKE_RESULT);
+                                                    } else {
+                                                        player.sendMessage(Language.get("roleplay.blacksmith.enchantment.not.enough.money"));
+                                                        this.playSound(player, Sound.NOTE_BASS);
+                                                    }
+                                                });
+                                            })
+                                            .onNo(z -> {
+                                                this.openBlacksmithShop(player);
+                                            })
+                                            .build();
+                                    buyModal.send(player);
+                                })
+                                .build();
+                        selectForm.send(player);
+                    }
+                });
+            });
+            enchantmentForm.build().send(player);
         });
         form.addButton(new ElementButton("§7» §fMein Angebot", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/paper.png")), e -> {
 
