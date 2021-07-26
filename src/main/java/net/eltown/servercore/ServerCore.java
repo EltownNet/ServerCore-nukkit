@@ -17,6 +17,7 @@ import net.eltown.servercore.components.api.ServerCoreAPI;
 import net.eltown.servercore.components.api.intern.LevelAPI;
 import net.eltown.servercore.components.enchantments.CustomEnchantment;
 import net.eltown.servercore.components.entities.HumanNPC;
+import net.eltown.servercore.components.entities.ModelEntity;
 import net.eltown.servercore.components.forms.FormListener;
 import net.eltown.servercore.components.api.intern.HologramAPI;
 import net.eltown.servercore.components.api.intern.NpcAPI;
@@ -29,6 +30,7 @@ import net.eltown.servercore.listeners.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Random;
 
 @Getter
@@ -50,6 +52,7 @@ public class ServerCore extends PluginBase {
     @Override
     public void onLoad() {
         Entity.registerEntity(HumanNPC.class.getSimpleName(), HumanNPC.class);
+        Entity.registerEntity("ModelEntity", ModelEntity.class);
     }
 
     @Override
@@ -77,6 +80,7 @@ public class ServerCore extends PluginBase {
         this.getServer().getPluginManager().registerEvents(new ChairListener(), this);
         this.getServer().getPluginManager().registerEvents(new HologramListener(this), this);
         this.getServer().getPluginManager().registerEvents(new LevelListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new ModelListener(this), this);
 
         this.getServer().getCommandMap().register("servercore", new EnchantCommand(this));
         this.getServer().getCommandMap().register("servercore", new SpeedCommand(this));
@@ -101,6 +105,7 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new GamemodeCommand(this));
         this.getServer().getCommandMap().register("servercore", new RepairCommand(this));
         this.getServer().getCommandMap().register("servercore", new FlyCommand(this));
+        this.getServer().getCommandMap().register("servercore", new ModelCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new PluginsCommand(this));
 
@@ -120,6 +125,8 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new TpacceptCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new TicketCommand(this));
+
+        this.saveResource("models");
 
         this.hologramAPI = new HologramAPI(this);
         this.npcAPI = new NpcAPI(this);
