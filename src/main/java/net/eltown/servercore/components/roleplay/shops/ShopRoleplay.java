@@ -50,7 +50,7 @@ public class ShopRoleplay {
                             .addElement(new ElementInput("Bitte gebe an, wie viel du von diesem Item §akaufen §fmöchtest.", "64", "64"))
                             .onSubmit((g, h) -> {
                                 try {
-                                    int i = Integer.parseInt(h.getInputResponse(0));
+                                    final int i = Integer.parseInt(h.getInputResponse(0));
                                     if (i <= 0) throw new Exception("Invalid item amount");
 
                                     Economy.getShopAPI().getCurrentPrice(id, i, finalPrice -> {
@@ -89,34 +89,55 @@ public class ShopRoleplay {
                     customForm.send(player);
                 })
                 .addButton(new ElementButton("§8» §cVerkaufen\n§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)) + " §8pro Item"), o -> {
+                    final int count = this.countInventoryItems(player, id);
                     final CustomForm customForm = new CustomForm.Builder("§7» §8" + Item.get(id[0], id[1]).getName())
                             .addElement(new ElementInput("Bitte gebe an, wie viel du von diesem Item §cverkaufen §fmöchtest.", "64", "64"))
+                            .addElement(new ElementToggle("Alle Items dieser Art aus meinem Inventar verkaufen: §7" + count, false))
                             .onSubmit((g, h) -> {
                                 try {
-                                    int i = Integer.parseInt(h.getInputResponse(0));
-                                    if (i <= 0) throw new Exception("Invalid item amount");
+                                    final boolean b = h.getToggleResponse(1);
+                                    if (count <= 0) throw new Exception("Invalid item amount");
+                                    if (b) {
+                                        Economy.getShopAPI().getCurrentPrice(id, count, finalPrice -> {
+                                            final ModalForm modalForm = new ModalForm.Builder("§7» §8Verkaufsbestätigung", "Möchtest du §9" + count + "x " + Item.get(id[0], id[1]).getName() + " §ffür"
+                                                    + " §a$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(finalPrice)) + " §fverkaufen?", "§7» §aVerkaufen", "§7» §cAbbrechen")
+                                                    .onYes(l -> {
+                                                        final Item item = Item.get(id[0], id[1], count);
+                                                        player.getInventory().removeItem(item);
+                                                        Economy.getAPI().addMoney(player, this.getSellPrice(finalPrice));
+                                                        Economy.getShopAPI().sendSold(id, count);
+                                                        player.sendMessage(Language.get("roleplay.shop.item.sold", count, Item.get(id[0], id[1], count).getName(), Economy.getAPI().getMoneyFormat().format(this.getSellPrice(finalPrice))));
+                                                        this.playSound(player, Sound.UI_STONECUTTER_TAKE_RESULT);
+                                                    })
+                                                    .onNo(l -> this.playSound(l, Sound.NOTE_BASS))
+                                                    .build();
+                                            modalForm.send(player);
+                                        });
+                                    } else {
+                                        final int i = Integer.parseInt(h.getInputResponse(0));
+                                        if (i <= 0) throw new Exception("Invalid item amount");
 
-                                    Economy.getShopAPI().getCurrentPrice(id, i, finalPrice -> {
-                                        final ModalForm modalForm = new ModalForm.Builder("§7» §8Verkaufsbestätigung", "Möchtest du §9" + i + "x " + Item.get(id[0], id[1]).getName() + " §ffür"
-                                                + " §a$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(finalPrice)) + " §fverkaufen?", "§7» §aVerkaufen", "§7» §cAbbrechen")
-                                                .onYes(l -> {
-                                                    final int count = this.countInventoryItems(player, id);
-                                                    if (count < i) {
-                                                        player.sendMessage(Language.get("roleplay.shop.item.inventory.invalid"));
-                                                        this.playSound(player, Sound.NOTE_BASS);
-                                                        return;
-                                                    }
-                                                    final Item item = Item.get(id[0], id[1], i);
-                                                    player.getInventory().removeItem(item);
-                                                    Economy.getAPI().addMoney(player, this.getSellPrice(finalPrice));
-                                                    Economy.getShopAPI().sendSold(id, i);
-                                                    player.sendMessage(Language.get("roleplay.shop.item.sold", i, Item.get(id[0], id[1], i).getName(), Economy.getAPI().getMoneyFormat().format(this.getSellPrice(finalPrice))));
-                                                    this.playSound(player, Sound.UI_STONECUTTER_TAKE_RESULT);
-                                                })
-                                                .onNo(l -> this.playSound(l, Sound.NOTE_BASS))
-                                                .build();
-                                        modalForm.send(player);
-                                    });
+                                        Economy.getShopAPI().getCurrentPrice(id, i, finalPrice -> {
+                                            final ModalForm modalForm = new ModalForm.Builder("§7» §8Verkaufsbestätigung", "Möchtest du §9" + i + "x " + Item.get(id[0], id[1]).getName() + " §ffür"
+                                                    + " §a$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(finalPrice)) + " §fverkaufen?", "§7» §aVerkaufen", "§7» §cAbbrechen")
+                                                    .onYes(l -> {
+                                                        if (count < i) {
+                                                            player.sendMessage(Language.get("roleplay.shop.item.inventory.invalid"));
+                                                            this.playSound(player, Sound.NOTE_BASS);
+                                                            return;
+                                                        }
+                                                        final Item item = Item.get(id[0], id[1], i);
+                                                        player.getInventory().removeItem(item);
+                                                        Economy.getAPI().addMoney(player, this.getSellPrice(finalPrice));
+                                                        Economy.getShopAPI().sendSold(id, i);
+                                                        player.sendMessage(Language.get("roleplay.shop.item.sold", i, Item.get(id[0], id[1], i).getName(), Economy.getAPI().getMoneyFormat().format(this.getSellPrice(finalPrice))));
+                                                        this.playSound(player, Sound.UI_STONECUTTER_TAKE_RESULT);
+                                                    })
+                                                    .onNo(l -> this.playSound(l, Sound.NOTE_BASS))
+                                                    .build();
+                                            modalForm.send(player);
+                                        });
+                                    }
                                 } catch (final Exception e) {
                                     player.sendMessage(Language.get("roleplay.shop.item.invalid.amount"));
                                     this.playSound(player, Sound.NOTE_BASS);
