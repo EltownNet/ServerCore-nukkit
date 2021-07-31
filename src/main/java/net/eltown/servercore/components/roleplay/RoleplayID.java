@@ -9,6 +9,8 @@ public enum RoleplayID {
     SHOP_MONSTERUNTER("servercore:shop.monsterhunter"),
     SHOP_BLACKSMITH("servercore:shop.blacksmith"),
 
+    BANKER("servercore:job.banker"),
+
     ;
 
     private final String id;

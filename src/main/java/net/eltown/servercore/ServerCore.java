@@ -1,6 +1,9 @@
 package net.eltown.servercore;
 
+import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.level.Sound;
+import cn.nukkit.network.protocol.PlaySoundPacket;
 import cn.nukkit.plugin.PluginBase;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -23,6 +26,7 @@ import net.eltown.servercore.components.api.intern.HologramAPI;
 import net.eltown.servercore.components.api.intern.NpcAPI;
 import net.eltown.servercore.components.language.Language;
 import net.eltown.servercore.components.roleplay.jobs.JobRoleplay;
+import net.eltown.servercore.components.roleplay.other.BankRoleplay;
 import net.eltown.servercore.components.roleplay.shops.ShopRoleplay;
 import net.eltown.servercore.components.tinyrabbit.TinyRabbit;
 import net.eltown.servercore.listeners.*;
@@ -48,6 +52,7 @@ public class ServerCore extends PluginBase {
 
     private ShopRoleplay shopRoleplay;
     private JobRoleplay jobRoleplay;
+    private BankRoleplay bankRoleplay;
 
     @Override
     public void onLoad() {
@@ -136,6 +141,7 @@ public class ServerCore extends PluginBase {
 
         this.shopRoleplay = new ShopRoleplay(this);
         this.jobRoleplay = new JobRoleplay(this);
+        this.bankRoleplay = new BankRoleplay(this);
 
         new ServerCoreAPI(this);
     }
@@ -228,6 +234,28 @@ public class ServerCore extends PluginBase {
                 return days == 0 ? hours + " " + hour + " " + minutes + " " + minute : days + " " + day + " " + hours + " " + hour + " " + minutes + " " + minute;
             }
         }
+    }
+
+    public void playSound(final Player player, final Sound sound) {
+        final PlaySoundPacket packet = new PlaySoundPacket();
+        packet.name = sound.getSound();
+        packet.x = new Double(player.getLocation().getX()).intValue();
+        packet.y = new Double(player.getLocation().getY()).intValue();
+        packet.z = new Double(player.getLocation().getZ()).intValue();
+        packet.volume = 1.0F;
+        packet.pitch = 1.0F;
+        player.dataPacket(packet);
+    }
+
+    public void playSound(final Player player, final Sound sound, final float volume, final float pitch) {
+        final PlaySoundPacket packet = new PlaySoundPacket();
+        packet.name = sound.getSound();
+        packet.x = new Double(player.getLocation().getX()).intValue();
+        packet.y = new Double(player.getLocation().getY()).intValue();
+        packet.z = new Double(player.getLocation().getZ()).intValue();
+        packet.volume = volume;
+        packet.pitch = pitch;
+        player.dataPacket(packet);
     }
 
 }

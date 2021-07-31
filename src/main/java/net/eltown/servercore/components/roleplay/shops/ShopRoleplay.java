@@ -369,7 +369,7 @@ public class ShopRoleplay {
     }
 
     public double getSellPrice(final double d) {
-        return 0.62 * d;
+        return 0.38 * d;
     }
 
     private final List<ChainMessage> blacksmithTalks = new ArrayList<>(Arrays.asList(
