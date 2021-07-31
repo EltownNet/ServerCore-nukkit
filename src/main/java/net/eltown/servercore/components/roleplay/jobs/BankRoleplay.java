@@ -1,4 +1,4 @@
-package net.eltown.servercore.components.roleplay.other;
+package net.eltown.servercore.components.roleplay.jobs;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;

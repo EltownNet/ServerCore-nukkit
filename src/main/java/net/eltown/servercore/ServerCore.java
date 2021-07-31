@@ -26,7 +26,7 @@ import net.eltown.servercore.components.api.intern.HologramAPI;
 import net.eltown.servercore.components.api.intern.NpcAPI;
 import net.eltown.servercore.components.language.Language;
 import net.eltown.servercore.components.roleplay.jobs.JobRoleplay;
-import net.eltown.servercore.components.roleplay.other.BankRoleplay;
+import net.eltown.servercore.components.roleplay.jobs.BankRoleplay;
 import net.eltown.servercore.components.roleplay.shops.ShopRoleplay;
 import net.eltown.servercore.components.tinyrabbit.TinyRabbit;
 import net.eltown.servercore.listeners.*;
@@ -34,7 +34,6 @@ import net.eltown.servercore.listeners.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Random;
 
 @Getter
