@@ -9,6 +9,7 @@ import cn.nukkit.entity.data.Skin;
 import cn.nukkit.form.element.ElementButton;
 import cn.nukkit.form.element.ElementInput;
 import cn.nukkit.form.element.ElementLabel;
+import cn.nukkit.form.element.ElementToggle;
 import cn.nukkit.level.Location;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
@@ -76,15 +77,27 @@ public class ModelCommand extends PluginCommand<ServerCore> {
                             player.sendMessage("§cDies ist keine ModelEntity!");
                             return true;
                         }
+                        final CustomForm form = new CustomForm.Builder("ModelEntity " + entity.getId())
+                                .addElement(new ElementInput("§8» §7Anzeigename ändern", "Name", entity.getNameTag()))
+                                .addElement(new ElementToggle("§8» §7An meine Position teleportieren", false))
+                                .addElement(new ElementToggle("§8» §7Endgültig entfernen", false))
+                                .onSubmit((g, h) -> {
+                                    final String name = h.getInputResponse(0);
+                                    if (!name.equals(entity.getNameTag())) {
+                                        entity.setNameTag(name);
+                                    }
 
-                        final SimpleForm form = new SimpleForm.Builder("ModelEntity " + id, "Bitte wähle eine Aktion aus.")
-                                .addButton(new ElementButton("§8» §7An meine Position teleportieren"), e -> {
-                                    entity.teleport(player.getLocation());
-                                    player.sendMessage("ModelEntity §9[" + id + "] §fwurde an deine Position teleportiert.");
-                                })
-                                .addButton(new ElementButton("§8» §7Endgültig entfernen"), e -> {
-                                    entity.close();
-                                    player.sendMessage("ModelEntity §9[" + id + "] §fwurde endgültig entfernt.");
+                                    final boolean teleport = h.getToggleResponse(2);
+                                    if (teleport) {
+                                        entity.teleport(player.getLocation());
+                                    }
+
+                                    final boolean delete = h.getToggleResponse(3);
+                                    if (delete) {
+                                        entity.close();
+                                    }
+
+                                    player.sendMessage("Die Einstellungen von ModelEntity §9[" + entity.getId() + "] §fwurden gespeichert.");
                                 })
                                 .build();
                         form.send(player);
