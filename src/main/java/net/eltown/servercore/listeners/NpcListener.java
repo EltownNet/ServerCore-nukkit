@@ -7,16 +7,13 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.player.PlayerInteractEntityEvent;
 import cn.nukkit.event.player.PlayerMoveEvent;
-import cn.nukkit.form.element.ElementInput;
-import cn.nukkit.form.element.ElementToggle;
+import cn.nukkit.item.ItemID;
 import cn.nukkit.math.Vector2;
 import cn.nukkit.network.protocol.MovePlayerPacket;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.entities.HumanNPC;
-import net.eltown.servercore.components.forms.custom.CustomForm;
-import net.eltown.servercore.components.language.Language;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,44 +29,10 @@ public class NpcListener implements Listener {
     @EventHandler
     public void on(final PlayerInteractEntityEvent event) {
         final Player player = event.getPlayer();
-        if (this.getPlugin().getNpcAPI().getManagers().contains(player.getName())) {
-            if (event.getEntity() instanceof HumanNPC) {
-
-                final HumanNPC npc = (HumanNPC) event.getEntity();
-                this.getPlugin().getNpcAPI().getManagers().remove(player.getName());
-
-                new CustomForm.Builder("§8» §fNPC bearbeiten")
-                        .addElement(new ElementInput("NPC ID", npc.getNpcID(), npc.getNpcID()))
-                        .addElement(new ElementInput("NPC Name", npc.getNameTag(), npc.getNameTag()))
-                        .addElement(new ElementToggle("NPC löschen?", false))
-                        .onSubmit((p, f) -> {
-                            final boolean delete = f.getToggleResponse(2);
-                            if (delete) {
-                                npc.close();
-                                return;
-                            }
-
-                            final String id = f.getInputResponse(0);
-                            final String name = f.getInputResponse(1);
-
-                            if (id.isEmpty()) {
-                                p.sendMessage(Language.get("npc.missing.id"));
-                                return;
-                            }
-
-                            if (name.isEmpty()) {
-                                p.sendMessage(Language.get("npc.missing.name"));
-                                return;
-                            }
-
-                            npc.setID(id);
-                            npc.setNameTag(name);
-
-                            p.sendMessage(Language.get("npc.updated"));
-                        }).build().send(player);
-
-            } else player.sendMessage(Language.get("npc.no"));
-
+        if (player.isOp()) {
+            if (player.getInventory().getItemInHand().getId() == ItemID.WOODEN_AXE && event.getEntity() instanceof HumanNPC) {
+                player.sendMessage("HumanNPC ID: §9" + event.getEntity().getId());
+            }
         }
     }
 
