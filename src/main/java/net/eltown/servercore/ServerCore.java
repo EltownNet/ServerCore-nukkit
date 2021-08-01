@@ -12,7 +12,7 @@ import net.eltown.servercore.commands.defaults.PluginsCommand;
 import net.eltown.servercore.commands.giftkeys.GiftkeyCommand;
 import net.eltown.servercore.commands.giftkeys.RedeemCommand;
 import net.eltown.servercore.commands.level.LevelCommand;
-import net.eltown.servercore.commands.npc.NpcCommand;
+import net.eltown.servercore.commands.administrative.NpcCommand;
 import net.eltown.servercore.commands.holograms.HologramCommand;
 import net.eltown.servercore.commands.teleportation.*;
 import net.eltown.servercore.commands.ticketsystem.TicketCommand;
@@ -23,7 +23,6 @@ import net.eltown.servercore.components.entities.HumanNPC;
 import net.eltown.servercore.components.entities.ModelEntity;
 import net.eltown.servercore.components.forms.FormListener;
 import net.eltown.servercore.components.api.intern.HologramAPI;
-import net.eltown.servercore.components.api.intern.NpcAPI;
 import net.eltown.servercore.components.language.Language;
 import net.eltown.servercore.components.roleplay.jobs.JobRoleplay;
 import net.eltown.servercore.components.roleplay.jobs.BankRoleplay;
@@ -44,7 +43,6 @@ public class ServerCore extends PluginBase {
     private String serverName;
 
     private HologramAPI hologramAPI;
-    private NpcAPI npcAPI;
     private LevelAPI levelAPI;
 
     private CustomEnchantment customEnchantment;
@@ -133,7 +131,6 @@ public class ServerCore extends PluginBase {
         this.saveResource("models");
 
         this.hologramAPI = new HologramAPI(this);
-        this.npcAPI = new NpcAPI(this);
         this.levelAPI = new LevelAPI(this);
 
         this.customEnchantment = new CustomEnchantment(this);

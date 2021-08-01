@@ -1,4 +1,4 @@
-package net.eltown.servercore.commands.npc;
+package net.eltown.servercore.commands.administrative;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
