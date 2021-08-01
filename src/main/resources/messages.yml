@@ -89,6 +89,9 @@ fly.disabled.other: "&a[0] &7kann nun nicht mehr fliegen."
 fly.player.not.found: "Der angegebene Spieler konnte nicht gefunden werden."
 fly.usage: "&a/fly <optional: spieler>"
 
+sync.data.loading: "&7Lade Daten..."
+sync.data.loaded: "&aDaten geladen."
+
 guardian.invalid.input: "&cFehlerhafte Eingaben. Bitte überprüfe diese."
 guardian.ban.executed: "&7[0] &awurde erfolgreich mit dem Grund &7[1] &agebannt. &7[&e[2]&7]"
 guardian.ban.is.banned: "&7[0] &cist bereits gebannt."

@@ -18,6 +18,7 @@ import net.eltown.servercore.commands.teleportation.*;
 import net.eltown.servercore.commands.ticketsystem.TicketCommand;
 import net.eltown.servercore.components.api.ServerCoreAPI;
 import net.eltown.servercore.components.api.intern.LevelAPI;
+import net.eltown.servercore.components.api.intern.SyncAPI;
 import net.eltown.servercore.components.enchantments.CustomEnchantment;
 import net.eltown.servercore.components.entities.HumanNPC;
 import net.eltown.servercore.components.entities.ModelEntity;
@@ -44,6 +45,7 @@ public class ServerCore extends PluginBase {
 
     private HologramAPI hologramAPI;
     private LevelAPI levelAPI;
+    private SyncAPI syncAPI;
 
     private CustomEnchantment customEnchantment;
 
@@ -67,6 +69,11 @@ public class ServerCore extends PluginBase {
             e.printStackTrace();
             this.getLogger().error("§4Fehler beim initialisieren des ServerCores.");
         }
+    }
+
+    @Override
+    public void onDisable() {
+        this.getServer().getOnlinePlayers().forEach(((uuid, player) -> this.syncAPI.savePlayer(player)));
     }
 
     @SneakyThrows
@@ -132,6 +139,7 @@ public class ServerCore extends PluginBase {
 
         this.hologramAPI = new HologramAPI(this);
         this.levelAPI = new LevelAPI(this);
+        this.syncAPI = new SyncAPI(this);
 
         this.customEnchantment = new CustomEnchantment(this);
 
