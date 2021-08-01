@@ -1,6 +1,5 @@
 package net.eltown.servercore.listeners;
 
-import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockID;
 import cn.nukkit.event.EventHandler;
@@ -8,14 +7,10 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.player.PlayerFishEvent;
-import cn.nukkit.event.player.PlayerQuitEvent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.eltown.servercore.ServerCore;
-import net.eltown.servercore.components.data.level.Level;
-import net.eltown.servercore.components.data.level.LevelCalls;
-import net.eltown.servercore.components.tinyrabbit.Queue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,14 +20,6 @@ import java.util.List;
 public class LevelListener implements Listener {
 
     private final ServerCore instance;
-
-    @EventHandler
-    public void on(final PlayerQuitEvent event) {
-        final Player player = event.getPlayer();
-        final Level level = this.instance.getLevelAPI().getLevel(player.getName());
-        this.instance.getTinyRabbit().send(Queue.LEVEL_RECEIVE, LevelCalls.REQUEST_UPDATE_TO_DATABASE.name(),
-                player.getName(), String.valueOf(level.getLevel()), String.valueOf(level.getExperience()));
-    }
 
     private final List<ExperienceBlock> blocks = new ArrayList<>(Arrays.asList(
             new ExperienceBlock(BlockID.LOG, 0, 0.5),

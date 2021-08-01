@@ -149,12 +149,19 @@ public class EventListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void on(final PlayerQuitEvent event) {
+        final Player player = event.getPlayer();
         event.setQuitMessage("");
 
-        if (this.instance.getSyncAPI().getLoaded().contains(event.getPlayer().getName())) this.instance.getSyncAPI().savePlayerAsync(event.getPlayer());
+        if (this.instance.getSyncAPI().getLoaded().contains(event.getPlayer().getName())) {
+            this.instance.getSyncAPI().savePlayerAsync(event.getPlayer());
 
-        ScoreboardAPI.cachedDisplayEntries.remove(event.getPlayer().getName() + "/economy");
-        ScoreboardAPI.cachedDisplayEntries.remove(event.getPlayer().getName() + "/level");
+            ScoreboardAPI.cachedDisplayEntries.remove(event.getPlayer().getName() + "/economy");
+            ScoreboardAPI.cachedDisplayEntries.remove(event.getPlayer().getName() + "/level");
+
+            final Level level = this.instance.getLevelAPI().getLevel(player.getName());
+            this.instance.getTinyRabbit().send(Queue.LEVEL_RECEIVE, LevelCalls.REQUEST_UPDATE_TO_DATABASE.name(),
+                    player.getName(), String.valueOf(level.getLevel()), String.valueOf(level.getExperience()));
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
