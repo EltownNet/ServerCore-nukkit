@@ -9,6 +9,7 @@ import net.eltown.economy.Economy;
 import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.data.giftkeys.Giftkey;
 import net.eltown.servercore.components.data.giftkeys.GiftkeyCalls;
+import net.eltown.servercore.components.data.groupmanager.GroupCalls;
 import net.eltown.servercore.components.forms.custom.CustomForm;
 import net.eltown.servercore.components.forms.modal.ModalForm;
 import net.eltown.servercore.components.language.Language;
@@ -21,7 +22,7 @@ public class RedeemCommand extends PluginCommand<ServerCore> {
     public RedeemCommand(ServerCore owner) {
         super("redeem", owner);
         this.setDescription("Löse einen Giftkey ein");
-        this.setAliases(Arrays.asList("einlösen", "key").toArray(new String[]{}));
+        this.setAliases(Arrays.asList("einlösen", "key", "gutschein", "voucher").toArray(new String[]{}));
     }
 
     @Override
@@ -91,7 +92,22 @@ public class RedeemCommand extends PluginCommand<ServerCore> {
                                                                     break;
                                                                 case "rank":
                                                                     final String rank = raw[1];
-                                                                    player.sendMessage(Language.get("giftkey.reward.rank", rank));
+                                                                    final String unit = raw[2];
+                                                                    final int time = Integer.parseInt(raw[3]);
+                                                                    final long duration = this.getPlugin().getDuration(unit, time);
+                                                                    this.getPlugin().getTinyRabbit().sendAndReceive((o -> {
+                                                                        switch (GroupCalls.valueOf(o.getKey().toUpperCase())) {
+                                                                            case CALLBACK_GROUP_DOES_NOT_EXIST:
+                                                                                player.sendMessage("Fehler: RedeemCommand :: " + raw[0] + " value: " + rank);
+                                                                                break;
+                                                                            case CALLBACK_PLAYER_ALREADY_IN_GROUP:
+                                                                                player.sendMessage(Language.get("giftkey.reward.rank.already", rank));
+                                                                                break;
+                                                                            case CALLBACK_SUCCESS:
+                                                                                player.sendMessage(Language.get("giftkey.reward.rank", rank));
+                                                                                break;
+                                                                        }
+                                                                    }), Queue.GROUPS, GroupCalls.REQUEST_SET_GROUP.name(), player.getName(), rank, "SYSTEM/GIFTKEY", String.valueOf(duration));
                                                                     break;
                                                                 default:
                                                                     player.sendMessage("Fehler: RedeemCommand :: " + raw[0]);

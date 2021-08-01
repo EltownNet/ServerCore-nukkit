@@ -38,8 +38,8 @@ public class GiftkeyCommand extends PluginCommand<ServerCore> {
                 .addElement(new ElementStepSlider("Bitte wähle aus, wie viel Inhalt ein Key haben soll.", Arrays.asList("1", "2", "3", "4", "5"), 1))
                 .onSubmit((i, o) -> {
                     final CustomForm.Builder form1 = new CustomForm.Builder("§7» §8Giftkey erstellen");
-                    form1.addElement(new ElementLabel("Reward-Formate:\n§7item;id;damage;amount;name\n§7money;amount\nlevelxp;amount\nrank;name"));
-                    form1.addElement(new ElementSlider("Bitte gebe an, wie viele Spieler diesen Key einlösen können.", 1, 100, 1, 1));
+                    form1.addElement(new ElementLabel("Reward-Formate:\n§7item;id;damage;amount;name\n§7money;amount\nlevelxp;amount\nrank;name;timeunit;time"));
+                    form1.addElement(new ElementSlider("Bitte gebe an, wie viele Spieler diesen Key einlösen können.", 1, 250, 1, 1));
 
                     for (int x = 0; x < Integer.parseInt(o.getStepSliderResponse(0).getElementContent()); x++) {
                         form1.addElement(new ElementInput("", "Reward " + (x + 1)));
