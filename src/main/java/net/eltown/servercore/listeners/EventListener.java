@@ -20,7 +20,6 @@ import net.eltown.servercore.components.data.teleportation.TeleportationCalls;
 import net.eltown.servercore.components.language.Language;
 import net.eltown.servercore.components.scoreboard.network.DisplayEntry;
 import net.eltown.servercore.components.scoreboard.network.DisplaySlot;
-import net.eltown.servercore.components.scoreboard.network.Scoreboard;
 import net.eltown.servercore.components.scoreboard.network.ScoreboardDisplay;
 import net.eltown.servercore.components.tinyrabbit.Queue;
 
@@ -153,7 +152,7 @@ public class EventListener implements Listener {
         event.setQuitMessage("");
 
         if (this.instance.getSyncAPI().getLoaded().contains(event.getPlayer().getName())) {
-            this.instance.getSyncAPI().savePlayerAsync(event.getPlayer());
+            this.instance.getSyncAPI().savePlayer(event.getPlayer());
 
             ScoreboardAPI.cachedDisplayEntries.remove(event.getPlayer().getName() + "/economy");
             ScoreboardAPI.cachedDisplayEntries.remove(event.getPlayer().getName() + "/level");
