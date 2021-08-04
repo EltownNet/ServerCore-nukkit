@@ -148,6 +148,8 @@ roleplay.bank.no.money: "Du hast zu wenig Geld dabei, um dies machen zu können.
 roleplay.bank.invalid.password: "Das Passwort des Kontos ist nicht korrekt."
 roleplay.bank.invalid.account: "Zu dieser Bankkarte konnte kein Account gefunden werden."
 roleplay.bank.invalid.input: "Deine Eingaben sind fehlerhaft. Bitte überprüfe diese."
+roleplay.bank.invalid.user: "Du musst der Inhaber des Kontos sein, um dies machen zu können."
 roleplay.bank.card.needed: "Halte eine gültige Bankkarte in deiner Hand, um fortzufahren."
+roleplay.bank.card.received: "Du hast eine neue Bankkarte erhalten."
 roleplay.bank.deposit.success: "&a$[0] &7wurden auf das Konto eingezahlt. Der aktuelle Kontostand beträgt &a$[1]&7."
 roleplay.bank.withdraw.success: "&a$[0] &7wurden vom Konto abgehoben. Der aktuelle Kontostand beträgt &a$[1]&7."
