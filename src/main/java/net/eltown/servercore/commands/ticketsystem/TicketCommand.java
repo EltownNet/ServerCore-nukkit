@@ -63,7 +63,22 @@ public class TicketCommand extends PluginCommand<ServerCore> {
                     }
 
                     if (discord) {
-
+                        this.getPlugin().getTinyRabbit().sendAndReceive(delivery -> {
+                            switch (TicketCalls.DiscordTicketCalls.valueOf(delivery.getKey().toUpperCase())) {
+                                case CALLBACK_NO_AUTH:
+                                    player.sendMessage(Language.get("ticket.discord.no.auth"));
+                                    break;
+                                case CALLBACK_USER_NULL:
+                                    player.sendMessage(Language.get("ticket.discord.user.null"));
+                                    break;
+                                case CALLBACK_TOO_MANY_TICKETS:
+                                    player.sendMessage(Language.get("ticket.discord.tickets.limit"));
+                                    break;
+                                case CALLBACK_NULL:
+                                    player.sendMessage(Language.get("ticket.discord.created"));
+                                    break;
+                            }
+                        }, Queue.DISCORD_TICKET, TicketCalls.DiscordTicketCalls.REQUEST_OPEN_TICKET.name(), player.getName(), subject, section, message);
                     } else {
                         this.getPlugin().getTinyRabbit().sendAndReceive(delivery -> {
                             switch (TicketCalls.valueOf(delivery.getKey().toUpperCase())) {

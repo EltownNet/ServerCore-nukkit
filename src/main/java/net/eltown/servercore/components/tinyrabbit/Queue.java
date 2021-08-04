@@ -11,6 +11,7 @@ public class Queue {
     public static final String GIFTKEYS_RECEIVE = "giftkeys.receive";
     public static final String GIFTKEYS_CALLBACK = "giftkeys.callback";
     public static final String DISCORD_AUTH = "discord.bot.auth";
+    public static final String DISCORD_TICKET = "discord.bot.ticket";
     public static final String LEVEL_RECEIVE = "level.receive";
     public static final String LEVEL_CALLBACK = "level.callback";
     public static final String GUARDIAN = "guardian";

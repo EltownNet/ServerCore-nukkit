@@ -16,6 +16,16 @@ public enum TicketCalls {
     REQUEST_OPEN_TICKETS,
     CALLBACK_OPEN_TICKETS,
     REQUEST_MY_SUPPORT_TICKETS,
-    CALLBACK_MY_SUPPORT_TICKETS,
+    CALLBACK_MY_SUPPORT_TICKETS;
+
+    public enum DiscordTicketCalls {
+
+        REQUEST_OPEN_TICKET,
+        CALLBACK_NO_AUTH,
+        CALLBACK_TOO_MANY_TICKETS,
+        CALLBACK_USER_NULL,
+        CALLBACK_NULL
+
+    }
 
 }
