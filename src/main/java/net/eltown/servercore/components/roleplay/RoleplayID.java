@@ -10,6 +10,7 @@ public enum RoleplayID {
     SHOP_BLACKSMITH("servercore:shop.blacksmith"),
 
     BANKER("servercore:job.banker"),
+    COOK("servercore:job.cook"),
 
     ;
 

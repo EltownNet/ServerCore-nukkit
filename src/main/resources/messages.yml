@@ -159,3 +159,6 @@ roleplay.bank.deposit.success: "&a$[0] &7wurden auf das Konto eingezahlt. Der ak
 roleplay.bank.withdraw.success: "&a$[0] &7wurden vom Konto abgehoben. Der aktuelle Kontostand beträgt &a$[1]&7."
 roleplay.bank.settings.updated: "&7Die Einstellungen wurden übernommen."
 roleplay.bank.settings.invalid.password: "&7Fehler beim Übernehmen der Einstellungen: Das Passwort muss aus vier Ziffern bestehen."
+roleplay.job.cook.item.inventory.full: "&7Bitte schaffe in deinem Inventar platz, um das Gericht bestellen zu können."
+roleplay.job.cook.item.bought: "&7Du hast das Gericht für &a$[0] &7bestellt."
+roleplay.job.cook.item.not.enough.money: "&7Du hast zu wenig Geld, um dieses Gericht bestellen zu können."
