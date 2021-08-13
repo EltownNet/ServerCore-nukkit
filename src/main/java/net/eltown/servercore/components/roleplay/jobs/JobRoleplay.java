@@ -69,23 +69,23 @@ public class JobRoleplay {
     public void openCook(final Player player) {
         final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Koch Duke", "§7Wähle eines der aufgelisteten Gerichte aus, welches du bestellen möchtest.");
 
-        form.addButton(new ElementButton("Kartoffeln und Steak mit Beilage\n§3§lMenu 1   §r§a$9.95", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/cook/01.png")), e -> {
+        form.addButton(new ElementButton("Kartoffeln und Steak mit Beilage\n§3§lMenü 1   §r§a$9.95", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/cook/01.png")), e -> {
             this.solveCook(player, 9.95, Item.get(ItemID.BAKED_POTATO, 0, 1), Item.get(ItemID.COOKED_BEEF, 0, 1), Item.get(ItemID.CARROT, 0, 1));
         });
 
-        form.addButton(new ElementButton("Gemüseteller\n§3§lMenu 2   §r§a$6.95", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/cook/02.png")), e -> {
+        form.addButton(new ElementButton("Gemüseteller\n§3§lMenü 2   §r§a$6.95", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/cook/02.png")), e -> {
             this.solveCook(player, 6.95, Item.get(ItemID.BEETROOT, 0, 1), Item.get(ItemID.BAKED_POTATO, 0, 1), Item.get(ItemID.CARROT, 0, 1));
         });
 
-        form.addButton(new ElementButton("Pilzsuppe mit Brot\n§3§lMenu 3   §r§a$7.95", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/cook/03.png")), e -> {
+        form.addButton(new ElementButton("Pilzsuppe mit Brot\n§3§lMenü 3   §r§a$7.95", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/cook/03.png")), e -> {
             this.solveCook(player, 7.95, Item.get(ItemID.MUSHROOM_STEW, 0, 1), Item.get(ItemID.BREAD, 0, 2));
         });
 
-        form.addButton(new ElementButton("Rote Beete Suppe mit Brot\n§3§lMenu 4   §r§a$7.95", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/cook/04.png")), e -> {
+        form.addButton(new ElementButton("Rote Beete Suppe mit Brot\n§3§lMenü 4   §r§a$7.95", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/cook/04.png")), e -> {
             this.solveCook(player, 7.95, Item.get(ItemID.BEETROOT_SOUP, 0, 1), Item.get(ItemID.BREAD, 0, 2));
         });
 
-        form.addButton(new ElementButton("Haseneintopf mit Brot\n§3§lMenu 5   §r§a$8.49", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/cook/05.png")), e -> {
+        form.addButton(new ElementButton("Haseneintopf mit Brot\n§3§lMenü 5   §r§a$8.49", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/cook/05.png")), e -> {
             this.solveCook(player, 8.49, Item.get(ItemID.RABBIT_STEW, 0, 1), Item.get(ItemID.BREAD, 0, 2));
         });
 
