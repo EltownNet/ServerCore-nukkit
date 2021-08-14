@@ -49,7 +49,7 @@ public class JobRoleplay {
     ));
 
     public void openCookByNpc(final Player player) {
-        this.smallTalk(this.cookTalks, RoleplayID.SHOP_LUMBERJACK.id(), player, message -> {
+        this.smallTalk(this.cookTalks, RoleplayID.COOK.id(), player, message -> {
             if (message == null) {
                 this.openCook(player);
             } else {

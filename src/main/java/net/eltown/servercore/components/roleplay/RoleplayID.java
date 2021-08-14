@@ -11,6 +11,7 @@ public enum RoleplayID {
 
     BANKER("servercore:job.banker"),
     COOK("servercore:job.cook"),
+    FARMER("servercore:job.farmer"),
 
     ;
 

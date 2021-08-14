@@ -8,6 +8,7 @@ import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.player.PlayerInteractEntityEvent;
 import cn.nukkit.form.element.*;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemID;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.Sound;
 import cn.nukkit.network.protocol.PlaySoundPacket;
@@ -389,6 +390,50 @@ public class ShopRoleplay {
         form.build().send(player);
     }
 
+    private final List<int[]> farmerShop = new ArrayList<>(Arrays.asList(
+            new int[]{ItemID.BEETROOT, 0}, new int[]{ItemID.CARROT, 0}, new int[]{ItemID.WHEAT, 0}, new int[]{ItemID.POTATO, 0}, new int[]{ItemID.APPLE, 0}
+    ));
+
+    private final List<ChainMessage> farmerTalks = new ArrayList<>(Arrays.asList(
+            new ChainMessage("Hallo §a%p§7! Bei mir gibt es das beste Obst und Gemüse aus der ganzen Stadt!", 5),
+            new ChainMessage("Ich besitze die meisten Felder!", 3),
+            new ChainMessage("Ich dünge nur mit natürlichen Mitteln!", 3),
+            new ChainMessage("Bäuerin zu sein ist ein echter Knochenjob.", 3),
+            new ChainMessage("Wenn etwas fehlt, sag mir bescheid!", 3),
+            new ChainMessage("Geringe Preise für tolle Qualität!", 3),
+            new ChainMessage("Ich ernte nur die besten Früchte!", 3)
+    ));
+
+    public void openFarmerShopByNpc(final Player player) {
+        this.smallTalk(this.farmerTalks, RoleplayID.FARMER.id(), player, message -> {
+            if (message == null) {
+                this.openFarmerShop(player);
+            } else {
+                new ChainExecution.Builder()
+                        .append(0, () -> {
+                            player.sendMessage("§8» §fSofi §8| §7" + message.getMessage().replace("%p", player.getName()));
+                        })
+                        .append(message.getSeconds(), () -> {
+                            this.openFarmerShop(player);
+                            this.openQueue.remove(player.getName());
+                        })
+                        .build().start();
+            }
+        });
+    }
+
+    public void openFarmerShop(final Player player) {
+        final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Bäuerin Sofi", "§7Wähle eines der aufgelisteten Items aus, welches du kaufen möchtest.");
+        this.farmerShop.forEach(id -> {
+            Economy.getShopAPI().getCurrentPrice(id, 1, price -> {
+                form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§3§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §r§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)), new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
+                    this.openItemShop(e, id, price);
+                });
+            });
+        });
+        form.build().send(player);
+    }
+
     public double getSellPrice(final double d) {
         return 0.38 * d;
     }
@@ -626,6 +671,7 @@ public class ShopRoleplay {
                     else if (npcId.equals(RoleplayID.SHOP_LUMBERJACK.id())) this.shopRoleplay.openWoodShopByNpc(player);
                     else if (npcId.equals(RoleplayID.SHOP_MONSTERUNTER.id())) this.shopRoleplay.openMobdropShopByNpc(player);
                     else if (npcId.equals(RoleplayID.SHOP_BLACKSMITH.id())) this.shopRoleplay.openBlacksmithShopByNpc(player);
+                    else if (npcId.equals(RoleplayID.FARMER.id())) this.shopRoleplay.openFarmerShopByNpc(player);
                 }
             }
         }
@@ -645,6 +691,7 @@ public class ShopRoleplay {
                         else if (npcId.equals(RoleplayID.SHOP_LUMBERJACK.id())) this.shopRoleplay.openWoodShopByNpc(player);
                         else if (npcId.equals(RoleplayID.SHOP_MONSTERUNTER.id())) this.shopRoleplay.openMobdropShopByNpc(player);
                         else if (npcId.equals(RoleplayID.SHOP_BLACKSMITH.id())) this.shopRoleplay.openBlacksmithShopByNpc(player);
+                        else if (npcId.equals(RoleplayID.FARMER.id())) this.shopRoleplay.openFarmerShopByNpc(player);
                     }
                 }
             }
