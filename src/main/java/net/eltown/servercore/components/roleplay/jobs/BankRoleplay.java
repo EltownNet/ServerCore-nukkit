@@ -6,10 +6,7 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.player.PlayerInteractEntityEvent;
-import cn.nukkit.form.element.ElementButton;
-import cn.nukkit.form.element.ElementInput;
-import cn.nukkit.form.element.ElementLabel;
-import cn.nukkit.form.element.ElementToggle;
+import cn.nukkit.form.element.*;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemID;
 import cn.nukkit.level.Sound;
@@ -71,8 +68,8 @@ public class BankRoleplay {
     public void openBankAccount(final Player player, final String account) {
         Economy.getBankAPI().getAccount(account, bankAccount -> {
             final SimpleForm form = new SimpleForm.Builder("§7» §8Bankkonto", "§fKonto: §9" + account + "\n§fName: §9" + bankAccount.getDisplayName() + "\n§fInhaber: §9" + bankAccount.getOwner() + "\n\n§fGuthaben: §a$" + Economy.getAPI().getMoneyFormat().format(bankAccount.getBalance()) + "\n")
-                    .addButton(new ElementButton("§8» §3Guthaben einzahlen"), e -> this.openDepositMenu(e, bankAccount.getAccount()))
-                    .addButton(new ElementButton("§8» §3Guthaben abheben"), e -> this.openWithdrawMenu(e, bankAccount.getAccount()))
+                    .addButton(new ElementButton("§8» §3Guthaben einzahlen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/banker/deposit.png")), e -> this.openDepositMenu(e, bankAccount.getAccount()))
+                    .addButton(new ElementButton("§8» §3Guthaben abheben", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/banker/withdraw.png")), e -> this.openWithdrawMenu(e, bankAccount.getAccount()))
                     .build();
             form.send(player);
         });
@@ -80,15 +77,15 @@ public class BankRoleplay {
 
     public void openDepositMenu(final Player player, final String account) {
         Economy.getBankAPI().getAccount(account, bankAccount -> {
-            final CustomForm form = new CustomForm.Builder("§7» §8Guthaben einzahlen")
-                    .addElement(new ElementLabel("§fKonto: §9" + account + "\n§fName: §9" + bankAccount.getDisplayName() + "\n§fInhaber: §9" + bankAccount.getOwner() + "\n\n§fGuthaben: §a$" + Economy.getAPI().getMoneyFormat().format(bankAccount.getBalance()) + "\n"))
-                    .addElement(new ElementInput("Bitte gebe an, wie viel Geld du auf dieses Konto einzahlen möchtest.", "3.99"))
-                    .onSubmit((g, h) -> {
-                        try {
-                            final double amount = Double.parseDouble(h.getInputResponse(1));
-                            if (amount <= 0) throw new Exception("Invalid bank interact amount");
+            Economy.getAPI().getMoney(player, money -> {
+                final CustomForm form = new CustomForm.Builder("§7» §8Guthaben einzahlen")
+                        .addElement(new ElementLabel("§fKonto: §9" + account + "\n§fName: §9" + bankAccount.getDisplayName() + "\n§fInhaber: §9" + bankAccount.getOwner() + "\n\n§fGuthaben: §a$" + Economy.getAPI().getMoneyFormat().format(bankAccount.getBalance()) + "\n§fBargeld: §a$" + Economy.getAPI().getMoneyFormat().format(money) + "\n"))
+                        .addElement(new ElementInput("Bitte gebe an, wie viel Geld du auf dieses Konto einzahlen möchtest.", "3.99"))
+                        .onSubmit((g, h) -> {
+                            try {
+                                final double amount = Double.parseDouble(h.getInputResponse(1));
+                                if (amount <= 0) throw new Exception("Invalid bank interact amount");
 
-                            Economy.getAPI().getMoney(player, money -> {
                                 if (money >= amount) {
                                     Economy.getAPI().reduceMoney(player, amount);
                                     Economy.getBankAPI().depositMoney(account, amount);
@@ -99,14 +96,14 @@ public class BankRoleplay {
                                     player.sendMessage(Language.get("roleplay.bank.no.money"));
                                     this.serverCore.playSound(player, Sound.NOTE_BASS);
                                 }
-                            });
-                        } catch (final Exception e) {
-                            player.sendMessage(Language.get("roleplay.bank.invalid.input"));
-                            this.serverCore.playSound(player, Sound.NOTE_BASS);
-                        }
-                    })
-                    .build();
-            form.send(player);
+                            } catch (final Exception e) {
+                                player.sendMessage(Language.get("roleplay.bank.invalid.input"));
+                                this.serverCore.playSound(player, Sound.NOTE_BASS);
+                            }
+                        })
+                        .build();
+                form.send(player);
+            });
         });
     }
 
