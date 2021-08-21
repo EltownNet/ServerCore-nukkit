@@ -17,6 +17,7 @@ import net.eltown.servercore.commands.holograms.HologramCommand;
 import net.eltown.servercore.commands.teleportation.*;
 import net.eltown.servercore.commands.ticketsystem.TicketCommand;
 import net.eltown.servercore.components.api.ServerCoreAPI;
+import net.eltown.servercore.components.api.intern.GroupAPI;
 import net.eltown.servercore.components.api.intern.LevelAPI;
 import net.eltown.servercore.components.api.intern.SyncAPI;
 import net.eltown.servercore.components.enchantments.CustomEnchantment;
@@ -46,6 +47,7 @@ public class ServerCore extends PluginBase {
     private HologramAPI hologramAPI;
     private LevelAPI levelAPI;
     private SyncAPI syncAPI;
+    private GroupAPI groupAPI;
 
     private CustomEnchantment customEnchantment;
 
@@ -133,11 +135,10 @@ public class ServerCore extends PluginBase {
 
         this.getServer().getCommandMap().register("servercore", new TicketCommand(this));
 
-        this.saveResource("models");
-
         this.hologramAPI = new HologramAPI(this);
         this.levelAPI = new LevelAPI(this);
         this.syncAPI = new SyncAPI(this);
+        this.groupAPI = new GroupAPI(this);
 
         this.customEnchantment = new CustomEnchantment(this);
 
