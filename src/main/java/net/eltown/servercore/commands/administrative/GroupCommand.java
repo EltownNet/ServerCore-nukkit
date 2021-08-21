@@ -3,12 +3,10 @@ package net.eltown.servercore.commands.administrative;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.PluginCommand;
-import cn.nukkit.form.element.ElementButton;
-import cn.nukkit.form.element.ElementDropdown;
-import cn.nukkit.form.element.ElementInput;
+import cn.nukkit.form.element.*;
 import net.eltown.servercore.ServerCore;
-import net.eltown.servercore.components.data.groupmanager.Group;
 import net.eltown.servercore.components.data.groupmanager.GroupCalls;
+import net.eltown.servercore.components.data.groupmanager.GroupedPlayer;
 import net.eltown.servercore.components.forms.custom.CustomForm;
 import net.eltown.servercore.components.forms.simple.SimpleForm;
 import net.eltown.servercore.components.language.Language;
@@ -18,33 +16,67 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class GroupmetaCommand extends PluginCommand<ServerCore> {
+public class GroupCommand extends PluginCommand<ServerCore> {
 
-    public GroupmetaCommand(final ServerCore owner) {
-        super("groupmeta", owner);
-        this.setDescription("Groupmeta Command");
-        this.setPermission("core.command.groupmeta");
+    public GroupCommand(final ServerCore owner) {
+        super("group", owner);
+        this.setDescription("Group Command");
+        this.setPermission("core.command.group");
+        this.setAliases(Arrays.asList("setgroup", "rank").toArray(new String[]{}));
     }
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!sender.hasPermission(this.getPermission())) return true;
         if (sender instanceof Player) {
-            final CustomForm customForm = new CustomForm.Builder("§7» §8Meta bearbeiten")
-                    .addElement(new ElementDropdown("§8» §7Gruppe", this.getGroups()))
-                    .onSubmit((e, r) -> {
-                        this.openMenu((Player) sender, r.getDropdownResponse(0).getElementContent());
+            final SimpleForm form = new SimpleForm.Builder("§7» §8Gruppeneinstellungen", "Bitte wähle eine Kategorie aus.")
+                    .addButton(new ElementButton("§8» §9Gruppe bearbeiten"), e -> {
+                        final CustomForm customForm = new CustomForm.Builder("§7» §8Gruppe bearbeiten")
+                                .addElement(new ElementDropdown("§8» §7Gruppe auswählen", this.getGroups()))
+                                .onSubmit((g, r) -> {
+                                    this.openMenu((Player) sender, r.getDropdownResponse(0).getElementContent());
+                                })
+                                .build();
+                        customForm.send((Player) sender);
                     })
+                    .addButton(new ElementButton("§8» §9Spieler bearbeiten"), e -> {
+                        final CustomForm customForm = new CustomForm.Builder("§7» §8Spieler bearbeiten")
+                                .addElement(new ElementInput("§8» §7Spieler auswählen", "Nickname"))
+                                .onSubmit((g, r) -> {
+                                    if (!r.getInputResponse(0).isEmpty()) {
+                                        this.openPlayerMenu((Player) sender, r.getInputResponse(0));
+                                    } else sender.sendMessage(Language.get("group.invalid.input"));
+                                })
+                                .build();
+                        customForm.send((Player) sender);
+                    })
+                    .addButton(new ElementButton("§8» §9Gruppe setzen"), this::setGroup)
+                    .addButton(new ElementButton("§8» §9Gruppe erstellen"), this::createGroup)
                     .build();
-            customForm.send((Player) sender);
+            form.send((Player) sender);
         }
         return true;
+    }
+
+    private void openPlayerMenu(final Player player, final String target) {
+        this.getPlugin().getTinyRabbit().sendAndReceive((delivery -> {
+            switch (GroupCalls.valueOf(delivery.getKey().toUpperCase())) {
+                case CALLBACK_FULL_GROUP_PLAYER:
+                    final GroupedPlayer groupedPlayer = new GroupedPlayer(target, delivery.getData()[1], Long.parseLong(delivery.getData()[2]), Arrays.asList(delivery.getData()[6].split("#")));
+                    final SimpleForm simpleForm = new SimpleForm.Builder("§7» §8Spieler bearbeiten", "§fGruppe: §7" + groupedPlayer.getGroup())
+                            .addButton(new ElementButton("§8» §9Berechtigung hinzufügen"), e -> this.addPlayerPermission(e, groupedPlayer))
+                            .addButton(new ElementButton("§8» §9Berechtigung entfernen"), e -> this.removePlayerPermission(e, groupedPlayer))
+                            .build();
+                    simpleForm.send(player);
+                    break;
+            }
+        }), Queue.GROUPS, GroupCalls.REQUEST_FULL_GROUP_PLAYER.name(), target);
     }
 
     private void openMenu(final Player player, final String group) {
         this.getPlugin().getTinyRabbit().sendAndReceive((delivery -> {
             switch (GroupCalls.valueOf(delivery.getKey().toUpperCase())) {
-                case CALLBACK_GROUP_DOES_NOT_EXIST:
+                case CALLBACK_PLAYER_DOES_NOT_EXIST:
                     player.sendMessage(Language.get("group.not.exists", group));
                     break;
                 case CALLBACK_NULL:
@@ -97,6 +129,34 @@ public class GroupmetaCommand extends PluginCommand<ServerCore> {
         }), Queue.GROUPS, GroupCalls.REQUEST_FULL_GROUP.name(), group);
     }
 
+    private void addPlayerPermission(final Player player, final GroupedPlayer target) {
+        final CustomForm customForm = new CustomForm.Builder("§7» §8Berechtigung hinzufügen")
+                .addElement(new ElementInput("§8» §7Berechtigungsschlüssel", "plugin.key.subkey"))
+                .onSubmit((e, r) -> {
+                    final String key = r.getInputResponse(0);
+
+                    if (key.isEmpty()) {
+                        player.sendMessage(Language.get("group.invalid.input"));
+                        return;
+                    }
+                    if (target.getPermissions().contains(key)) {
+                        player.sendMessage(Language.get("group.player.permission.already.added", key));
+                        return;
+                    }
+
+                    this.getPlugin().getTinyRabbit().sendAndReceive((delivery1 -> {
+                        switch (GroupCalls.valueOf(delivery1.getKey().toUpperCase())) {
+                            case CALLBACK_SUCCESS:
+                                player.sendMessage(Language.get("group.player.permission.added", player.getName(), key));
+                                PluginCommand.broadcastCommandMessage(player, "Added permission " + key + " to user " + player.getName(), false);
+                                break;
+                        }
+                    }), Queue.GROUPS, GroupCalls.REQUEST_ADD_PLAYER_PERMISSION.name(), target.getPlayer(), key);
+                })
+                .build();
+        customForm.send(player);
+    }
+
     private void removePermission(final Player player, final String group) {
         this.getPlugin().getTinyRabbit().sendAndReceive((delivery -> {
             switch (GroupCalls.valueOf(delivery.getKey().toUpperCase())) {
@@ -127,6 +187,30 @@ public class GroupmetaCommand extends PluginCommand<ServerCore> {
                     break;
             }
         }), Queue.GROUPS, GroupCalls.REQUEST_FULL_GROUP.name(), group);
+    }
+
+    private void removePlayerPermission(final Player player, final GroupedPlayer target) {
+        final CustomForm customForm = new CustomForm.Builder("§7» §8Berechtigung entfernen")
+                .addElement(new ElementDropdown("§8» §7Berechtigungsschlüssel", target.getPermissions()))
+                .onSubmit((e, r) -> {
+                    final String key = r.getDropdownResponse(0).getElementContent();
+
+                    if (key.isEmpty()) {
+                        player.sendMessage(Language.get("group.invalid.input"));
+                        return;
+                    }
+
+                    this.getPlugin().getTinyRabbit().sendAndReceive((delivery1 -> {
+                        switch (GroupCalls.valueOf(delivery1.getKey().toUpperCase())) {
+                            case CALLBACK_SUCCESS:
+                                player.sendMessage(Language.get("group.player.permission.removed", player.getName(), key));
+                                PluginCommand.broadcastCommandMessage(player, "Removed permission " + key + " from user " + player.getName(), false);
+                                break;
+                        }
+                    }), Queue.GROUPS, GroupCalls.REQUEST_REMOVE_PLAYER_PERMISSION.name(), target.getPlayer(), key);
+                })
+                .build();
+        customForm.send(player);
     }
 
     private void addInheritance(final Player player, final String group) {
@@ -233,6 +317,73 @@ public class GroupmetaCommand extends PluginCommand<ServerCore> {
                     break;
             }
         }), Queue.GROUPS, GroupCalls.REQUEST_FULL_GROUP.name(), group);
+    }
+
+    private void setGroup(final Player sender) {
+        final CustomForm formWindowCustom = new CustomForm.Builder("§7» §8Gruppe Setzen")
+                .addElement(new ElementInput("§8» §7Nickname des Spielers", "Nickname"))
+                .addElement(new ElementDropdown("§8» §7Name der Gruppe", this.getGroups()))
+                .addElement(new ElementDropdown("§8» §7Auswahl der Zeiteinheit", Arrays.asList("m", "h", "d", "M", "Permanent"), 2))
+                .addElement(new ElementSlider("§8» §7Auswahl der Zeit", 1, 100, 1, 3))
+                .onSubmit((e, r) -> {
+                    final String target = r.getInputResponse(0);
+                    final String group = r.getDropdownResponse(1).getElementContent();
+                    final long duration = this.getPlugin().getDuration(r.getDropdownResponse(2).getElementContent(), (int) r.getSliderResponse(3));
+
+                    if (target.isEmpty() || group.isEmpty()) {
+                        sender.sendMessage(Language.get("group.invalid.input"));
+                        return;
+                    }
+
+                    this.getPlugin().getTinyRabbit().sendAndReceive((delivery -> {
+                        switch (GroupCalls.valueOf(delivery.getKey().toUpperCase())) {
+                            case CALLBACK_GROUP_DOES_NOT_EXIST:
+                                sender.sendMessage(Language.get("group.group.not.exists", group));
+                                break;
+                            case CALLBACK_PLAYER_ALREADY_IN_GROUP:
+                                sender.sendMessage(Language.get("group.player.already.in.group", target, group));
+                                break;
+                            case CALLBACK_PLAYER_DOES_NOT_EXIST:
+                                sender.sendMessage(Language.get("group.player.not.exists", target));
+                                break;
+                            case CALLBACK_SUCCESS:
+                                sender.sendMessage(Language.get("group.player.group.set", target, group, this.getPlugin().getRemainingTimeFuture(duration)));
+                                PluginCommand.broadcastCommandMessage(sender, "Set group " + group + " to " + target + " for " + this.getPlugin().getRemainingTimeFuture(duration), false);
+                                break;
+                        }
+                    }), Queue.GROUPS, GroupCalls.REQUEST_SET_GROUP.name(), target, group, sender.getName(), String.valueOf(duration));
+                })
+                .build();
+        formWindowCustom.send(sender);
+    }
+
+    private void createGroup(final Player sender) {
+        final CustomForm formWindowCustom = new CustomForm.Builder("§7» §8Gruppe Erstellen")
+                .addElement(new ElementInput("§8» §7Name der Gruppe", "Gruppe", "GROUP"))
+                .addElement(new ElementInput("§8» §7Prefix der Gruppe", "Prefix"))
+                .onSubmit((e, r) -> {
+                    final String group = r.getInputResponse(0);
+                    final String prefix = r.getInputResponse(1);
+
+                    if (group.isEmpty() || prefix.isEmpty()) {
+                        sender.sendMessage(Language.get("group.invalid.input"));
+                        return;
+                    }
+
+                    this.getPlugin().getTinyRabbit().sendAndReceive((delivery -> {
+                        switch (GroupCalls.valueOf(delivery.getKey().toUpperCase())) {
+                            case CALLBACK_GROUP_ALREADY_EXIST:
+                                sender.sendMessage(Language.get("group.group.already.exists", group));
+                                break;
+                            case CALLBACK_SUCCESS:
+                                sender.sendMessage(Language.get("group.group.created", group));
+                                PluginCommand.broadcastCommandMessage(sender, "Created group " + group, false);
+                                break;
+                        }
+                    }), Queue.GROUPS, GroupCalls.REQUEST_CREATE_GROUP.name(), group, prefix, sender.getName());
+                })
+                .build();
+        formWindowCustom.send(sender);
     }
 
     private List<String> getGroups() {

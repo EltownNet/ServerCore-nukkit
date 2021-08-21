@@ -106,9 +106,7 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new CheckmuteCommand(this));
         this.getServer().getCommandMap().register("servercore", new GetmuteCommand(this));
         this.getServer().getCommandMap().register("servercore", new UnmutelogCommand(this));
-        this.getServer().getCommandMap().register("servercore", new SetgroupCommand(this));
-        this.getServer().getCommandMap().register("servercore", new CreategroupCommand(this));
-        this.getServer().getCommandMap().register("servercore", new GroupmetaCommand(this));
+        this.getServer().getCommandMap().register("servercore", new GroupCommand(this));
         this.getServer().getCommandMap().register("servercore", new HealCommand(this));
         this.getServer().getCommandMap().register("servercore", new ClearCommand(this));
         this.getServer().getCommandMap().register("servercore", new GamemodeCommand(this));

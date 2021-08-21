@@ -77,8 +77,9 @@ public class EventListener implements Listener {
                 this.instance.getTinyRabbit().sendAndReceive((delivery -> {
                     switch (GroupCalls.valueOf(delivery.getKey().toUpperCase())) {
                         case CALLBACK_FULL_GROUP_PLAYER:
-                            final String prefix = delivery.getData()[2];
-                            final String[] permissions = delivery.getData()[3].split("#");
+                            final String prefix = delivery.getData()[3];
+                            final String[] permissions = delivery.getData()[4].split("#");
+                            final String[] aPermissions = delivery.getData()[6].split("#");
 
                             this.attachments.remove(player.getName());
                             this.attachments.put(player.getName(), player.addAttachment(this.instance));
@@ -86,6 +87,10 @@ public class EventListener implements Listener {
 
                             for (final String p : permissions) {
                                 attachment.setPermission(p, true);
+                            }
+
+                            for (final String p : aPermissions) {
+                                if (!attachment.getPermissions().containsKey(p)) attachment.setPermission(p, true);
                             }
 
                             player.setNameTag(prefix.replace("%p", player.getName()));
