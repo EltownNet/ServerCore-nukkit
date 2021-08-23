@@ -20,6 +20,7 @@ import net.eltown.servercore.components.api.ServerCoreAPI;
 import net.eltown.servercore.components.api.intern.LevelAPI;
 import net.eltown.servercore.components.api.intern.SyncAPI;
 import net.eltown.servercore.components.enchantments.CustomEnchantment;
+import net.eltown.servercore.components.enchantments.enchantment.EnchantmentLumberjack;
 import net.eltown.servercore.components.entities.HumanNPC;
 import net.eltown.servercore.components.entities.ModelEntity;
 import net.eltown.servercore.components.forms.FormListener;
