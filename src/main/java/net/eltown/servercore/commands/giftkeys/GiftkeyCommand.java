@@ -14,7 +14,6 @@ import net.eltown.servercore.components.language.Language;
 import net.eltown.servercore.components.tinyrabbit.Queue;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 
 public class GiftkeyCommand extends PluginCommand<ServerCore> {
 

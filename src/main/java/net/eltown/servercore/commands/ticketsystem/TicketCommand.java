@@ -16,7 +16,9 @@ import net.eltown.servercore.components.forms.simple.SimpleForm;
 import net.eltown.servercore.components.language.Language;
 import net.eltown.servercore.components.tinyrabbit.Queue;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public class TicketCommand extends PluginCommand<ServerCore> {
 

@@ -9,25 +9,22 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import net.eltown.servercore.commands.administrative.*;
 import net.eltown.servercore.commands.defaults.PluginsCommand;
+import net.eltown.servercore.commands.feature.ChestshopCommand;
 import net.eltown.servercore.commands.giftkeys.GiftkeyCommand;
 import net.eltown.servercore.commands.giftkeys.RedeemCommand;
-import net.eltown.servercore.commands.level.LevelCommand;
-import net.eltown.servercore.commands.administrative.NpcCommand;
 import net.eltown.servercore.commands.holograms.HologramCommand;
+import net.eltown.servercore.commands.level.LevelCommand;
 import net.eltown.servercore.commands.teleportation.*;
 import net.eltown.servercore.commands.ticketsystem.TicketCommand;
 import net.eltown.servercore.components.api.ServerCoreAPI;
-import net.eltown.servercore.components.api.intern.GroupAPI;
-import net.eltown.servercore.components.api.intern.LevelAPI;
-import net.eltown.servercore.components.api.intern.SyncAPI;
+import net.eltown.servercore.components.api.intern.*;
 import net.eltown.servercore.components.enchantments.CustomEnchantment;
 import net.eltown.servercore.components.entities.HumanNPC;
 import net.eltown.servercore.components.entities.ModelEntity;
 import net.eltown.servercore.components.forms.FormListener;
-import net.eltown.servercore.components.api.intern.HologramAPI;
 import net.eltown.servercore.components.language.Language;
-import net.eltown.servercore.components.roleplay.jobs.JobRoleplay;
 import net.eltown.servercore.components.roleplay.jobs.BankRoleplay;
+import net.eltown.servercore.components.roleplay.jobs.JobRoleplay;
 import net.eltown.servercore.components.roleplay.shops.ShopRoleplay;
 import net.eltown.servercore.components.tinyrabbit.TinyRabbit;
 import net.eltown.servercore.listeners.*;
@@ -48,6 +45,7 @@ public class ServerCore extends PluginBase {
     private LevelAPI levelAPI;
     private SyncAPI syncAPI;
     private GroupAPI groupAPI;
+    private ChestShopAPI chestShopAPI;
 
     private CustomEnchantment customEnchantment;
 
@@ -92,6 +90,7 @@ public class ServerCore extends PluginBase {
         this.getServer().getPluginManager().registerEvents(new HologramListener(this), this);
         this.getServer().getPluginManager().registerEvents(new LevelListener(this), this);
         this.getServer().getPluginManager().registerEvents(new ModelListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new ChestShopListener(this), this);
 
         this.getServer().getCommandMap().register("servercore", new EnchantCommand(this));
         this.getServer().getCommandMap().register("servercore", new SpeedCommand(this));
@@ -118,6 +117,8 @@ public class ServerCore extends PluginBase {
 
         this.getServer().getCommandMap().register("servercore", new PluginsCommand(this));
 
+        this.getServer().getCommandMap().register("servercore", new ChestshopCommand(this));
+
         this.getServer().getCommandMap().register("servercore", new GiftkeyCommand(this));
         this.getServer().getCommandMap().register("servercore", new RedeemCommand(this));
 
@@ -139,6 +140,7 @@ public class ServerCore extends PluginBase {
         this.levelAPI = new LevelAPI(this);
         this.syncAPI = new SyncAPI(this);
         this.groupAPI = new GroupAPI(this);
+        this.chestShopAPI = new ChestShopAPI(this);
 
         this.customEnchantment = new CustomEnchantment(this);
 
@@ -151,6 +153,17 @@ public class ServerCore extends PluginBase {
 
     public String createId(final int i) {
         final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        final StringBuilder stringBuilder = new StringBuilder();
+        final Random rnd = new Random();
+        while (stringBuilder.length() < i) {
+            int index = (int) (rnd.nextFloat() * chars.length());
+            stringBuilder.append(chars.charAt(index));
+        }
+        return stringBuilder.toString();
+    }
+
+    public String createNumberId(final int i) {
+        final String chars = "1234567890";
         final StringBuilder stringBuilder = new StringBuilder();
         final Random rnd = new Random();
         while (stringBuilder.length() < i) {

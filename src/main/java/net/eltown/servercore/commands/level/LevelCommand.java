@@ -6,7 +6,6 @@ import cn.nukkit.command.PluginCommand;
 import cn.nukkit.form.element.ElementButton;
 import cn.nukkit.form.element.ElementInput;
 import net.eltown.servercore.ServerCore;
-import net.eltown.servercore.components.data.level.Level;
 import net.eltown.servercore.components.data.level.LevelCalls;
 import net.eltown.servercore.components.forms.custom.CustomForm;
 import net.eltown.servercore.components.forms.simple.SimpleForm;
