@@ -15,7 +15,7 @@ public class ShopLicense {
 
     public enum ShopLicenseType {
 
-        STANDARD("Standard"),
+        STANDARD("Privatverkäufer"),
         SMALL_BUSINESS("Kleingewerbe"),
         BUSINESS("Gewerbe"),
         BIG_BUSINESS("Großgewerbe"),

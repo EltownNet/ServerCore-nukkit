@@ -16,6 +16,7 @@ import net.eltown.servercore.components.data.chestshop.ShopLicense;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ChestShopAPI {
 
@@ -189,7 +190,11 @@ public class ChestShopAPI {
     }
 
     public int countPlayerChestShops(final String player) {
-        return this.config.getSection("chestshop." + player).getKeys(false).size();
+        final AtomicInteger atomicInteger = new AtomicInteger(0);
+        this.cachedChestShops.values().forEach(e -> {
+            if (e.getOwner().equals(player)) atomicInteger.addAndGet(1);
+        });
+        return atomicInteger.get();
     }
 
     public ShopLicense getPlayerLicense(final String player) {

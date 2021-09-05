@@ -74,7 +74,7 @@ public class ChestShopListener implements Listener {
         final Block block = event.getBlock();
         final Item item = event.getItem();
 
-        if (item.getId() == ItemID.SIGN && item.getNamedTag().getString("shop_creator") != null) {
+        if (item.getId() == ItemID.SIGN && item.getNamedTag() != null) {
             if (event.getBlockAgainst().getId() == BlockID.CHEST) {
                 if (!this.chestIsUsed(event.getBlockAgainst())) {
                     final ShopLicense shopLicense = this.serverCore.getChestShopAPI().getPlayerLicense(player.getName());
@@ -201,7 +201,7 @@ public class ChestShopListener implements Listener {
                     }
                     event.setCancelled(true);
                 } else {
-                    if (!this.interactCooldown.hasCooldown(player.getName()) && chestShop != null) {
+                    if (!this.interactCooldown.hasCooldown(player.getName()) && chestShop != null && chestShop.getId() != -1) {
                         final BlockEntityChest chest = (BlockEntityChest) chestShop.getChestLocation().getLevel().getBlockEntity(chestShop.getChestLocation());
 
                         if (player.getName().equals(chestShop.getOwner()) && event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
@@ -249,7 +249,7 @@ public class ChestShopListener implements Listener {
                             this.serverCore.playSound(player, Sound.RANDOM_ORB);
                             event.setCancelled(true);
                             return;
-                        }
+                        } else if (player.getName().equals(chestShop.getOwner()) && event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) return;
 
                         final AtomicInteger count = new AtomicInteger();
                         if (chestShop.getShopType() == ChestShop.ShopType.BUY) {
@@ -496,7 +496,7 @@ public class ChestShopListener implements Listener {
         } else if (block instanceof BlockChest) {
             this.serverCore.getChestShopAPI().cachedChestShops.values().forEach(e -> {
                 if (e.getChestLocation().equals(block.getLocation())) {
-                    if (!e.getOwner().equals(player.getName())) {
+                    if (!e.getOwner().equals(player.getName()) && !player.isOp()) {
                         player.sendMessage(Language.get("chestshop.interact.chest"));
                         this.serverCore.playSound(player, Sound.ITEM_SHIELD_BLOCK);
                         event.setCancelled(true);
