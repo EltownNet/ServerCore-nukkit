@@ -192,3 +192,10 @@ chestshop.bank.login.success: "Du hast dich erfolgreich in das Bankkonto eingelo
 chestshop.edit.amount: "Die Stückzahl wurde geändert."
 chestshop.edit.price: "Der Preis wurde geändert."
 chestshop.edit.item: "Das Item wurde geändert."
+
+furnace.break.success: "Du hast den Ofen erfolgreich abgebaut. &8[&7Level: &9[0]&8]"
+furnace.break.need.sneak: "Du musst Sneaken, um den Ofen abbauen zu können."
+furnace.upgrade.need.money: "Du hast zu wenig Geld, um deinen Ofen zu upgraden."
+furnace.upgrade.need.experience: "Du hast zu wenig Erfahrungslevel, um deinen Ofen upgraden zu können."
+furnace.upgrade.need.level: "&7Du benötigst &aLevel [0]&7, um deinen Ofen upgraden zu können."
+furnace.upgrade.success: "&7Dein Ofen wurde erfolgreich auf &aLevel [0] &7geupgradet."

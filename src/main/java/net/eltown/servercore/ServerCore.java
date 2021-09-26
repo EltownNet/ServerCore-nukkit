@@ -46,6 +46,7 @@ public class ServerCore extends PluginBase {
     private SyncAPI syncAPI;
     private GroupAPI groupAPI;
     private ChestShopAPI chestShopAPI;
+    private FurnaceAPI furnaceAPI;
 
     private CustomEnchantment customEnchantment;
 
@@ -91,6 +92,7 @@ public class ServerCore extends PluginBase {
         this.getServer().getPluginManager().registerEvents(new LevelListener(this), this);
         this.getServer().getPluginManager().registerEvents(new ModelListener(this), this);
         this.getServer().getPluginManager().registerEvents(new ChestShopListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new FurnaceListener(this), this);
 
         this.getServer().getCommandMap().register("servercore", new EnchantCommand(this));
         this.getServer().getCommandMap().register("servercore", new SpeedCommand(this));
@@ -141,6 +143,7 @@ public class ServerCore extends PluginBase {
         this.syncAPI = new SyncAPI(this);
         this.groupAPI = new GroupAPI(this);
         this.chestShopAPI = new ChestShopAPI(this);
+        this.furnaceAPI = new FurnaceAPI(this);
 
         this.customEnchantment = new CustomEnchantment(this);
 

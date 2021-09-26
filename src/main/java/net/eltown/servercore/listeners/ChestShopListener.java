@@ -170,7 +170,6 @@ public class ChestShopListener implements Listener {
                                                     packet.entityRuntimeId = chestShop.getId();
                                                     packet.entityUniqueId = chestShop.getId();
                                                     packet.item = displayItem;
-                                                    packet.x = (float) chestShop.getChestLocation().x + 0.5f;
                                                     packet.y = (float) chestShop.getChestLocation().y + 1f;
                                                     packet.z = (float) chestShop.getChestLocation().z + 0.5f;
                                                     packet.speedX = 0f;
