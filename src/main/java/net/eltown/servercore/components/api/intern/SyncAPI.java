@@ -11,6 +11,7 @@ import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.data.sync.SyncCalls;
 import net.eltown.servercore.components.data.sync.SyncPlayer;
 import net.eltown.servercore.components.language.Language;
+import net.eltown.servercore.components.tinyrabbit.Queue;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -22,7 +23,7 @@ public class SyncAPI {
     private final ServerCore instance;
 
     public void savePlayer(final String player, final String invString, final String ecString, final String health, final int food, final int level, final int exp, final int gamemode, final List<String> effects) {
-        this.instance.getTinyRabbit().send("playersyncReceive", SyncCalls.REQUEST_SETSYNC.name(), player, invString, ecString, health, "" + food, "" + level, "" + exp, effects.size() > 0 ? String.join("#", effects) : "empty", "" + gamemode);
+        this.instance.getTinyRabbit().send(Queue.SYNC_RECEIVE, SyncCalls.REQUEST_SETSYNC.name(), player, invString, ecString, health, "" + food, "" + level, "" + exp, effects.size() > 0 ? String.join("#", effects) : "empty", "" + gamemode);
     }
 
     public void getPlayer(final Player player, final Consumer<SyncPlayer> callback) {
@@ -49,7 +50,7 @@ public class SyncAPI {
                         callback.accept(new SyncPlayer(delivery.getData()[1], delivery.getData()[2], Float.parseFloat(delivery.getData()[3]), Integer.parseInt(delivery.getData()[4]), Integer.parseInt(delivery.getData()[5]), Integer.parseInt(delivery.getData()[6]), Integer.parseInt(delivery.getData()[8]), effects));
                         break;
                 }
-            }), "playersync", SyncCalls.REQUEST_SYNC.name(), player.getName());
+            }), Queue.SYNC_CALLBACK, SyncCalls.REQUEST_SYNC.name(), player.getName());
         });
     }
 
