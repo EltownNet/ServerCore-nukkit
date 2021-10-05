@@ -80,7 +80,7 @@ public class ChestShopListener implements Listener {
                     final ShopLicense shopLicense = this.serverCore.getChestShopAPI().getPlayerLicense(player.getName());
                     final int chestShops = this.serverCore.getChestShopAPI().countPlayerChestShops(player.getName());
 
-                    if (chestShops < shopLicense.getMaxPossibleShops()) {
+                    if (chestShops < shopLicense.getLicense().maxPossibleShops()) {
                         final String creator = item.getNamedTag().getString("shop_creator");
                         if (player.getName().equals(creator)) {
                             final String rawItem = item.getNamedTag().getString("shop_item");

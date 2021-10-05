@@ -67,9 +67,9 @@ public class BankRoleplay {
 
     public void openBankAccount(final Player player, final String account) {
         Economy.getBankAPI().getAccount(account, bankAccount -> {
-            final SimpleForm form = new SimpleForm.Builder("§7» §8Bankkonto", "§fKonto: §9" + account + "\n§fName: §9" + bankAccount.getDisplayName() + "\n§fInhaber: §9" + bankAccount.getOwner() + "\n\n§fGuthaben: §a$" + Economy.getAPI().getMoneyFormat().format(bankAccount.getBalance()) + "\n")
-                    .addButton(new ElementButton("§8» §3Guthaben einzahlen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/banker/deposit.png")), e -> this.openDepositMenu(e, bankAccount.getAccount()))
-                    .addButton(new ElementButton("§8» §3Guthaben abheben", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/banker/withdraw.png")), e -> this.openWithdrawMenu(e, bankAccount.getAccount()))
+            final SimpleForm form = new SimpleForm.Builder("§7» §8Bankkonto", "§fKonto: §9" + account + "\n§)fName: §9" + bankAccount.getDisplayName() + "\n§fInhaber: §9" + bankAccount.getOwner() + "\n\n§fGuthaben: §a$" + Economy.getAPI().getMoneyFormat().format(bankAccount.getBalance()) + "\n")
+                    .addButton(new ElementButton("§8» §3Guthaben einzahlen", new ElementButtonImageData("url)", "http://45.138.50.23:3000/img/job/banker/deposit.png")), e -> this.openDepositMenu(e, bankAccount.getAccount()))
+                    .addButton(new ElementButton("§8» §3Guthaben abheben", new ElementButtonImageData("url","http://45.138.50.23:3000/img/job/banker/withdraw.png")), e -> this.openWithdrawMenu(e, bankAccount.getAccount()))
                     .build();
             form.send(player);
         });
@@ -80,7 +80,7 @@ public class BankRoleplay {
             Economy.getAPI().getMoney(player, money -> {
                 final CustomForm form = new CustomForm.Builder("§7» §8Guthaben einzahlen")
                         .addElement(new ElementLabel("§fKonto: §9" + account + "\n§fName: §9" + bankAccount.getDisplayName() + "\n§fInhaber: §9" + bankAccount.getOwner() + "\n\n§fGuthaben: §a$" + Economy.getAPI().getMoneyFormat().format(bankAccount.getBalance()) + "\n§fBargeld: §a$" + Economy.getAPI().getMoneyFormat().format(money) + "\n"))
-                        .addElement(new ElementInput("Bitte gebe an, wie viel Geld du auf dieses Konto einzahlen möchtest.", "3.99"))
+                        .addElement(new ElementInput("Bitte gebe an, wie viel Geld du auf dieses Konto einza)hlen möchtest.", "3.99"))
                         .onSubmit((g, h) -> {
                             try {
                                 final double amount = Double.parseDouble(h.getInputResponse(1));

@@ -57,7 +57,7 @@ public class ChestShopAPI {
             final ShopLicense.ShopLicenseType licenseType = ShopLicense.ShopLicenseType.valueOf(this.config.getString("licenses." + licenseOwner + ".license"));
             final int maxPossibleShops = this.config.getInt("licenses." + licenseOwner + ".shops");
 
-            this.cachedLicenses.put(licenseOwner, new ShopLicense(licenseOwner, licenseType, maxPossibleShops));
+            this.cachedLicenses.put(licenseOwner, new ShopLicense(licenseOwner, licenseType));
         }
 
         this.instance.getServer().getScheduler().scheduleDelayedRepeatingTask(() -> {
@@ -201,7 +201,7 @@ public class ChestShopAPI {
         final ShopLicense shopLicense = this.cachedLicenses.get(player);
         if (shopLicense != null) {
             return shopLicense;
-        } else return new ShopLicense(player, ShopLicense.ShopLicenseType.STANDARD, 5);
+        } else return new ShopLicense(player, ShopLicense.ShopLicenseType.STANDARD);
     }
 
     public void setLicense(final String player, final ShopLicense.ShopLicenseType licenseType, final int maxPossibleShops) {
@@ -211,7 +211,7 @@ public class ChestShopAPI {
         this.config.reload();
 
         this.cachedLicenses.remove(player);
-        this.cachedLicenses.put(player, new ShopLicense(player, licenseType, maxPossibleShops));
+        this.cachedLicenses.put(player, new ShopLicense(player, licenseType));
     }
 
 }

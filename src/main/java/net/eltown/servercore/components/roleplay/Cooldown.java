@@ -27,6 +27,14 @@ public class Cooldown {
         }
     }
 
+    public boolean containsCooldown(final String key) {
+        if (this.cooldown.containsKey(key)) {
+            final long next = this.cooldown.get(key);
+
+            return next > System.currentTimeMillis();
+        } else return false;
+    }
+
     public void removeCooldown(final String key) {
         this.cooldown.remove(key);
     }

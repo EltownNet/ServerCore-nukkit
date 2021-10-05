@@ -13,6 +13,9 @@ public enum RoleplayID {
     COOK("servercore:job.cook"),
     FARMER("servercore:job.farmer"),
 
+    TOWNHALL_RECEPTION("servercore:townhall_reception"),
+    TOWNHALL_TAXES("servercore:cassandra"),
+
     ;
 
     private final String id;

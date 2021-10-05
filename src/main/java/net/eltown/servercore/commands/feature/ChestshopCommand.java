@@ -39,9 +39,9 @@ public class ChestshopCommand extends PluginCommand<ServerCore> {
             final ShopLicense shopLicense = this.getPlugin().getChestShopAPI().getPlayerLicense(player.getName());
             final int chestShops = this.getPlugin().getChestShopAPI().countPlayerChestShops(player.getName());
 
-            if (chestShops < shopLicense.getMaxPossibleShops()) {
+            if (chestShops < shopLicense.getLicense().maxPossibleShops()) {
                 final CustomForm form = new CustomForm.Builder("§7» §8ChestShop erstellen")
-                        .addElement(new ElementLabel("§7» §fDeine Lizenz: §e" + shopLicense.getLicense().displayName() + "\n§7» §fDeine Shops: §e" + chestShops + "§f/§e" + shopLicense.getMaxPossibleShops() + "\n\n§7» §fItem: §9" + item.getName()))
+                        .addElement(new ElementLabel("§7» §fDeine Lizenz: §e" + shopLicense.getLicense().displayName() + "\n§7» §fDeine Shops: §e" + chestShops + "§f/§e" + shopLicense.getLicense().maxPossibleShops() + "\n\n§7» §fItem: §9" + item.getName()))
                         .addElement(new ElementInput("§7» §fBitte gebe an, mit welcher Stückzahl du das Item verkaufen möchtest.", "16"))
                         .addElement(new ElementInput("§7» §fFür welchen Preis möchtest du das Item verkaufen?", "29.95"))
                         .addElement(new ElementDropdown("§7» §fIch verkaufe Items an Spieler: §eBUY\n§7» §fSpieler verkaufen Items an mich: §eSELL", Arrays.asList("BUY", "SELL"), 0))
