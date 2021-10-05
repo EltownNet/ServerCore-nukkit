@@ -16,6 +16,7 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.block.SignChangeEvent;
+import cn.nukkit.event.player.PlayerChunkRequestEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
@@ -170,6 +171,7 @@ public class ChestShopListener implements Listener {
                                                     packet.entityRuntimeId = chestShop.getId();
                                                     packet.entityUniqueId = chestShop.getId();
                                                     packet.item = displayItem;
+                                                    packet.x = (float) chestShop.getChestLocation().x + 0.5f;
                                                     packet.y = (float) chestShop.getChestLocation().y + 1f;
                                                     packet.z = (float) chestShop.getChestLocation().z + 0.5f;
                                                     packet.speedX = 0f;
@@ -552,6 +554,15 @@ public class ChestShopListener implements Listener {
                 });
             }
         }
+    }
+
+    @EventHandler
+    public void on(final PlayerChunkRequestEvent event) {
+        final Player player = event.getPlayer();
+        final int x = event.getChunkX();
+        final int z = event.getChunkZ();
+
+
     }
 
     @EventHandler

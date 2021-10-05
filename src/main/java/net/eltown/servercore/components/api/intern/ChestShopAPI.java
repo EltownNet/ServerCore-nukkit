@@ -62,26 +62,30 @@ public class ChestShopAPI {
 
         this.instance.getServer().getScheduler().scheduleDelayedRepeatingTask(() -> {
             this.cachedChestShops.forEach((location, chestShop) -> {
+                final RemoveEntityPacket removeEntityPacket = new RemoveEntityPacket();
+                removeEntityPacket.eid = chestShop.getId();
+                this.instance.getServer().getOnlinePlayers().values().forEach(e -> e.dataPacket(removeEntityPacket));
+
                 final Item displayItem = chestShop.getItem().clone();
                 displayItem.setCount(1);
 
-                final AddItemEntityPacket packet = new AddItemEntityPacket();
-                packet.entityRuntimeId = chestShop.getId();
-                packet.entityUniqueId = chestShop.getId();
-                packet.item = displayItem;
-                packet.x = (float) chestShop.getChestLocation().x + 0.5f;
-                packet.y = (float) chestShop.getChestLocation().y + 1f;
-                packet.z = (float) chestShop.getChestLocation().z + 0.5f;
-                packet.speedX = 0f;
-                packet.speedY = 0f;
-                packet.speedZ = 0f;
-                packet.metadata = new EntityMetadata()
+                final AddItemEntityPacket addItemEntityPacket = new AddItemEntityPacket();
+                addItemEntityPacket.entityRuntimeId = chestShop.getId();
+                addItemEntityPacket.entityUniqueId = chestShop.getId();
+                addItemEntityPacket.item = displayItem;
+                addItemEntityPacket.x = (float) chestShop.getChestLocation().x + 0.5f;
+                addItemEntityPacket.y = (float) chestShop.getChestLocation().y + 1f;
+                addItemEntityPacket.z = (float) chestShop.getChestLocation().z + 0.5f;
+                addItemEntityPacket.speedX = 0f;
+                addItemEntityPacket.speedY = 0f;
+                addItemEntityPacket.speedZ = 0f;
+                addItemEntityPacket.metadata = new EntityMetadata()
                         .putLong(Entity.DATA_FLAGS, Entity.DATA_FLAG_IMMOBILE)
                         .putLong(Entity.DATA_LEAD_HOLDER_EID, -1)
                         .putLong(Entity.DATA_SCALE, 4L);
-                Server.broadcastPacket(this.instance.getServer().getOnlinePlayers().values(), packet);
+                this.instance.getServer().getOnlinePlayers().values().forEach(e -> e.dataPacket(addItemEntityPacket));
             });
-        }, 600, 6000, true);
+        }, 500, 5000);
     }
 
     public HashMap<Location, ChestShop> cachedChestShops = new HashMap<>();
@@ -172,7 +176,7 @@ public class ChestShopAPI {
                 .putLong(Entity.DATA_FLAGS, Entity.DATA_FLAG_IMMOBILE)
                 .putLong(Entity.DATA_LEAD_HOLDER_EID, -1)
                 .putLong(Entity.DATA_SCALE, 4L);
-        Server.broadcastPacket(this.instance.getServer().getOnlinePlayers().values(), addItemEntityPacket);
+        this.instance.getServer().getOnlinePlayers().values().forEach(e -> e.dataPacket(addItemEntityPacket));
     }
 
     public void removeChestShop(final Location signLocation, final String owner, final long id) {
@@ -184,7 +188,7 @@ public class ChestShopAPI {
 
         final RemoveEntityPacket packet = new RemoveEntityPacket();
         packet.eid = id;
-        Server.broadcastPacket(this.instance.getServer().getOnlinePlayers().values(), packet);
+        this.instance.getServer().getOnlinePlayers().values().forEach(e -> e.dataPacket(packet));
 
         this.cachedChestShops.remove(signLocation);
     }
