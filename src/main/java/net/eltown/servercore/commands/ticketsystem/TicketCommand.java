@@ -3,10 +3,7 @@ package net.eltown.servercore.commands.ticketsystem;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.PluginCommand;
-import cn.nukkit.form.element.ElementButton;
-import cn.nukkit.form.element.ElementDropdown;
-import cn.nukkit.form.element.ElementInput;
-import cn.nukkit.form.element.ElementToggle;
+import cn.nukkit.form.element.*;
 import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.data.ticketsystem.Ticket;
 import net.eltown.servercore.components.data.ticketsystem.TicketCalls;
@@ -39,9 +36,9 @@ public class TicketCommand extends PluginCommand<ServerCore> {
 
     private void openMain(final Player player) {
         final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8TicketSystem", "§fWähle eine Option, um fortzufahren.");
-        form.addButton(new ElementButton("§7» §fNeues Ticket eröffnen"), this::openCreateTicket);
-        form.addButton(new ElementButton("§7» §fMeine Tickets"), this::openMyTickets);
-        if (player.hasPermission("core.ticketsystem.manage")) form.addButton(new ElementButton("§7» §4Ticket Administration"), this::openTicketAdministration);
+        form.addButton(new ElementButton("§7» §fNeues Ticket eröffnen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/create-ticket.png")), this::openCreateTicket);
+        form.addButton(new ElementButton("§7» §fMeine Tickets", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/my-tickets.png")), this::openMyTickets);
+        if (player.hasPermission("core.ticketsystem.manage")) form.addButton(new ElementButton("§7» §4Ticket Administration", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/ticket-administration.png")), this::openTicketAdministration);
         form.build().send(player);
     }
 
@@ -122,7 +119,7 @@ public class TicketCommand extends PluginCommand<ServerCore> {
                             }
                         }
                     });
-                    form.addButton(new ElementButton("§7» §fZurück"), this::openMain);
+                    form.addButton(new ElementButton("§7» §fZurück", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/back.png")), this::openMain);
                     form.build().send(player);
                     break;
             }
@@ -153,14 +150,14 @@ public class TicketCommand extends PluginCommand<ServerCore> {
         final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Ticket " + ticket.getId(), content.toString());
 
         if (player.hasPermission("core.ticketsystem.manage") && !ticket.getCreator().equals(player.getName()) && ticket.getSupporter().equals("null") && ticket.getDateClosed().equals("null")) {
-            form.addButton(new ElementButton("§7» §aTicket als Supporter annehmen"), e -> {
+            form.addButton(new ElementButton("§7» §aTicket als Supporter annehmen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/ticket-administration-take-ticket.png")), e -> {
                 this.getPlugin().getTinyRabbit().send(Queue.TICKET_RECEIVE, TicketCalls.REQUEST_TAKE_TICKET.name(), player.getName(), ticket.getId());
                 player.sendMessage(Language.get("ticket.supporter.took", ticket.getId()));
             });
         }
 
         if (!ticket.getSupporter().equals("null") && !player.getName().equals(ticket.getCreator()) && ticket.getDateClosed().equals("null")) {
-            form.addButton(new ElementButton("§7» §fNeue Nachricht verfassen"), e -> {
+            form.addButton(new ElementButton("§7» §fNeue Nachricht verfassen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/new-message.png")), e -> {
                 final CustomForm form1 = new CustomForm.Builder("§7» §8Neue Nachricht verfassen")
                         .addElement(new ElementInput("Nachricht für Ticket: §7" + ticket.getId(), "Nachricht"))
                         .onSubmit((g, h) -> {
@@ -179,7 +176,7 @@ public class TicketCommand extends PluginCommand<ServerCore> {
             });
         } else {
             if (ticket.getCreator().equals(player.getName()) && ticket.getDateClosed().equals("null")) {
-                form.addButton(new ElementButton("§7» §fNeue Nachricht verfassen"), e -> {
+                form.addButton(new ElementButton("§7» §fNeue Nachricht verfassen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/new-message.png")), e -> {
                     final CustomForm form1 = new CustomForm.Builder("§7» §8Neue Nachricht verfassen")
                             .addElement(new ElementInput("Nachricht für Ticket: §7" + ticket.getId(), "Nachricht"))
                             .onSubmit((g, h) -> {
@@ -200,7 +197,7 @@ public class TicketCommand extends PluginCommand<ServerCore> {
         }
 
         if (player.hasPermission("core.ticketsystem.manage.extended") && !ticket.getCreator().equals(player.getName()) && ticket.getDateClosed().equals("null")) {
-            form.addButton(new ElementButton("§7» §fPriorität ändern"), e -> {
+            form.addButton(new ElementButton("§7» §fPriorität ändern", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/ticket-administration-change-priority.png")), e -> {
                 final CustomForm form1 = new CustomForm.Builder("§7» §8Ticket Priorität ändern")
                         .addElement(new ElementDropdown("Priorität für Ticket ändern: §7" + ticket.getId(), Arrays.asList("§4Dringend", "§cHoch", "§6Normal", "§eGering"), 2))
                         .onSubmit((g, h) -> {
@@ -214,7 +211,7 @@ public class TicketCommand extends PluginCommand<ServerCore> {
 
         if (ticket.getCreator().equals(player.getName()) || ticket.getSupporter().equals(player.getName())) {
             if (ticket.getDateClosed().equals("null")) {
-                form.addButton(new ElementButton("§7» §4Ticket schließen"), e -> {
+                form.addButton(new ElementButton("§7» §4Ticket schließen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/close-ticket.png")), e -> {
                     final ModalForm form1 = new ModalForm.Builder("§7» §8Ticket schließen", "Möchtest du das Ticket wirklich schließen? Nach einer Schließung kann dieses nicht erneut geöffnet werden.",
                             "§7» §aTicket schließen", "§7» §cAbbrechen")
                             .onYes(g -> {
@@ -231,9 +228,9 @@ public class TicketCommand extends PluginCommand<ServerCore> {
 
 
         if (ticket.getCreator().equals(player.getName())) {
-            form.addButton(new ElementButton("§7» §fZurück"), this::openMyTickets);
+            form.addButton(new ElementButton("§7» §fZurück", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/back.png")), this::openMyTickets);
         } else if (ticket.getSupporter().equals(player.getName())) {
-            form.addButton(new ElementButton("§7» §fZurück"), this::openTicketAdministration);
+            form.addButton(new ElementButton("§7» §fZurück", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/back.png")), this::openTicketAdministration);
         }
 
         form.build().send(player);
@@ -251,7 +248,7 @@ public class TicketCommand extends PluginCommand<ServerCore> {
                                 final List<String> mySupportTickets = Arrays.asList(delivery1.getData());
 
                                 final SimpleForm simpleForm = new SimpleForm.Builder("§7» §8Administration", "")
-                                        .addButton(new ElementButton("§7» §fOffene Tickets"), e -> {
+                                        .addButton(new ElementButton("§7» §fOffene Tickets", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/ticket-administration-open-tickets.png")), e -> {
                                             final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Offene Tickets", "Klicke auf eines der Tickets, um weitere Informationen zu erhalten.");
                                             try {
                                                 openedTickets.forEach(i -> {
@@ -262,13 +259,13 @@ public class TicketCommand extends PluginCommand<ServerCore> {
                                                         });
                                                     }
                                                 });
-                                                form.addButton(new ElementButton("§7» §fZurück"), this::openTicketAdministration);
+                                                form.addButton(new ElementButton("§7» §fZurück", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/back.png")), this::openTicketAdministration);
                                                 form.build().send(player);
                                             } catch (final Exception exception) {
                                                 player.sendMessage(Language.get("ticket.no.tickets"));
                                             }
                                         })
-                                        .addButton(new ElementButton("§7» §fTickets unter meiner\nBearbeitung"), e -> {
+                                        .addButton(new ElementButton("§7» §fTickets unter meiner\nBearbeitung", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/ticket-administration-my-tickets.png")), e -> {
                                             final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Tickets, die ich bearbeite", "Klicke auf eines der Tickets, um weitere Informationen zu erhalten.");
                                             try {
                                                 mySupportTickets.forEach(i -> {
@@ -279,13 +276,13 @@ public class TicketCommand extends PluginCommand<ServerCore> {
                                                         });
                                                     }
                                                 });
-                                                form.addButton(new ElementButton("§7» §fZurück"), this::openTicketAdministration);
+                                                form.addButton(new ElementButton("§7» §fZurück", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/back.png")), this::openTicketAdministration);
                                                 form.build().send(player);
                                             } catch (final Exception exception) {
                                                 player.sendMessage(Language.get("ticket.no.tickets"));
                                             }
                                         })
-                                        .addButton(new ElementButton("§7» §fZurück"), this::openMain)
+                                        .addButton(new ElementButton("§7» §fZurück", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/back.png")), this::openMain)
                                         .build();
                                 simpleForm.send(player);
                                 break;
