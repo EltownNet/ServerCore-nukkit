@@ -58,12 +58,12 @@ public class ChestShopListener implements Listener {
             if (chestShop.getShopType() == ChestShop.ShopType.BUY) {
                 event.setLine(0, "§c[§4ChestShop§c]");
                 event.setLine(1, "§cKaufe: §4" + chestShop.getShopCount() + "x");
-                event.setLine(2, "§c$ §4" + chestShop.getShopPrice());
+                event.setLine(2, "§c$ §4" + Economy.getAPI().getMoneyFormat().format(chestShop.getShopPrice()));
                 event.setLine(3, "§4" + player.getName());
             } else {
                 event.setLine(0, "§c[§4ChestShop§c]");
                 event.setLine(1, "§cVerkaufe: §4" + chestShop.getShopCount() + "x");
-                event.setLine(2, "§c$ §4" + chestShop.getShopPrice());
+                event.setLine(2, "§c$ §4" + Economy.getAPI().getMoneyFormat().format(chestShop.getShopPrice()));
                 event.setLine(3, "§4" + player.getName());
             }
         }
@@ -92,9 +92,9 @@ public class ChestShopListener implements Listener {
                             if (block instanceof BlockWallSign) {
                                 final BlockEntitySign blockEntitySign = (BlockEntitySign) block.getLocation().getLevelBlock().getLevel().getBlockEntity(block.getLocation());
                                 if (type == ChestShop.ShopType.BUY) {
-                                    blockEntitySign.setText("§c[§4ChestShop§c]", "§cKaufe: §4" + amount + "x", "§c$ §4" + price, "§4" + player.getName());
+                                    blockEntitySign.setText("§c[§4ChestShop§c]", "§cKaufe: §4" + amount + "x", "§c$ §4" + Economy.getAPI().getMoneyFormat().format(price), "§4" + player.getName());
                                 } else {
-                                    blockEntitySign.setText("§c[§4ChestShop§c]", "§cVerkaufe: §4" + amount + "x", "§c$ §4" + price, "§4" + player.getName());
+                                    blockEntitySign.setText("§c[§4ChestShop§c]", "§cVerkaufe: §4" + amount + "x", "§c$ §4" + Economy.getAPI().getMoneyFormat().format(price), "§4" + player.getName());
                                 }
                                 blockEntitySign.scheduleUpdate();
                             }
@@ -156,9 +156,9 @@ public class ChestShopListener implements Listener {
 
                                                     final BlockEntitySign blockEntitySign = (BlockEntitySign) chestShop.getSignLocation().getLevelBlock().getLevel().getBlockEntity(chestShop.getSignLocation());
                                                     if (chestShop.getShopType() == ChestShop.ShopType.BUY) {
-                                                        blockEntitySign.setText("§a[§2ChestShop§a]", "§0Kaufe: §2" + chestShop.getShopCount() + "x", "§f$ " + chestShop.getShopPrice(), "§2" + player.getName());
+                                                        blockEntitySign.setText("§a[§2ChestShop§a]", "§0Kaufe: §2" + chestShop.getShopCount() + "x", "§f$ " + Economy.getAPI().getMoneyFormat().format(chestShop.getShopPrice()), "§2" + player.getName());
                                                     } else {
-                                                        blockEntitySign.setText("§a[§2ChestShop§a]", "§0Verkaufe: §2" + chestShop.getShopCount() + "x", "§f$ " + chestShop.getShopPrice(), "§2" + player.getName());
+                                                        blockEntitySign.setText("§a[§2ChestShop§a]", "§0Verkaufe: §2" + chestShop.getShopCount() + "x", "§f$ " + Economy.getAPI().getMoneyFormat().format(chestShop.getShopPrice()), "§2" + player.getName());
                                                     }
                                                     blockEntitySign.scheduleUpdate();
 
@@ -209,7 +209,7 @@ public class ChestShopListener implements Listener {
                             final CustomForm form = new CustomForm.Builder("§7» §8ChestShop bearbeiten")
                                     .addElement(new ElementLabel("§7» §fChestShopID: §9" + chestShop.getId()))
                                     .addElement(new ElementInput("§7» §fStückzahl bearbeiten:", "10", "" + chestShop.getShopCount()))
-                                    .addElement(new ElementInput("§7» §fPreis bearbeiten:", "29.95", "" + chestShop.getShopPrice()))
+                                    .addElement(new ElementInput("§7» §fPreis bearbeiten:", "29.95", "" + Economy.getAPI().getMoneyFormat().format(chestShop.getShopPrice())))
                                     .addElement(new ElementToggle("§7» §fDas Item in deiner Hand zum neuen Kauf- oder Verkaufsitem setzen.", false))
                                     .onSubmit((g, h) -> {
                                         try {
@@ -299,7 +299,7 @@ public class ChestShopListener implements Listener {
                                                         player.getInventory().addItem(item);
 
                                                         if (!this.messageCooldown.hasCooldown(player.getName() + "/" + chestShop.getId()))
-                                                            player.sendMessage(Language.get("chestshop.interact.bought.bank", item.getName(), chestShop.getShopCount(), chestShop.getShopPrice(), bankAccount.getDisplayName()));
+                                                            player.sendMessage(Language.get("chestshop.interact.bought.bank", item.getName(), chestShop.getShopCount(), Economy.getAPI().getMoneyFormat().format(chestShop.getShopPrice()), bankAccount.getDisplayName()));
                                                         this.serverCore.playSound(player, Sound.RANDOM_ORB);
                                                         chestShop.getChestLocation().getLevel().addParticle(new DestroyBlockParticle(chestShop.getChestLocation(), Block.get(BlockID.EMERALD_BLOCK)));
                                                     } else {
@@ -350,7 +350,7 @@ public class ChestShopListener implements Listener {
                                                 chest.getRealInventory().removeItem(item);
                                                 player.getInventory().addItem(item);
 
-                                                if (!this.messageCooldown.hasCooldown(player.getName() + "/" + chestShop.getId())) player.sendMessage(Language.get("chestshop.interact.bought", item.getName(), chestShop.getShopCount(), chestShop.getShopPrice()));
+                                                if (!this.messageCooldown.hasCooldown(player.getName() + "/" + chestShop.getId())) player.sendMessage(Language.get("chestshop.interact.bought", item.getName(), chestShop.getShopCount(), Economy.getAPI().getMoneyFormat().format(chestShop.getShopPrice())));
                                                 this.serverCore.playSound(player, Sound.RANDOM_ORB);
                                                 chestShop.getChestLocation().getLevel().addParticle(new DestroyBlockParticle(chestShop.getChestLocation(), Block.get(BlockID.EMERALD_BLOCK)));
                                             } else {
@@ -417,7 +417,7 @@ public class ChestShopListener implements Listener {
                                                             player.getInventory().removeItem(item);
 
                                                             if (!this.messageCooldown.hasCooldown(player.getName() + "/" + chestShop.getId()))
-                                                                player.sendMessage(Language.get("chestshop.interact.sold.bank", item.getName(), chestShop.getShopCount(), chestShop.getShopPrice(), sellAccount.getDisplayName()));
+                                                                player.sendMessage(Language.get("chestshop.interact.sold.bank", item.getName(), chestShop.getShopCount(), Economy.getAPI().getMoneyFormat().format(chestShop.getShopPrice()), sellAccount.getDisplayName()));
                                                             this.serverCore.playSound(player, Sound.RANDOM_ORB);
                                                             chestShop.getChestLocation().getLevel().addParticle(new DestroyBlockParticle(chestShop.getChestLocation(), Block.get(BlockID.EMERALD_BLOCK)));
                                                         } else {
@@ -469,7 +469,7 @@ public class ChestShopListener implements Listener {
                                                 chest.getRealInventory().addItem(item);
                                                 player.getInventory().removeItem(item);
 
-                                                if (!this.messageCooldown.hasCooldown(player.getName() + "/" + chestShop.getId())) player.sendMessage(Language.get("chestshop.interact.sold", item.getName(), chestShop.getShopCount(), chestShop.getShopPrice()));
+                                                if (!this.messageCooldown.hasCooldown(player.getName() + "/" + chestShop.getId())) player.sendMessage(Language.get("chestshop.interact.sold", item.getName(), chestShop.getShopCount(), Economy.getAPI().getMoneyFormat().format(chestShop.getShopPrice())));
                                                 this.serverCore.playSound(player, Sound.RANDOM_ORB);
                                                 chestShop.getChestLocation().getLevel().addParticle(new DestroyBlockParticle(chestShop.getChestLocation(), Block.get(BlockID.EMERALD_BLOCK)));
                                             } else {
