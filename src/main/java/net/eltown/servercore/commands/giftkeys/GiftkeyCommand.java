@@ -39,6 +39,7 @@ public class GiftkeyCommand extends PluginCommand<ServerCore> {
                     final CustomForm.Builder form1 = new CustomForm.Builder("§7» §8Giftkey erstellen");
                     form1.addElement(new ElementLabel("Reward-Formate:\n§7item;id;damage;amount;name\n§7money;amount\nlevelxp;amount\nrank;name;timeunit;time"));
                     form1.addElement(new ElementSlider("Bitte gebe an, wie viele Spieler diesen Key einlösen können.", 1, 250, 1, 1));
+                    form1.addElement(new ElementInput("Gebe optional an, für welche Spieler dieser Gutschein vorbemerkt werden soll.", "EltownUser123;LolUser9283;ABCspieler"));
 
                     for (int x = 0; x < Integer.parseInt(o.getStepSliderResponse(0).getElementContent()); x++) {
                         form1.addElement(new ElementInput("", "Reward " + (x + 1)));
@@ -48,9 +49,18 @@ public class GiftkeyCommand extends PluginCommand<ServerCore> {
                             final int uses = (int) h.getSliderResponse(1);
                             final StringBuilder rewards = new StringBuilder();
                             for (int x = 0; x < Integer.parseInt(o.getStepSliderResponse(0).getElementContent()); x++) {
-                                rewards.append(h.getInputResponse(2 + x)).append(">:<");
+                                rewards.append(h.getInputResponse(3 + x)).append(">:<");
                             }
                             final String rewardString = rewards.substring(0, rewards.length() - 3);
+
+                            final String rawMarks = h.getInputResponse(2);
+                            final StringBuilder marks = new StringBuilder();
+                            for (final String s : rawMarks.split(";")) {
+                                marks.append(s).append(">:<");
+                            }
+                            String marksString = marks.substring(0, marks.length() - 3);
+
+                            if (marksString.isEmpty()) marksString = "none>:<none";
 
                             this.getPlugin().getTinyRabbit().sendAndReceive(delivery -> {
                                 switch (GiftkeyCalls.valueOf(delivery.getKey().toUpperCase())) {
@@ -58,7 +68,7 @@ public class GiftkeyCommand extends PluginCommand<ServerCore> {
                                         player.sendMessage(Language.get("giftkey.created", delivery.getData()[1]));
                                         break;
                                 }
-                            }, Queue.GIFTKEYS_CALLBACK,GiftkeyCalls.REQUEST_CREATE_KEY.name(), String.valueOf(uses), rewardString);
+                            }, Queue.GIFTKEYS_CALLBACK, GiftkeyCalls.REQUEST_CREATE_KEY.name(), String.valueOf(uses), rewardString, marksString);
                         } catch (final Exception e) {
                             player.sendMessage(Language.get("giftkey.invalid.input"));
                         }

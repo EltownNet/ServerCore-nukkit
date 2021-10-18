@@ -35,7 +35,7 @@ public class RedeemCommand extends PluginCommand<ServerCore> {
 
     private void openRedeemKey(final Player player) {
         final CustomForm form = new CustomForm.Builder("§7» §8Key einlösen")
-                .addElement(new ElementInput("Bitte gebe einen Code an, um diesen einzulösen.", "XXXXXX"))
+                .addElement(new ElementInput("Bitte gebe einen Code an, um diesen einzulösen.", "XXXXX-XXXXX"))
                 .onSubmit((g, h) -> {
                     final String key = h.getInputResponse(0);
 
