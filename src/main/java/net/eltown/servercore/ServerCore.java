@@ -25,6 +25,7 @@ import net.eltown.servercore.components.forms.FormListener;
 import net.eltown.servercore.components.language.Language;
 import net.eltown.servercore.components.roleplay.jobs.BankRoleplay;
 import net.eltown.servercore.components.roleplay.jobs.JobRoleplay;
+import net.eltown.servercore.components.roleplay.other.FeatureRoleplay;
 import net.eltown.servercore.components.roleplay.rathaus.RathausRoleplay;
 import net.eltown.servercore.components.roleplay.shops.ShopRoleplay;
 import net.eltown.servercore.components.tinyrabbit.TinyRabbit;
@@ -55,6 +56,7 @@ public class ServerCore extends PluginBase {
     private JobRoleplay jobRoleplay;
     private BankRoleplay bankRoleplay;
     private RathausRoleplay rathausRoleplay;
+    private FeatureRoleplay featureRoleplay;
 
     @Override
     public void onLoad() {
@@ -153,6 +155,7 @@ public class ServerCore extends PluginBase {
         this.jobRoleplay = new JobRoleplay(this);
         this.bankRoleplay = new BankRoleplay(this);
         if (this.getServerName().equals("server-1")) this.rathausRoleplay = new RathausRoleplay(this);
+        this.featureRoleplay = new FeatureRoleplay(this);
 
         new ServerCoreAPI(this);
     }

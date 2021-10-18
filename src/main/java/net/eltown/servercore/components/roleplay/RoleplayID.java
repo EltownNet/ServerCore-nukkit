@@ -16,6 +16,8 @@ public enum RoleplayID {
     TOWNHALL_RECEPTION("servercore:townhall_reception"),
     TOWNHALL_TAXES("servercore:cassandra"),
 
+    FEATURE_LOLA("servercore:lola"),
+
     ;
 
     private final String id;
