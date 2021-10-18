@@ -50,7 +50,7 @@ public class FurnaceListener implements Listener {
         final Player player = event.getPlayer();
         final Block block = event.getBlock();
 
-        if (event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && player.isSneaking()) {
+        if ((player.getGamemode() == 0 && event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && player.isSneaking()) || (player.getGamemode() == 1 && player.isSneaking() && event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)) {
             if (block.getId() == BlockID.FURNACE || block.getId() == BlockID.BURNING_FURNACE) {
                 final Furnace furnace = this.serverCore.getFurnaceAPI().cachedFurnaces.get(block.getLocation());
                 if (furnace != null) {
@@ -105,6 +105,7 @@ public class FurnaceListener implements Listener {
                     }
                 }
             }
+            event.setCancelled(true);
         }
     }
 
@@ -126,7 +127,7 @@ public class FurnaceListener implements Listener {
                     this.serverCore.getFurnaceAPI().placeFurnace(player.getName(), block.getLocation(), furnace);
                 }
             } else {
-                player.sendActionBar("§cBitte warte einen Moment.");
+                player.sendActionBar("§8[§7!§8] §cBitte warte einen Moment.");
                 event.setCancelled(true);
             }
         }
