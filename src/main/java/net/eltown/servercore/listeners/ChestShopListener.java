@@ -214,7 +214,7 @@ public class ChestShopListener implements Listener {
                                     .onSubmit((g, h) -> {
                                         try {
                                             final int givenCount = Integer.parseInt(h.getInputResponse(1));
-                                            final double givenPrice = Double.parseDouble(h.getInputResponse(2));
+                                            final double givenPrice = Double.parseDouble(h.getInputResponse(2).replace(",", "."));
                                             final boolean updateItem = h.getToggleResponse(3);
 
                                             if (givenCount <= 0) throw new Exception("Invalid chest shop amount.");
