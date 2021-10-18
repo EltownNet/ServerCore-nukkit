@@ -10,6 +10,7 @@ import cn.nukkit.level.Location;
 import cn.nukkit.network.protocol.AddItemEntityPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
 import cn.nukkit.utils.Config;
+import net.eltown.economy.Economy;
 import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.data.chestshop.ChestShop;
 import net.eltown.servercore.components.data.chestshop.ShopLicense;
@@ -125,9 +126,9 @@ public class ChestShopAPI {
 
         final BlockEntitySign blockEntitySign = (BlockEntitySign) chestShop.getSignLocation().getLevelBlock().getLevel().getBlockEntity(chestShop.getSignLocation());
         if (chestShop.getShopType() == ChestShop.ShopType.BUY) {
-            blockEntitySign.setText("§a[§2ChestShop§a]", "§0Kaufe: §2" + update + "x", "§f$ " + chestShop.getShopPrice(), "§2" + chestShop.getOwner());
+            blockEntitySign.setText("§a[§2ChestShop§a]", "§0Kaufe: §2" + update + "x", "§f$ " + Economy.getAPI().getMoneyFormat().format(chestShop.getShopPrice()), "§2" + chestShop.getOwner());
         } else {
-            blockEntitySign.setText("§a[§2ChestShop§a]", "§0Verkaufe: §2" + update + "x", "§f$ " + chestShop.getShopPrice(), "§2" + chestShop.getOwner());
+            blockEntitySign.setText("§a[§2ChestShop§a]", "§0Verkaufe: §2" + update + "x", "§f$ " + Economy.getAPI().getMoneyFormat().format(chestShop.getShopPrice()), "§2" + chestShop.getOwner());
         }
         blockEntitySign.scheduleUpdate();
     }
@@ -141,9 +142,9 @@ public class ChestShopAPI {
 
         final BlockEntitySign blockEntitySign = (BlockEntitySign) chestShop.getSignLocation().getLevelBlock().getLevel().getBlockEntity(chestShop.getSignLocation());
         if (chestShop.getShopType() == ChestShop.ShopType.BUY) {
-            blockEntitySign.setText("§a[§2ChestShop§a]", "§0Kaufe: §2" + chestShop.getShopCount() + "x", "§f$ " + price, "§2" + chestShop.getOwner());
+            blockEntitySign.setText("§a[§2ChestShop§a]", "§0Kaufe: §2" + chestShop.getShopCount() + "x", "§f$ " + Economy.getAPI().getMoneyFormat().format(price), "§2" + chestShop.getOwner());
         } else {
-            blockEntitySign.setText("§a[§2ChestShop§a]", "§0Verkaufe: §2" + chestShop.getShopCount() + "x", "§f$ " + price, "§2" + chestShop.getOwner());
+            blockEntitySign.setText("§a[§2ChestShop§a]", "§0Verkaufe: §2" + chestShop.getShopCount() + "x", "§f$ " + Economy.getAPI().getMoneyFormat().format(price), "§2" + chestShop.getOwner());
         }
         blockEntitySign.scheduleUpdate();
     }
