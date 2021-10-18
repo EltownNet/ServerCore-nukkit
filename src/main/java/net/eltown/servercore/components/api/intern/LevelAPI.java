@@ -30,6 +30,8 @@ public class LevelAPI {
         final DisplayEntry levelEntry = scoreboardDisplay.addLine("   §f" + this.instance.getLevelAPI().getLevel(player.getName()).getLevel() + " §8[" + this.instance.getLevelAPI().getLevelDisplay(player) + "§8]  ", 5);
         ScoreboardAPI.cachedDisplayEntries.put(player.getName() + "/level", levelEntry);
 
+        player.sendActionBar("§a+ §2" + experience + "XP");
+
         this.checkForLevelUp(player);
     }
 
