@@ -5,6 +5,7 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.PluginCommand;
 import cn.nukkit.form.element.ElementInput;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Sound;
 import net.eltown.economy.Economy;
 import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.data.giftkeys.Giftkey;
@@ -51,15 +52,16 @@ public class RedeemCommand extends PluginCommand<ServerCore> {
                                 break;
                             case CALLBACK_KEY:
                                 final String[] d = delivery.getData()[1].split(">>");
-                                final Giftkey giftkey = new Giftkey(d[0], Integer.parseInt(d[1]), Arrays.asList(d[2].split(">:<")), Arrays.asList(d[3].split(">:<")));
+                                final Giftkey giftkey = new Giftkey(d[0], Integer.parseInt(d[1]), Arrays.asList(d[2].split(">:<")), Arrays.asList(d[3].split(">:<")), Arrays.asList(d[4].split(">:<")));
 
                                 if (giftkey.getUses().contains(player.getName())) {
                                     player.sendMessage(Language.get("giftkey.already.redeemed"));
                                     return;
                                 }
 
-                                final ModalForm modalForm = new ModalForm.Builder("§7» §8Key einlösen", "Möchtest du diesen Key einlösen und die Belohnungen, die dahinter stecken erhalten? Jeder Key kann nur einmal von einer Person eingelöst werden.", "§7» §aEinlösen", "§7» §cAbbrechen")
+                                final ModalForm modalForm = new ModalForm.Builder("§7» §8Key einlösen", "Möchtest du diesen Key einlösen und die Belohnungen, die dahinter stecken erhalten? Jeder Key kann nur einmal von dir eingelöst werden.", "§7» §aEinlösen", "§7» §cAbbrechen")
                                         .onYes(e -> {
+                                            this.getPlugin().playSound(player, Sound.RANDOM_LEVELUP);
                                             this.getPlugin().getTinyRabbit().sendAndReceive(delivery1 -> {
                                                 switch (GiftkeyCalls.valueOf(delivery1.getKey().toUpperCase())) {
                                                     case CALLBACK_ALREADY_REDEEMED:
