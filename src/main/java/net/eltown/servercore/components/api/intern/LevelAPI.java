@@ -1,10 +1,13 @@
 package net.eltown.servercore.components.api.intern;
 
 import cn.nukkit.Player;
+import cn.nukkit.item.Item;
 import lombok.RequiredArgsConstructor;
 import net.eltown.servercore.ServerCore;
+import net.eltown.servercore.components.data.giftkeys.GiftkeyCalls;
 import net.eltown.servercore.components.data.level.Level;
 import net.eltown.servercore.components.data.level.LevelCalls;
+import net.eltown.servercore.components.data.level.LevelReward;
 import net.eltown.servercore.components.language.Language;
 import net.eltown.servercore.components.scoreboard.network.DisplayEntry;
 import net.eltown.servercore.components.scoreboard.network.ScoreboardDisplay;
@@ -51,8 +54,25 @@ public class LevelAPI {
         this.instance.getTinyRabbit().sendAndReceive(delivery -> {
             switch (LevelCalls.valueOf(delivery.getKey().toUpperCase())) {
                 case CALLBACK_LEVEL_REWARD:
-                    final String levelReward = delivery.getData()[1];
-                    player.sendMessage(Language.get("level.reward", levelReward));
+                    final LevelReward levelReward = new LevelReward(Integer.parseInt(delivery.getData()[1]), delivery.getData()[2], delivery.getData()[3]);
+                    final String[] rewardData = levelReward.getData().split("#");
+
+                    player.sendMessage(Language.get("level.reward", levelReward.getDescription()));
+
+                    if (rewardData[0].startsWith("gutschein")) {
+                        this.instance.getTinyRabbit().sendAndReceive(delivery1 -> {
+                            switch (GiftkeyCalls.valueOf(delivery1.getKey().toUpperCase())) {
+                                case CALLBACK_NULL:
+                                    player.sendMessage(Language.get("level.reward.giftkey", delivery1.getData()[1]));
+                                    break;
+                            }
+                        }, Queue.GIFTKEYS_CALLBACK, GiftkeyCalls.REQUEST_CREATE_KEY.name(), String.valueOf(1), rewardData[1], player.getName());
+                    } else if (rewardData[0].startsWith("item")) {
+                        final Item item = SyncAPI.ItemAPI.pureItemFromStringWithCount(rewardData[1]);
+                        player.getInventory().addItem(item);
+                    } else if (rewardData[0].startsWith("permission")) {
+                        this.instance.getGroupAPI().addPlayerPermission(player.getName(), rewardData[1]);
+                    }
                     break;
             }
         }, Queue.LEVEL_CALLBACK, LevelCalls.REQUEST_LEVEL_REWARD.name(), String.valueOf(level.getLevel()));

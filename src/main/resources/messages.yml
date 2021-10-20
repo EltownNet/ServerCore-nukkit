@@ -136,6 +136,7 @@ group.player.not.exists: "&cDer Spieler &7[0] &ckonnte nicht gefunden werden."
 
 level.levelup: "§2§lLEVEL UP! §r§7Du bist nun Level [0]!"
 level.reward: "§0Belohnung: &7[0]"
+level.reward.giftkey: "§7Deinen Gutscheincode findest du bei §fLola §7am CityBuild-Spawn. §8[§7[0]§8]"
 level.settings.updated: "Die Einstellungen wurden geändert."
 level.settings.created: "Die Einstellungen wurden gespeichert."
 level.settings.invalid.input: "Fehlerhafte Eingaben. Bitte überprüfe diese."
