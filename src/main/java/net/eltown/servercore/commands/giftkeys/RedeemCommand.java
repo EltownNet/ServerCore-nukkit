@@ -8,6 +8,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
 import net.eltown.economy.Economy;
 import net.eltown.servercore.ServerCore;
+import net.eltown.servercore.components.api.intern.SyncAPI;
 import net.eltown.servercore.components.data.giftkeys.Giftkey;
 import net.eltown.servercore.components.data.giftkeys.GiftkeyCalls;
 import net.eltown.servercore.components.data.groupmanager.GroupCalls;
@@ -75,10 +76,7 @@ public class RedeemCommand extends PluginCommand<ServerCore> {
                                                             final String[] raw = reward.split(";");
                                                             switch (raw[0]) {
                                                                 case "item":
-                                                                    final Item item = Item.get(Integer.parseInt(raw[1]));
-                                                                    item.setDamage(Integer.parseInt(raw[2]));
-                                                                    item.setCount(Integer.parseInt(raw[3]));
-                                                                    item.setCustomName(raw[4]);
+                                                                    final Item item = SyncAPI.ItemAPI.pureItemFromStringWithCount(raw[1]);
                                                                     player.getInventory().addItem(item);
                                                                     player.sendMessage(Language.get("giftkey.reward.item"));
                                                                     break;

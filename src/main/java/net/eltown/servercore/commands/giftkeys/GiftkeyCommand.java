@@ -7,7 +7,9 @@ import cn.nukkit.form.element.ElementInput;
 import cn.nukkit.form.element.ElementLabel;
 import cn.nukkit.form.element.ElementSlider;
 import cn.nukkit.form.element.ElementStepSlider;
+import cn.nukkit.item.Item;
 import net.eltown.servercore.ServerCore;
+import net.eltown.servercore.components.api.intern.SyncAPI;
 import net.eltown.servercore.components.data.giftkeys.GiftkeyCalls;
 import net.eltown.servercore.components.forms.custom.CustomForm;
 import net.eltown.servercore.components.language.Language;
@@ -37,7 +39,7 @@ public class GiftkeyCommand extends PluginCommand<ServerCore> {
                 .addElement(new ElementStepSlider("Bitte wähle aus, wie viel Inhalt ein Key haben soll.", Arrays.asList("1", "2", "3", "4", "5"), 1))
                 .onSubmit((i, o) -> {
                     final CustomForm.Builder form1 = new CustomForm.Builder("§7» §8Giftkey erstellen");
-                    form1.addElement(new ElementLabel("Reward-Formate:\n§7item;id;damage;amount;name\n§7money;amount\nlevelxp;amount\nrank;name;timeunit;time"));
+                    form1.addElement(new ElementLabel("Reward-Formate:\n§7item;<slot>\n§7money;amount\nlevelxp;amount\nrank;name;timeunit;time"));
                     form1.addElement(new ElementSlider("Bitte gebe an, wie viele Spieler diesen Key einlösen können.", 1, 250, 1, 1));
                     form1.addElement(new ElementInput("Gebe optional an, für welche Spieler dieser Gutschein vorbemerkt werden soll.", "EltownUser123;LolUser9283;ABCspieler"));
 
@@ -49,7 +51,13 @@ public class GiftkeyCommand extends PluginCommand<ServerCore> {
                             final int uses = (int) h.getSliderResponse(1);
                             final StringBuilder rewards = new StringBuilder();
                             for (int x = 0; x < Integer.parseInt(o.getStepSliderResponse(0).getElementContent()); x++) {
-                                rewards.append(h.getInputResponse(3 + x)).append(">:<");
+                                if (h.getInputResponse(3 + x).startsWith("item")) {
+                                    final String[] d = h.getInputResponse(3 + x).split(";");
+                                    final Item item = player.getInventory().slots.get(Integer.parseInt(d[1]));
+                                    if (item.getId() != 0) {
+                                        rewards.append("item;").append(SyncAPI.ItemAPI.pureItemToStringWithCount(item)).append(">:<");
+                                    }
+                                } else rewards.append(h.getInputResponse(3 + x)).append(">:<");
                             }
                             final String rewardString = rewards.substring(0, rewards.length() - 3);
 
