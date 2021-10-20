@@ -35,7 +35,7 @@ public class TicketCommand extends PluginCommand<ServerCore> {
     }
 
     private void openMain(final Player player) {
-        final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8TicketSystem", "§fWähle eine Option, um fortzufahren.");
+        final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8TicketSystem", "§fWenn du dich über einen Spieler beschweren möchtest, einen Fehler melden möchtest, Fragen oder Vorschläge hast, dann erstelle einfach ein Ticket.");
         form.addButton(new ElementButton("§7» §fNeues Ticket eröffnen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/create-ticket.png")), this::openCreateTicket);
         form.addButton(new ElementButton("§7» §fMeine Tickets", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/my-tickets.png")), this::openMyTickets);
         if (player.hasPermission("core.ticketsystem.manage")) form.addButton(new ElementButton("§7» §4Ticket Administration", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/ticket-administration.png")), this::openTicketAdministration);
@@ -109,11 +109,11 @@ public class TicketCommand extends PluginCommand<ServerCore> {
                         if (!e.equals(delivery.getKey().toLowerCase())) {
                             final String[] d = e.split(">>");
                             if (d[8].equals("null")) {
-                                form.addButton(new ElementButton(d[3] + "\n§f" + d[2] + " §8| " + d[5]), g -> {
+                                form.addButton(new ElementButton(d[3] + "\n§f" + d[2] + " §8| " + d[5], new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/opened-ticket.png")), g -> {
                                     this.openTicket(g, d);
                                 });
                             } else {
-                                form.addButton(new ElementButton(d[3] + "\n§f" + d[2] + " §8| §cGeschlossen"), g -> {
+                                form.addButton(new ElementButton(d[3] + "\n§f" + d[2] + " §8| §cGeschlossen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/closed-ticket.png")), g -> {
                                     this.openTicket(g, d);
                                 });
                             }
@@ -254,7 +254,7 @@ public class TicketCommand extends PluginCommand<ServerCore> {
                                                 openedTickets.forEach(i -> {
                                                     if (!i.equals(delivery.getKey().toLowerCase())) {
                                                         final String[] d = i.split(">>");
-                                                        form.addButton(new ElementButton(d[0] + "\n§f" + d[2] + " §8| " + d[5]), g -> {
+                                                        form.addButton(new ElementButton(d[0] + "\n§f" + d[2] + " §8| " + d[5], new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/opened-ticket.png")), g -> {
                                                             this.openTicket(g, d);
                                                         });
                                                     }
@@ -271,7 +271,7 @@ public class TicketCommand extends PluginCommand<ServerCore> {
                                                 mySupportTickets.forEach(i -> {
                                                     if (!i.equals(delivery1.getKey().toLowerCase())) {
                                                         final String[] d = i.split(">>");
-                                                        form.addButton(new ElementButton(d[0] + "\n§f" + d[2] + " §8| " + d[5]), g -> {
+                                                        form.addButton(new ElementButton(d[0] + "\n§f" + d[2] + " §8| " + d[5], new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/ticket/opened-ticket.png")), g -> {
                                                             this.openTicket(g, d);
                                                         });
                                                     }
