@@ -355,7 +355,7 @@ public class FeatureRoleplay {
                                                         case "item":
                                                             final Item item = SyncAPI.ItemAPI.pureItemFromStringWithCount(raw[1]);
                                                             player.getInventory().addItem(item);
-                                                            player.sendMessage(Language.get("giftkey.reward.item"));
+                                                            player.sendMessage(Language.get("giftkey.reward.item", item.getName(), item.getCount()));
                                                             break;
                                                         case "money":
                                                             final double amount = Double.parseDouble(raw[1]);
