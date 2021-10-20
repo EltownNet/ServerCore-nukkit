@@ -18,5 +18,7 @@ public class Queue {
     public static final String GROUPS = "api.groupmanager.main";
     public static final String SYNC_RECEIVE = "api.sync.receive";
     public static final String SYNC_CALLBACK = "api.sync.callback";
+    public static final String REWARDS_RECEIVE = "api.rewards.receive";
+    public static final String REWARDS_CALLBACK = "api.rewards.callback";
 
 }

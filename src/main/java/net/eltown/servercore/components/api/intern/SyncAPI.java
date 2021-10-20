@@ -142,6 +142,11 @@ public class SyncAPI {
                     (item.hasCompoundTag() ? bytesToBase64(item.getCompoundTag()) : "not");
         }
 
+        public static String pureItemToStringWithCount(Item item) {
+            return item.getId() + ":" + item.getDamage() + ":" + item.getCount() + ":" +
+                    (item.hasCompoundTag() ? bytesToBase64(item.getCompoundTag()) : "not");
+        }
+
         private static String bytesToBase64(byte[] src) {
             if (src == null || src.length <= 0) return "not";
             return Base64.getEncoder().encodeToString(src);
@@ -169,6 +174,17 @@ public class SyncAPI {
                     Integer.parseInt(info[1])
             );
             if (!info[2].equals("not")) item.setCompoundTag(base64ToBytes(info[2]));
+            return item;
+        }
+
+        public static Item pureItemFromStringWithCount(String itemString) throws NumberFormatException {
+            String[] info = itemString.split(":");
+            Item item = Item.get(
+                    Integer.parseInt(info[0]),
+                    Integer.parseInt(info[1]),
+                    Integer.parseInt(info[2])
+            );
+            if (!info[3].equals("not")) item.setCompoundTag(base64ToBytes(info[3]));
             return item;
         }
 

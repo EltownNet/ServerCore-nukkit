@@ -14,6 +14,7 @@ import net.eltown.servercore.commands.giftkeys.GiftkeyCommand;
 import net.eltown.servercore.commands.giftkeys.RedeemCommand;
 import net.eltown.servercore.commands.holograms.HologramCommand;
 import net.eltown.servercore.commands.level.LevelCommand;
+import net.eltown.servercore.commands.rewards.DailyRewardCommand;
 import net.eltown.servercore.commands.teleportation.*;
 import net.eltown.servercore.commands.ticketsystem.TicketCommand;
 import net.eltown.servercore.components.api.ServerCoreAPI;
@@ -131,6 +132,8 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new HologramCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new LevelCommand(this));
+
+        this.getServer().getCommandMap().register("servercore", new DailyRewardCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new NpcCommand(this));
 

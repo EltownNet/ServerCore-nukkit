@@ -22,26 +22,26 @@ public class LevelListener implements Listener {
     private final ServerCore instance;
 
     private final List<ExperienceBlock> blocks = new ArrayList<>(Arrays.asList(
-            new ExperienceBlock(BlockID.LOG, 0, 0.5),
-            new ExperienceBlock(BlockID.LOG, 1, 0.5),
-            new ExperienceBlock(BlockID.LOG, 2, 0.5),
-            new ExperienceBlock(BlockID.LOG, 3, 0.5),
-            new ExperienceBlock(BlockID.LOG2, 0, 0.5),
-            new ExperienceBlock(BlockID.LOG2, 1, 0.5),
-            new ExperienceBlock(BlockID.COAL_ORE, 0, 0.5),
-            new ExperienceBlock(BlockID.IRON_ORE, 0, 0.8),
-            new ExperienceBlock(BlockID.LAPIS_ORE, 0, 1.1),
-            new ExperienceBlock(BlockID.GLOWING_REDSTONE_ORE, 0, 0.9),
-            new ExperienceBlock(BlockID.REDSTONE_ORE, 0, 0.9),
-            new ExperienceBlock(BlockID.DIAMOND_ORE, 0, 2.5),
-            new ExperienceBlock(BlockID.GOLD_ORE, 0, 1.2),
-            new ExperienceBlock(BlockID.EMERALD_ORE, 0, 3),
-            new ExperienceBlock(BlockID.ANCIENT_DERBRIS, 0, 5),
-            new ExperienceBlock(BlockID.GLOWSTONE, 0, 0.5),
-            new ExperienceBlock(BlockID.WARPED_STEM, 0, 0.8),
-            new ExperienceBlock(BlockID.CRIMSON_STEM, 0, 0.8),
-            new ExperienceBlock(BlockID.NETHER_GOLD_ORE, 0, 0.6),
-            new ExperienceBlock(BlockID.QUARTZ_ORE, 0, 0.6)
+            new ExperienceBlock(BlockID.LOG, 0, 1.5),
+            new ExperienceBlock(BlockID.LOG, 1, 1.5),
+            new ExperienceBlock(BlockID.LOG, 2, 1.5),
+            new ExperienceBlock(BlockID.LOG, 3, 1.5),
+            new ExperienceBlock(BlockID.LOG2, 0, 1.5),
+            new ExperienceBlock(BlockID.LOG2, 1, 1.5),
+            new ExperienceBlock(BlockID.COAL_ORE, 0, 1.7),
+            new ExperienceBlock(BlockID.IRON_ORE, 0, 3.5),
+            new ExperienceBlock(BlockID.LAPIS_ORE, 0, 3.2),
+            new ExperienceBlock(BlockID.GLOWING_REDSTONE_ORE, 0, 3.2),
+            new ExperienceBlock(BlockID.REDSTONE_ORE, 0, 3.2),
+            new ExperienceBlock(BlockID.DIAMOND_ORE, 0, 8.5),
+            new ExperienceBlock(BlockID.GOLD_ORE, 0, 4.3),
+            new ExperienceBlock(BlockID.EMERALD_ORE, 0, 6.5),
+            new ExperienceBlock(BlockID.ANCIENT_DERBRIS, 0, 20),
+            new ExperienceBlock(BlockID.GLOWSTONE, 0, 1.9),
+            new ExperienceBlock(BlockID.WARPED_STEM, 0, 1.5),
+            new ExperienceBlock(BlockID.CRIMSON_STEM, 0, 1.5),
+            new ExperienceBlock(BlockID.NETHER_GOLD_ORE, 0, 3.2),
+            new ExperienceBlock(BlockID.QUARTZ_ORE, 0, 3.5)
     ));
 
     @EventHandler
