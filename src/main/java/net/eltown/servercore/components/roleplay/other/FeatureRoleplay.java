@@ -7,6 +7,7 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.player.PlayerInteractEntityEvent;
 import cn.nukkit.form.element.ElementButton;
+import cn.nukkit.form.element.ElementButtonImageData;
 import cn.nukkit.form.element.ElementInput;
 import cn.nukkit.form.element.ElementLabel;
 import cn.nukkit.item.Item;
@@ -92,7 +93,7 @@ public class FeatureRoleplay {
                     calendarReward.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
 
                     if ((calendarReward.get(Calendar.DAY_OF_YEAR) == calendarNow.get(Calendar.DAY_OF_YEAR)) && calendarReward.get(Calendar.YEAR) == calendarNow.get(Calendar.YEAR)) {
-                        form.addButton(new ElementButton("§8» §1Tägliche Belohnung"), g -> {
+                        form.addButton(new ElementButton("§8» §1Tägliche Belohnung", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/rewards/daily-reward.png")), g -> {
                             final int day = rewardPlayer.getDay() + 1;
                             if (!(day > 14)) {
                                 this.serverCore.getTinyRabbit().sendAndReceive(delivery1 -> {
@@ -109,7 +110,7 @@ public class FeatureRoleplay {
                                             });
 
                                             final SimpleForm nextDays = new SimpleForm.Builder("§7» §8Lola's Rewards", rewards.toString())
-                                                    .addButton(new ElementButton("§8» §cZurück"), this::openReward)
+                                                    .addButton(new ElementButton("§8» §cZurück", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/back.png")), this::openReward)
                                                     .build();
                                             nextDays.send(player);
                                             break;
@@ -117,7 +118,7 @@ public class FeatureRoleplay {
                                 }, Queue.REWARDS_CALLBACK, RewardCalls.REQUEST_REWARDS.name(), String.valueOf(day));
                             } else {
                                 final SimpleForm nextDays = new SimpleForm.Builder("§7» §8Lola's Rewards", "§8» §fLola §8| §7Da du deinen §914-Tage-Streak §7vollendet hast, startest du morgen wieder von vorn. Viel Glück bei den nächsten 14 Tagen!\n\n")
-                                        .addButton(new ElementButton("§8» §cZurück"), this::openReward)
+                                        .addButton(new ElementButton("§8» §cZurück", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/back.png")), this::openReward)
                                         .build();
                                 nextDays.send(player);
                             }
@@ -139,12 +140,22 @@ public class FeatureRoleplay {
                                         rewards.append("§8» §r").append(p.getDescription()).append("\n").append("§1Chance: §f").append(p.getChance()).append(" Prozent").append("\n\n");
                                     });
 
-                                    form.addButton(new ElementButton("§8» §1Tägliche Belohnung §8[§c§l!§r§8]"), e -> {
+                                    form.addButton(new ElementButton("§8» §1Tägliche Belohnung §8[§c§l!§r§8]", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/rewards/daily-reward.png")), e -> {
                                         final ModalForm claimForm = new ModalForm.Builder("§7» §8Tägliche Belohnung abholen", rewards.toString(),
                                                 "§8» §aAbholen", "§8» §cZurück")
                                                 .onYes(g -> {
-                                                    this.serverCore.getTinyRabbit().send(Queue.REWARDS_RECEIVE, RewardCalls.REQUEST_ADD_STREAK.name(), player.getName());
-                                                    this.givePlayerDailyReward(player, rewardsToday);
+                                                    this.serverCore.getTinyRabbit().sendAndReceive(delivery2 -> {
+                                                        if (delivery2.getKey().equalsIgnoreCase("REQUEST_PLAYTIME")) {
+                                                            final long day = Long.parseLong(delivery2.getData()[2]);
+                                                            final long minutes = day / 1000 / 60;
+                                                            if (minutes >= 30) {
+                                                                this.serverCore.getTinyRabbit().send(Queue.REWARDS_RECEIVE, RewardCalls.REQUEST_ADD_STREAK.name(), player.getName());
+                                                                this.givePlayerDailyReward(player, rewardsToday);
+                                                            } else {
+                                                                player.sendMessage(Language.get("reward.onlinetime", 30 - (int) minutes));
+                                                            }
+                                                        }
+                                                    }, Queue.PROXY_PLAYTIME, "REQUEST_PLAYTIME", player.getName());
                                                 })
                                                 .onNo(this::openReward)
                                                 .build();
@@ -168,12 +179,22 @@ public class FeatureRoleplay {
                                         rewards.append("§8» §r").append(p.getDescription()).append("\n").append("§1Chance: §f").append(p.getChance()).append(" Prozent").append("\n\n");
                                     });
 
-                                    form.addButton(new ElementButton("§8» §1Tägliche Belohnung §8[§c§l!§r§8]"), e -> {
+                                    form.addButton(new ElementButton("§8» §1Tägliche Belohnung §8[§c§l!§r§8]", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/rewards/daily-reward.png")), e -> {
                                         final ModalForm claimForm = new ModalForm.Builder("§7» §8Tägliche Belohnung abholen", rewards.toString(),
                                                 "§8» §aAbholen", "§8» §cZurück")
                                                 .onYes(g -> {
-                                                    this.serverCore.getTinyRabbit().send(Queue.REWARDS_RECEIVE, RewardCalls.REQUEST_ADD_STREAK.name(), player.getName());
-                                                    this.givePlayerDailyReward(player, rewardsToday);
+                                                    this.serverCore.getTinyRabbit().sendAndReceive(delivery2 -> {
+                                                        if (delivery2.getKey().equalsIgnoreCase("REQUEST_PLAYTIME")) {
+                                                            final long day = Long.parseLong(delivery2.getData()[2]);
+                                                            final long minutes = day / 1000 / 60;
+                                                            if (minutes >= 30) {
+                                                                this.serverCore.getTinyRabbit().send(Queue.REWARDS_RECEIVE, RewardCalls.REQUEST_ADD_STREAK.name(), player.getName());
+                                                                this.givePlayerDailyReward(player, rewardsToday);
+                                                            } else {
+                                                                player.sendMessage(Language.get("reward.onlinetime", 30 - (int) minutes));
+                                                            }
+                                                        }
+                                                    }, Queue.PROXY_PLAYTIME, "REQUEST_PLAYTIME", player.getName());
                                                 })
                                                 .onNo(this::openReward)
                                                 .build();
@@ -197,12 +218,22 @@ public class FeatureRoleplay {
                                         rewards.append("§8» §r").append(p.getDescription()).append("\n").append("§1Chance: §f").append(p.getChance()).append(" Prozent").append("\n\n");
                                     });
 
-                                    form.addButton(new ElementButton("§8» §1Tägliche Belohnung §8[§c§l!§r§8]"), e -> {
+                                    form.addButton(new ElementButton("§8» §1Tägliche Belohnung §8[§c§l!§r§8]", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/rewards/daily-reward.png")), e -> {
                                         final ModalForm claimForm = new ModalForm.Builder("§7» §8Tägliche Belohnung abholen", rewards.toString(),
                                                 "§8» §aAbholen", "§8» §cZurück")
                                                 .onYes(g -> {
-                                                    this.serverCore.getTinyRabbit().send(Queue.REWARDS_RECEIVE, RewardCalls.REQUEST_ADD_STREAK.name(), player.getName());
-                                                    this.givePlayerDailyReward(player, rewardsToday);
+                                                    this.serverCore.getTinyRabbit().sendAndReceive(delivery2 -> {
+                                                        if (delivery2.getKey().equalsIgnoreCase("REQUEST_PLAYTIME")) {
+                                                            final long day = Long.parseLong(delivery2.getData()[2]);
+                                                            final long minutes = day / 1000 / 60;
+                                                            if (minutes >= 30) {
+                                                                this.serverCore.getTinyRabbit().send(Queue.REWARDS_RECEIVE, RewardCalls.REQUEST_ADD_STREAK.name(), player.getName());
+                                                                this.givePlayerDailyReward(player, rewardsToday);
+                                                            } else {
+                                                                player.sendMessage(Language.get("reward.onlinetime", 30 - (int) minutes));
+                                                            }
+                                                        }
+                                                    }, Queue.PROXY_PLAYTIME, "REQUEST_PLAYTIME", player.getName());
                                                 })
                                                 .onNo(this::openReward)
                                                 .build();
@@ -220,13 +251,13 @@ public class FeatureRoleplay {
         this.serverCore.getTinyRabbit().sendAndReceive(delivery -> {
             switch (GiftkeyCalls.valueOf(delivery.getKey().toUpperCase())) {
                 case CALLBACK_NULL:
-                    form.addButton(new ElementButton("§8» §1Gutscheine §8[§c0§8]"), e -> {
+                    form.addButton(new ElementButton("§8» §1Gutscheine §8[§c0§8]", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/rewards/giftkeys.png")), e -> {
                         player.sendMessage("§8» §fLola §8| §7Oh, anscheinend hast du keine ausstehenden Gutscheine. Spieler können dir Gutscheine schenken oder du kannst welche bei Events erhalten.");
                     });
                     break;
                 case CALLBACK_USER_CODES:
                     final List<String> codes = Arrays.asList(delivery.getData()[1].split(">:<"));
-                    form.addButton(new ElementButton("§8» §1Gutscheine §8[§c" + codes.size() + "§8]"), e -> {
+                    form.addButton(new ElementButton("§8» §1Gutscheine §8[§c" + codes.size() + "§8]", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/rewards/giftkeys.png")), e -> {
                         this.openPlayerGiftKeys(player, codes);
                     });
                     break;
@@ -284,7 +315,7 @@ public class FeatureRoleplay {
                     break;
             }
         }, Queue.GIFTKEYS_CALLBACK, GiftkeyCalls.REQUEST_GET_KEY.name(), code));
-
+        giftkeyForm.addButton(new ElementButton("§8» §cZurück", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/back.png")), e -> this.openReward(player));
         giftkeyForm.build().send(player);
     }
 
@@ -404,7 +435,7 @@ public class FeatureRoleplay {
                     .build();
             form.send(player);
         });
-        if (codes != null) giftkeyInfoForm.addButton(new ElementButton("§8» §cZurück"), e -> this.openPlayerGiftKeys(player, codes));
+        if (codes != null) giftkeyInfoForm.addButton(new ElementButton("§8» §cZurück", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/back.png")), e -> this.openPlayerGiftKeys(player, codes));
         giftkeyInfoForm.build().send(player);
     }
 

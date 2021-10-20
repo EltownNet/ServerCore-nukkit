@@ -15,6 +15,7 @@ public class Queue {
     public static final String LEVEL_RECEIVE = "api.level.receive";
     public static final String LEVEL_CALLBACK = "api.level.callback";
     public static final String GUARDIAN = "core.proxy.guardian.main";
+    public static final String PROXY_PLAYTIME = "core.proxy.playtime.main";
     public static final String GROUPS = "api.groupmanager.main";
     public static final String SYNC_RECEIVE = "api.sync.receive";
     public static final String SYNC_CALLBACK = "api.sync.callback";
