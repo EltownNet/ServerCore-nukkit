@@ -1,9 +1,11 @@
 package net.eltown.servercore.components.api.intern;
 
+import cn.nukkit.permission.PermissionAttachment;
 import lombok.RequiredArgsConstructor;
 import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.data.groupmanager.GroupCalls;
 import net.eltown.servercore.components.tinyrabbit.Queue;
+import net.eltown.servercore.listeners.EventListener;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,13 +30,15 @@ public class GroupAPI {
 
     public void addPlayerPermission(final String player, final String key) {
         this.instance.getTinyRabbit().sendAndReceive((delivery1 -> {
-
+            final PermissionAttachment attachment = EventListener.attachments.get(player);
+            attachment.setPermission(key, true);
         }), Queue.GROUPS, GroupCalls.REQUEST_ADD_PLAYER_PERMISSION.name(), player, key);
     }
 
     public void removePlayerPermission(final String player, final String key) {
         this.instance.getTinyRabbit().sendAndReceive((delivery1 -> {
-
+            final PermissionAttachment attachment = EventListener.attachments.get(player);
+            attachment.setPermission(key, false);
         }), Queue.GROUPS, GroupCalls.REQUEST_REMOVE_PLAYER_PERMISSION.name(), player, key);
     }
 

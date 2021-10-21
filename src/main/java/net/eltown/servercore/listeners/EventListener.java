@@ -30,7 +30,7 @@ public class EventListener implements Listener {
 
     private final ServerCore instance;
 
-    private final HashMap<String, PermissionAttachment> attachments = new HashMap<>();
+    public static final HashMap<String, PermissionAttachment> attachments = new HashMap<>();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void on(final PlayerLocallyInitializedEvent event) {
@@ -81,9 +81,9 @@ public class EventListener implements Listener {
                             final String[] permissions = delivery.getData()[4].split("#");
                             final String[] aPermissions = delivery.getData()[6].split("#");
 
-                            this.attachments.remove(player.getName());
-                            this.attachments.put(player.getName(), player.addAttachment(this.instance));
-                            final PermissionAttachment attachment = this.attachments.get(player.getName());
+                            attachments.remove(player.getName());
+                            attachments.put(player.getName(), player.addAttachment(this.instance));
+                            final PermissionAttachment attachment = attachments.get(player.getName());
 
                             for (final String p : permissions) {
                                 attachment.setPermission(p, true);
