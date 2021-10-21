@@ -31,6 +31,11 @@ public class ChestshopCommand extends PluginCommand<ServerCore> {
             final Player player = (Player) sender;
             final Item item = player.getInventory().getItemInHand();
 
+            if (this.getPlugin().getLevelAPI().getLevel(player.getName()).getLevel() < 2) {
+                player.sendMessage(Language.get("chestshop.create.invalid.level"));
+                return true;
+            }
+
             if (item.getId() == 0) {
                 player.sendMessage(Language.get("chestshop.create.invalid.item"));
                 return true;

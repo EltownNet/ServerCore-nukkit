@@ -322,7 +322,7 @@ public class FeatureRoleplay {
     public void openGiftKeyInformation(final Player player, final Giftkey nGiftkey, final List<String> codes) {
         final SimpleForm.Builder giftkeyInfoForm = new SimpleForm.Builder("§7» §8Gutschein Information", "§8» §1Gutschein: §f" + nGiftkey.getKey() + "\n" +
                 "§8» §1Eingelöst: §f" + (nGiftkey.getUses().size() - 1) + "/" + nGiftkey.getMaxUses() + "\n§8» §1Belohnungen: §f" + nGiftkey.getRewards().size() + "\n\n");
-        giftkeyInfoForm.addButton(new ElementButton("§8» §aJetzt einlösen"), g -> {
+        giftkeyInfoForm.addButton(new ElementButton("§8» §aJetzt einlösen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/rewards/giftkey-redeem.png")), g -> {
             this.serverCore.getTinyRabbit().sendAndReceive(delivery -> {
                 switch (GiftkeyCalls.valueOf(delivery.getKey().toUpperCase())) {
                     case CALLBACK_NULL:
@@ -403,7 +403,7 @@ public class FeatureRoleplay {
                 }
             }, Queue.GIFTKEYS_CALLBACK, GiftkeyCalls.REQUEST_GET_KEY.name(), nGiftkey.getKey());
         });
-        giftkeyInfoForm.addButton(new ElementButton("§8» §9Gutschein verschenken"), e -> {
+        giftkeyInfoForm.addButton(new ElementButton("§8» §9Gutschein verschenken", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/rewards/giftkey-donate.png")), e -> {
             final CustomForm form = new CustomForm.Builder("§7» §8Gutschein verschenken")
                     .addElement(new ElementLabel("§8» §fLola §8| §7Du kannst Gutscheine einfach an einen anderen Spieler verschenken. Dieser wird dann in seinem Gutschein-Menü angezeigt und bei dir verschwindet der Gutschein. " +
                             "Du oder andere Spieler können den Code aber trotzdem noch einlösen."))

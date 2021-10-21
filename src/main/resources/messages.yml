@@ -1,5 +1,6 @@
 prefix: "&8» &fCore &8| &7"
 
+spawn.teleported: "Du wurdest zum Spawn teleportiert."
 home.input.invalid: "Deine Eingaben sind ungültig. Bitte überprüfe diese."
 home.no.homes: "&7Du hast keine Homes gesetzt."
 home.teleported: "&7Du wurdest zu deinem Home teleportiert. &8[&a[0]&8]"
@@ -173,6 +174,7 @@ roleplay.job.cook.item.not.enough.money: "&7Du hast zu wenig Geld, um dieses Ger
 
 chestshop.created: "Du hast erfolgreich einen ChestShop erstellt."
 chestshop.create.invalid.item: "Dieses Item kann nicht in einem ChestShop verkauft werden."
+chestshop.create.invalid.level: "Du benötigst ein höheres Level, um ChestShops nutzen zu können."
 chestshop.create.info: "Bitte platziere dieses Schild an eine &aKiste&7, um einen ChestShop zu erstellen."
 chestshop.create.invalid.input: "Fehlerhafte Angaben: Bitte überprüfe diese."
 chestshop.create.destroy: "Bitte stelle diesen ChestShop erst fertig, bevor du diesen wieder entfernen kannst."

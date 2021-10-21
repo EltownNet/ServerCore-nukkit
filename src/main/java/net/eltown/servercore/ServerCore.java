@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import net.eltown.servercore.commands.administrative.*;
 import net.eltown.servercore.commands.defaults.PluginsCommand;
+import net.eltown.servercore.commands.defaults.SpawnCommand;
 import net.eltown.servercore.commands.feature.ChestshopCommand;
 import net.eltown.servercore.commands.giftkeys.GiftkeyCommand;
 import net.eltown.servercore.commands.giftkeys.RedeemCommand;
@@ -119,10 +120,12 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new ClearCommand(this));
         this.getServer().getCommandMap().register("servercore", new GamemodeCommand(this));
         this.getServer().getCommandMap().register("servercore", new RepairCommand(this));
+        this.getServer().getCommandMap().register("servercore", new SetspawnCommand(this));
         this.getServer().getCommandMap().register("servercore", new FlyCommand(this));
         this.getServer().getCommandMap().register("servercore", new ModelCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new PluginsCommand(this));
+        this.getServer().getCommandMap().register("servercore", new SpawnCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new ChestshopCommand(this));
 
