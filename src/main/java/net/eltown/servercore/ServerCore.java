@@ -99,6 +99,8 @@ public class ServerCore extends PluginBase {
         this.getServer().getPluginManager().registerEvents(new ModelListener(this), this);
         this.getServer().getPluginManager().registerEvents(new ChestShopListener(this), this);
         this.getServer().getPluginManager().registerEvents(new FurnaceListener(this), this);
+        if (this.serverName.equals("server-2") || this.serverName.equals("server-3"))
+            this.getServer().getPluginManager().registerEvents(new SpawnProtectionListener(), this);
 
         this.getServer().getCommandMap().register("servercore", new EnchantCommand(this));
         this.getServer().getCommandMap().register("servercore", new SpeedCommand(this));
@@ -147,6 +149,8 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new TpacceptCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new TicketCommand(this));
+        if (this.serverName.equals("server-2") || this.serverName.equals("server-3"))
+            this.getServer().getCommandMap().register("servercore", new SetSpawnProtectionCommand(this));
 
         this.hologramAPI = new HologramAPI(this);
         this.levelAPI = new LevelAPI(this);
