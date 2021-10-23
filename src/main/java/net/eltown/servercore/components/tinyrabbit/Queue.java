@@ -21,5 +21,7 @@ public class Queue {
     public static final String SYNC_CALLBACK = "api.sync.callback";
     public static final String REWARDS_RECEIVE = "api.rewards.receive";
     public static final String REWARDS_CALLBACK = "api.rewards.callback";
+    public static final String QUESTS_RECEIVE = "api.quests.receive";
+    public static final String QUESTS_CALLBACK = "api.quests.callback";
 
 }

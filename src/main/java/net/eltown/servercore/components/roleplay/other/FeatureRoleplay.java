@@ -19,6 +19,8 @@ import net.eltown.servercore.components.api.intern.SyncAPI;
 import net.eltown.servercore.components.data.giftkeys.Giftkey;
 import net.eltown.servercore.components.data.giftkeys.GiftkeyCalls;
 import net.eltown.servercore.components.data.groupmanager.GroupCalls;
+import net.eltown.servercore.components.data.quests.Quest;
+import net.eltown.servercore.components.data.quests.QuestPlayer;
 import net.eltown.servercore.components.data.rewards.DailyReward;
 import net.eltown.servercore.components.data.rewards.RewardCalls;
 import net.eltown.servercore.components.data.rewards.RewardPlayer;
@@ -35,6 +37,7 @@ import net.eltown.servercore.components.tinyrabbit.Queue;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -436,6 +439,96 @@ public class FeatureRoleplay {
         giftkeyInfoForm.build().send(player);
     }
 
+    private final List<ChainMessage> ainaraTalks = new ArrayList<>(Arrays.asList(
+            new ChainMessage("Hi, §a%p§7! Naa, wie geht es dir?", 3),
+            new ChainMessage("Danke, dass du mir bei meinen Aufgaben hilfst.", 2),
+            new ChainMessage("Für meine Aufgaben erhälst du auch eine anständige Bezahlung!", 3),
+            new ChainMessage("Schön, dich zu sehen!", 2)
+    ));
+
+    public void openAinaraByNpc(final Player player) {
+        this.smallTalk(this.ainaraTalks, RoleplayID.FEATURE_LOLA.id(), player, message -> {
+            if (message == null) {
+                this.openAinara(player);
+            } else {
+                new ChainExecution.Builder()
+                        .append(0, () -> {
+                            player.sendMessage("§8» §fAinara §8| §7" + message.getMessage().replace("%p", player.getName()));
+                        })
+                        .append(message.getSeconds(), () -> {
+                            this.openAinara(player);
+                            this.openQueue.remove(player.getName());
+                        })
+                        .build().start();
+            }
+        });
+    }
+
+    public void openAinara(final Player player) {
+        this.serverCore.getQuestAPI().getRandomQuestByLink("Ainara", player.getName(), quest -> {
+            this.openQuestNPC(player, quest, "§8» §fAinara", " §8| §7Erledige meine Aufgabe, um eine oder mehrere tolle Belohnungen zu erhalten! Ich wäre dir sehr dankbar, denn ich habe immer etwas zu tun.");
+        });
+    }
+
+    public void openQuestNPC(final Player player, final Quest quest, final String npcPrefix, final String npcText) {
+        boolean b = true;
+        if (!this.serverCore.getQuestAPI().playerIsInQuest(player.getName(), quest.getNameId())) {
+            this.serverCore.getQuestAPI().setQuestOnPlayer(player.getName(), quest.getNameId());
+            b = false;
+        }
+        final QuestPlayer.QuestPlayerData questPlayerData = this.serverCore.getQuestAPI().getQuestPlayerDataFromQuestId(player.getName(), quest.getNameId());
+        final int questNeedCount = questPlayerData.getRequired() - questPlayerData.getCurrent();
+
+        if (b && questNeedCount > 0) {
+            if (quest.getData().split("#")[0].equals("bring")) {
+                final Item item = SyncAPI.ItemAPI.pureItemFromStringWithCount(quest.getData().split("#")[1]);
+                final int count = this.countInventoryItems(player, item);
+
+                if (count > 0) {
+                    int giveCount = Math.min(count, questNeedCount);
+                    final ModalForm itemForm = new ModalForm.Builder(npcPrefix, npcPrefix + " §8| §7Oh! Damit du deine Aufgabe erledigst, musst du mir noch §9" + questNeedCount + "x " + item.getName()
+                            + " §7geben. Möchtest du mir §9" + giveCount + " Stück §7schon geben, um in der Aufgabe weiterzumachen?",
+                            "§8» §aItems abgeben", "§8» §cAbbrechen")
+                            .onYes(e -> {
+                                item.setCount(giveCount);
+                                player.getInventory().removeItem(item);
+                                player.sendMessage(Language.get("quest.progress.gave.item", item.getName(), giveCount));
+                                this.serverCore.playSound(player, Sound.NOTE_PLING);
+                                this.serverCore.getQuestAPI().addQuestProgress(player, quest.getNameId(), giveCount);
+                            })
+                            .onNo(e -> {
+                                final String builder = "§8» §1Quest: §7" + quest.getDisplayName() + "§r\n" + "§8» §1Aufgabe: §7" + quest.getDescription() +
+                                        "§r\n" + "§8» §1Fortschritt: §f" + questPlayerData.getCurrent() + "/" + quest.getRequired() + "\n\n" +
+                                        "§8» §1Quest läuft ab in: §7" + this.serverCore.getRemainingTimeFuture(questPlayerData.getExpire()) + "\n\n";
+
+                                final SimpleForm.Builder form = new SimpleForm.Builder(npcPrefix, npcPrefix + npcText + "\n\n" + builder);
+                                form.build().send(player);
+                            })
+                            .build();
+                    itemForm.send(player);
+                    return;
+                }
+            }
+        }
+
+        final String builder = "§8» §1Quest: §7" + quest.getDisplayName() + "§r\n" + "§8» §1Aufgabe: §7" + quest.getDescription() +
+                "§r\n" + "§8» §1Fortschritt: §f" + questPlayerData.getCurrent() + "/" + quest.getRequired() + "\n\n" +
+                "§8» §1Quest läuft ab in: §7" + this.serverCore.getRemainingTimeFuture(questPlayerData.getExpire()) + "\n\n";
+
+        final SimpleForm.Builder form = new SimpleForm.Builder(npcPrefix, npcPrefix + npcText + "\n\n" + builder);
+        form.build().send(player);
+    }
+
+    private int countInventoryItems(final Player player, final Item item) {
+        final AtomicInteger i = new AtomicInteger(0);
+        player.getInventory().getContents().forEach((g, h) -> {
+            if (h.getId() == item.getId() && h.getDamage() == item.getDamage()) {
+                i.addAndGet(h.getCount());
+            }
+        });
+        return i.get();
+    }
+
     final Cooldown playerTalks = new Cooldown(TimeUnit.MINUTES.toMillis(15));
     final Cooldown talkCooldown = new Cooldown(TimeUnit.SECONDS.toMillis(20));
 
@@ -465,6 +558,7 @@ public class FeatureRoleplay {
                 final String npcId = event.getEntity().namedTag.getString("npc_id");
                 if (!this.featureRoleplay.openQueue.contains(player.getName())) {
                     if (npcId.equals(RoleplayID.FEATURE_LOLA.id())) this.featureRoleplay.openRewardByNpc(player);
+                    else if (npcId.equals(RoleplayID.FEATURE_AINARA.id())) this.featureRoleplay.openAinaraByNpc(player);
                 }
             }
         }
@@ -479,6 +573,7 @@ public class FeatureRoleplay {
                     final String npcId = entity.namedTag.getString("npc_id");
                     if (!this.featureRoleplay.openQueue.contains(player.getName())) {
                         if (npcId.equals(RoleplayID.FEATURE_LOLA.id())) this.featureRoleplay.openRewardByNpc(player);
+                        else if (npcId.equals(RoleplayID.FEATURE_AINARA.id())) this.featureRoleplay.openAinaraByNpc(player);
                     }
                 }
             }

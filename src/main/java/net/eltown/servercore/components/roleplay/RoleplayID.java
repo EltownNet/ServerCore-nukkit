@@ -17,6 +17,7 @@ public enum RoleplayID {
     TOWNHALL_TAXES("servercore:cassandra"),
 
     FEATURE_LOLA("servercore:lola"),
+    FEATURE_AINARA("servercore:ainara"),
 
     ;
 

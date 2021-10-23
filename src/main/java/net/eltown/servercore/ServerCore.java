@@ -15,6 +15,7 @@ import net.eltown.servercore.commands.giftkeys.GiftkeyCommand;
 import net.eltown.servercore.commands.giftkeys.RedeemCommand;
 import net.eltown.servercore.commands.holograms.HologramCommand;
 import net.eltown.servercore.commands.level.LevelCommand;
+import net.eltown.servercore.commands.quests.QuestCommand;
 import net.eltown.servercore.commands.rewards.DailyRewardCommand;
 import net.eltown.servercore.commands.teleportation.*;
 import net.eltown.servercore.commands.ticketsystem.TicketCommand;
@@ -51,6 +52,7 @@ public class ServerCore extends PluginBase {
     private GroupAPI groupAPI;
     private ChestShopAPI chestShopAPI;
     private FurnaceAPI furnaceAPI;
+    private QuestAPI questAPI;
 
     private CustomEnchantment customEnchantment;
 
@@ -99,6 +101,7 @@ public class ServerCore extends PluginBase {
         this.getServer().getPluginManager().registerEvents(new ModelListener(this), this);
         this.getServer().getPluginManager().registerEvents(new ChestShopListener(this), this);
         this.getServer().getPluginManager().registerEvents(new FurnaceListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new QuestListener(this), this);
 
         this.getServer().getCommandMap().register("servercore", new EnchantCommand(this));
         this.getServer().getCommandMap().register("servercore", new SpeedCommand(this));
@@ -136,6 +139,8 @@ public class ServerCore extends PluginBase {
 
         this.getServer().getCommandMap().register("servercore", new LevelCommand(this));
 
+        this.getServer().getCommandMap().register("servercore", new QuestCommand(this));
+
         this.getServer().getCommandMap().register("servercore", new DailyRewardCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new NpcCommand(this));
@@ -154,6 +159,7 @@ public class ServerCore extends PluginBase {
         this.groupAPI = new GroupAPI(this);
         this.chestShopAPI = new ChestShopAPI(this);
         this.furnaceAPI = new FurnaceAPI(this);
+        this.questAPI = new QuestAPI(this);
 
         this.customEnchantment = new CustomEnchantment(this);
 
