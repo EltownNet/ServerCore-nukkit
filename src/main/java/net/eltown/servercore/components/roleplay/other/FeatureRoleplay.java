@@ -33,6 +33,7 @@ import net.eltown.servercore.components.roleplay.ChainMessage;
 import net.eltown.servercore.components.roleplay.Cooldown;
 import net.eltown.servercore.components.roleplay.RoleplayID;
 import net.eltown.servercore.components.tinyrabbit.Queue;
+import net.eltown.servercore.listeners.EventListener;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -556,9 +557,11 @@ public class FeatureRoleplay {
             final Player player = event.getPlayer();
             if (event.getEntity().namedTag.exist("npc_id")) {
                 final String npcId = event.getEntity().namedTag.getString("npc_id");
-                if (!this.featureRoleplay.openQueue.contains(player.getName())) {
-                    if (npcId.equals(RoleplayID.FEATURE_LOLA.id())) this.featureRoleplay.openRewardByNpc(player);
-                    else if (npcId.equals(RoleplayID.FEATURE_AINARA.id())) this.featureRoleplay.openAinaraByNpc(player);
+                if (!EventListener.inIntroduction.contains(player.getName())) {
+                    if (!this.featureRoleplay.openQueue.contains(player.getName())) {
+                        if (npcId.equals(RoleplayID.FEATURE_LOLA.id())) this.featureRoleplay.openRewardByNpc(player);
+                        else if (npcId.equals(RoleplayID.FEATURE_AINARA.id())) this.featureRoleplay.openAinaraByNpc(player);
+                    }
                 }
             }
         }
@@ -571,9 +574,11 @@ public class FeatureRoleplay {
 
                 if (entity.namedTag.exist("npc_id")) {
                     final String npcId = entity.namedTag.getString("npc_id");
-                    if (!this.featureRoleplay.openQueue.contains(player.getName())) {
-                        if (npcId.equals(RoleplayID.FEATURE_LOLA.id())) this.featureRoleplay.openRewardByNpc(player);
-                        else if (npcId.equals(RoleplayID.FEATURE_AINARA.id())) this.featureRoleplay.openAinaraByNpc(player);
+                    if (!EventListener.inIntroduction.contains(player.getName())) {
+                        if (!this.featureRoleplay.openQueue.contains(player.getName())) {
+                            if (npcId.equals(RoleplayID.FEATURE_LOLA.id())) this.featureRoleplay.openRewardByNpc(player);
+                            else if (npcId.equals(RoleplayID.FEATURE_AINARA.id())) this.featureRoleplay.openAinaraByNpc(player);
+                        }
                     }
                 }
             }

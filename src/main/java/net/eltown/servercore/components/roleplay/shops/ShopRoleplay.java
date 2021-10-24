@@ -24,6 +24,7 @@ import net.eltown.servercore.components.roleplay.ChainExecution;
 import net.eltown.servercore.components.roleplay.ChainMessage;
 import net.eltown.servercore.components.roleplay.Cooldown;
 import net.eltown.servercore.components.roleplay.RoleplayID;
+import net.eltown.servercore.listeners.EventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -488,8 +489,8 @@ public class ShopRoleplay {
     ));
 
     public void openBlacksmithShop(final Player player) {
-        final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Schmied Ben", "§7Wähle eine der aufgelisteten Kategorien aus, um fortzufahren.");
-        form.addButton(new ElementButton("§7» §fBen's spezielle\n§fVerzauberungen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/enchanted_book.png")), e -> {
+        final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Schmied Ben", "§8» §fBen §8| §7Aktuell biete ich nur Reparaturen an. Aber bald auch spezielle Verzauberungen, die es nur bei mir gibt!");
+        /*form.addButton(new ElementButton("§7» §fBen's spezielle\n§fVerzauberungen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/enchanted_book.png")), e -> {
             final SimpleForm.Builder enchantmentForm = new SimpleForm.Builder("§7» §8Meine Verzauberungen", "§7Wähle eines der aufgelisteten Verzauberungen aus, um fortzufahren.");
             this.blacksmithEnchantments.forEach(c -> {
                 final EnchantmentID enchantmentID = this.serverCore.getCustomEnchantment().enchantmentId.get((int) c[0]);
@@ -567,7 +568,7 @@ public class ShopRoleplay {
         });
         form.addButton(new ElementButton("§7» §fMein Angebot", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/paper.png")), e -> {
 
-        });
+        });*/
         form.addButton(new ElementButton("§7» §fReparatur Service", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/anvil.png")), e -> {
             final Item item = e.getInventory().getItemInHand();
             if (item.isArmor() || item.isTool() || item.isShears()) {
@@ -680,14 +681,16 @@ public class ShopRoleplay {
             final Player player = event.getPlayer();
             if (event.getEntity().namedTag.exist("npc_id")) {
                 final String npcId = event.getEntity().namedTag.getString("npc_id");
-                if (!this.shopRoleplay.openQueue.contains(player.getName())) {
-                    if (npcId.equals(RoleplayID.SHOP_MINER.id())) this.shopRoleplay.openMiningShopByNpc(player);
-                    else if (npcId.equals(RoleplayID.SHOP_NETHER.id())) this.shopRoleplay.openNetherShopByNpc(player);
-                    else if (npcId.equals(RoleplayID.SHOP_EXPLORER.id())) this.shopRoleplay.openExploringShopByNpc(player);
-                    else if (npcId.equals(RoleplayID.SHOP_LUMBERJACK.id())) this.shopRoleplay.openWoodShopByNpc(player);
-                    else if (npcId.equals(RoleplayID.SHOP_MONSTERUNTER.id())) this.shopRoleplay.openMobdropShopByNpc(player);
-                    else if (npcId.equals(RoleplayID.SHOP_BLACKSMITH.id())) this.shopRoleplay.openBlacksmithShopByNpc(player);
-                    else if (npcId.equals(RoleplayID.FARMER.id())) this.shopRoleplay.openFarmerShopByNpc(player);
+                if (!EventListener.inIntroduction.contains(player.getName())) {
+                    if (!this.shopRoleplay.openQueue.contains(player.getName())) {
+                        if (npcId.equals(RoleplayID.SHOP_MINER.id())) this.shopRoleplay.openMiningShopByNpc(player);
+                        else if (npcId.equals(RoleplayID.SHOP_NETHER.id())) this.shopRoleplay.openNetherShopByNpc(player);
+                        else if (npcId.equals(RoleplayID.SHOP_EXPLORER.id())) this.shopRoleplay.openExploringShopByNpc(player);
+                        else if (npcId.equals(RoleplayID.SHOP_LUMBERJACK.id())) this.shopRoleplay.openWoodShopByNpc(player);
+                        else if (npcId.equals(RoleplayID.SHOP_MONSTERUNTER.id())) this.shopRoleplay.openMobdropShopByNpc(player);
+                        else if (npcId.equals(RoleplayID.SHOP_BLACKSMITH.id())) this.shopRoleplay.openBlacksmithShopByNpc(player);
+                        else if (npcId.equals(RoleplayID.FARMER.id())) this.shopRoleplay.openFarmerShopByNpc(player);
+                    }
                 }
             }
         }
@@ -697,17 +700,18 @@ public class ShopRoleplay {
             final Entity entity = event.getEntity();
             if (event.getDamager() instanceof Player) {
                 final Player player = (Player) event.getDamager();
-
                 if (entity.namedTag.exist("npc_id")) {
                     final String npcId = entity.namedTag.getString("npc_id");
-                    if (!this.shopRoleplay.openQueue.contains(player.getName())) {
-                        if (npcId.equals(RoleplayID.SHOP_MINER.id())) this.shopRoleplay.openMiningShopByNpc(player);
-                        else if (npcId.equals(RoleplayID.SHOP_NETHER.id())) this.shopRoleplay.openNetherShopByNpc(player);
-                        else if (npcId.equals(RoleplayID.SHOP_EXPLORER.id())) this.shopRoleplay.openExploringShopByNpc(player);
-                        else if (npcId.equals(RoleplayID.SHOP_LUMBERJACK.id())) this.shopRoleplay.openWoodShopByNpc(player);
-                        else if (npcId.equals(RoleplayID.SHOP_MONSTERUNTER.id())) this.shopRoleplay.openMobdropShopByNpc(player);
-                        else if (npcId.equals(RoleplayID.SHOP_BLACKSMITH.id())) this.shopRoleplay.openBlacksmithShopByNpc(player);
-                        else if (npcId.equals(RoleplayID.FARMER.id())) this.shopRoleplay.openFarmerShopByNpc(player);
+                    if (!EventListener.inIntroduction.contains(player.getName())) {
+                        if (!this.shopRoleplay.openQueue.contains(player.getName())) {
+                            if (npcId.equals(RoleplayID.SHOP_MINER.id())) this.shopRoleplay.openMiningShopByNpc(player);
+                            else if (npcId.equals(RoleplayID.SHOP_NETHER.id())) this.shopRoleplay.openNetherShopByNpc(player);
+                            else if (npcId.equals(RoleplayID.SHOP_EXPLORER.id())) this.shopRoleplay.openExploringShopByNpc(player);
+                            else if (npcId.equals(RoleplayID.SHOP_LUMBERJACK.id())) this.shopRoleplay.openWoodShopByNpc(player);
+                            else if (npcId.equals(RoleplayID.SHOP_MONSTERUNTER.id())) this.shopRoleplay.openMobdropShopByNpc(player);
+                            else if (npcId.equals(RoleplayID.SHOP_BLACKSMITH.id())) this.shopRoleplay.openBlacksmithShopByNpc(player);
+                            else if (npcId.equals(RoleplayID.FARMER.id())) this.shopRoleplay.openFarmerShopByNpc(player);
+                        }
                     }
                 }
             }

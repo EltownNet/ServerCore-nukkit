@@ -11,6 +11,7 @@ import net.eltown.servercore.commands.administrative.*;
 import net.eltown.servercore.commands.defaults.PluginsCommand;
 import net.eltown.servercore.commands.defaults.SpawnCommand;
 import net.eltown.servercore.commands.feature.ChestshopCommand;
+import net.eltown.servercore.commands.feature.StartCommand;
 import net.eltown.servercore.commands.giftkeys.GiftkeyCommand;
 import net.eltown.servercore.commands.giftkeys.RedeemCommand;
 import net.eltown.servercore.commands.holograms.HologramCommand;
@@ -27,6 +28,7 @@ import net.eltown.servercore.components.entities.ModelEntity;
 import net.eltown.servercore.components.forms.FormListener;
 import net.eltown.servercore.components.language.Language;
 import net.eltown.servercore.components.roleplay.jobs.BankRoleplay;
+import net.eltown.servercore.components.roleplay.jobs.CryptoRoleplay;
 import net.eltown.servercore.components.roleplay.jobs.JobRoleplay;
 import net.eltown.servercore.components.roleplay.other.FeatureRoleplay;
 import net.eltown.servercore.components.roleplay.rathaus.RathausRoleplay;
@@ -61,6 +63,7 @@ public class ServerCore extends PluginBase {
     private BankRoleplay bankRoleplay;
     private RathausRoleplay rathausRoleplay;
     private FeatureRoleplay featureRoleplay;
+    private CryptoRoleplay cryptoRoleplay;
 
     @Override
     public void onLoad() {
@@ -133,6 +136,7 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new SpawnCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new ChestshopCommand(this));
+        this.getServer().getCommandMap().register("servercore", new StartCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new GiftkeyCommand(this));
         this.getServer().getCommandMap().register("servercore", new RedeemCommand(this));
@@ -172,6 +176,7 @@ public class ServerCore extends PluginBase {
         this.bankRoleplay = new BankRoleplay(this);
         if (this.getServerName().equals("server-1")) this.rathausRoleplay = new RathausRoleplay(this);
         this.featureRoleplay = new FeatureRoleplay(this);
+        this.cryptoRoleplay = new CryptoRoleplay(this);
 
         new ServerCoreAPI(this);
     }

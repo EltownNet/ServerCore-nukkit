@@ -34,10 +34,36 @@ public class QuestListener implements Listener {
     public void on(final BlockBreakEvent event) {
         final Player player = event.getPlayer();
         final Block block = event.getBlock();
-        if (!block.getLocation().getLevel().getName().equals("plots")) {
+        if (!SpawnProtectionListener.isInRadius(event.getPlayer())) {
+            if (!block.getLocation().getLevel().getName().equals("plots")) {
+                if (!this.placed.contains(block)) {
+                    final QuestPlayer questPlayer = this.instance.getQuestAPI().cachedQuestPlayer.get(player.getName());
+                    questPlayer.getQuestPlayerData().forEach(playerData -> this.instance.getQuestAPI().getQuest(playerData.getQuestNameId(), quest -> {
+                        if (quest.getData().startsWith("collect")) {
+                            final Item item = SyncAPI.ItemAPI.pureItemFromStringWithCount(quest.getData().split("#")[1]);
+                            if (block.getId() == item.getId() && block.getDamage() == item.getDamage()) {
+                                this.instance.getQuestAPI().addQuestProgress(player, quest.getNameId(), 1);
+                            }
+                        }
+                    }));
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void on(final BlockPlaceEvent event) {
+        final Player player = event.getPlayer();
+        final Block block = event.getBlock();
+
+        if (!SpawnProtectionListener.isInRadius(event.getPlayer())) {
+            if (!block.getLocation().getLevel().getName().equals("plots")) {
+                this.placed.add(event.getBlock());
+            }
+
             final QuestPlayer questPlayer = this.instance.getQuestAPI().cachedQuestPlayer.get(player.getName());
             questPlayer.getQuestPlayerData().forEach(playerData -> this.instance.getQuestAPI().getQuest(playerData.getQuestNameId(), quest -> {
-                if (quest.getData().startsWith("collect")) {
+                if (quest.getData().startsWith("place")) {
                     final Item item = SyncAPI.ItemAPI.pureItemFromStringWithCount(quest.getData().split("#")[1]);
                     if (block.getId() == item.getId() && block.getDamage() == item.getDamage()) {
                         this.instance.getQuestAPI().addQuestProgress(player, quest.getNameId(), 1);
@@ -48,29 +74,10 @@ public class QuestListener implements Listener {
     }
 
     @EventHandler
-    public void on(final BlockPlaceEvent event) {
-        final Player player = event.getPlayer();
-        final Block block = event.getBlock();
-
-        if (!block.getLocation().getLevel().getName().equals("plots")) {
-            this.placed.add(event.getBlock());
-        }
-
-        final QuestPlayer questPlayer = this.instance.getQuestAPI().cachedQuestPlayer.get(player.getName());
-        questPlayer.getQuestPlayerData().forEach(playerData -> this.instance.getQuestAPI().getQuest(playerData.getQuestNameId(), quest -> {
-            if (quest.getData().startsWith("place")) {
-                final Item item = SyncAPI.ItemAPI.pureItemFromStringWithCount(quest.getData().split("#")[1]);
-                if (block.getId() == item.getId() && block.getDamage() == item.getDamage()) {
-                    this.instance.getQuestAPI().addQuestProgress(player, quest.getNameId(), 1);
-                }
-            }
-        }));
-    }
-
-    @EventHandler
     public void on(final PlayerMoveEvent event) {
         final Player player = event.getPlayer();
         final QuestPlayer questPlayer = this.instance.getQuestAPI().cachedQuestPlayer.get(player.getName());
+        if (questPlayer == null) return;
         questPlayer.getQuestPlayerData().forEach(playerData -> this.instance.getQuestAPI().getQuest(playerData.getQuestNameId(), quest -> {
             if (quest.getData().startsWith("explore")) {
                 final String[] d = quest.getData().split("#");

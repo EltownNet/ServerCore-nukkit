@@ -3,6 +3,7 @@ package net.eltown.servercore.listeners;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockID;
 import cn.nukkit.event.EventHandler;
+import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
@@ -44,14 +45,16 @@ public class LevelListener implements Listener {
             new ExperienceBlock(BlockID.QUARTZ_ORE, 0, 3.5)
     ));
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void on(final BlockBreakEvent event) {
         final Block block = event.getBlock();
-        if (!event.getBlock().getLocation().getLevel().getName().equals("plots")) {
-            if (!this.placed.contains(block)) {
-                blocks.stream().filter(e -> e.id == block.getId() && e.meta == block.getDamage()).findFirst().ifPresent((experienceBlock) -> {
-                    this.instance.getLevelAPI().addExperience(event.getPlayer(), experienceBlock.getExperience());
-                });
+        if (!SpawnProtectionListener.isInRadius(event.getPlayer())) {
+            if (!event.getBlock().getLocation().getLevel().getName().equals("plots")) {
+                if (!this.placed.contains(block)) {
+                    this.blocks.stream().filter(e -> e.id == block.getId() && e.meta == block.getDamage()).findFirst().ifPresent((experienceBlock) -> {
+                        this.instance.getLevelAPI().addExperience(event.getPlayer(), experienceBlock.getExperience());
+                    });
+                }
             }
         }
     }
@@ -67,7 +70,7 @@ public class LevelListener implements Listener {
 
     @EventHandler
     public void on(final PlayerFishEvent event) {
-        this.instance.getLevelAPI().addExperience(event.getPlayer(), 2);
+        this.instance.getLevelAPI().addExperience(event.getPlayer(), 5);
     }
 
     @AllArgsConstructor

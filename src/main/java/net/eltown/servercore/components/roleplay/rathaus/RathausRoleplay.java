@@ -25,6 +25,7 @@ import net.eltown.servercore.components.roleplay.ChainExecution;
 import net.eltown.servercore.components.roleplay.ChainMessage;
 import net.eltown.servercore.components.roleplay.Cooldown;
 import net.eltown.servercore.components.roleplay.RoleplayID;
+import net.eltown.servercore.listeners.EventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -124,11 +125,13 @@ public class RathausRoleplay {
             final Player player = event.getPlayer();
             if (event.getEntity().namedTag.exist("npc_id")) {
                 final String npcId = event.getEntity().namedTag.getString("npc_id");
-                if (!this.rathausRoleplay.openQueue.contains(player.getName())) {
-                    if (npcId.equals(RoleplayID.TOWNHALL_RECEPTION.id())) this.rathausRoleplay.openReceptionByNpc(player);
-                    else if (npcId.equals(RoleplayID.TOWNHALL_TAXES.id())) {
-                        if (this.rathausRoleplay.runningDatesData.get(this.rathausRoleplay.cachedAdministrationData.get(5)).equals(player.getName())) {
-                            this.openCassandra(player, this.rathausRoleplay.cachedDateData.get(player.getName()));
+                if (!EventListener.inIntroduction.contains(player.getName())) {
+                    if (!this.rathausRoleplay.openQueue.contains(player.getName())) {
+                        if (npcId.equals(RoleplayID.TOWNHALL_RECEPTION.id())) this.rathausRoleplay.openReceptionByNpc(player);
+                        else if (npcId.equals(RoleplayID.TOWNHALL_TAXES.id())) {
+                            if (this.rathausRoleplay.runningDatesData.get(this.rathausRoleplay.cachedAdministrationData.get(5)).equals(player.getName())) {
+                                this.openCassandra(player, this.rathausRoleplay.cachedDateData.get(player.getName()));
+                            }
                         }
                     }
                 }
@@ -143,11 +146,13 @@ public class RathausRoleplay {
 
                 if (entity.namedTag.exist("npc_id")) {
                     final String npcId = entity.namedTag.getString("npc_id");
-                    if (!this.rathausRoleplay.openQueue.contains(player.getName())) {
-                        if (npcId.equals(RoleplayID.TOWNHALL_RECEPTION.id())) this.rathausRoleplay.openReceptionByNpc(player);
-                        else if (npcId.equals(RoleplayID.TOWNHALL_TAXES.id())) {
-                            if (this.rathausRoleplay.runningDatesData.get(this.rathausRoleplay.cachedAdministrationData.get(5)).equals(player.getName())) {
-                                this.openCassandra(player, this.rathausRoleplay.cachedDateData.get(player.getName()));
+                    if (!EventListener.inIntroduction.contains(player.getName())) {
+                        if (!this.rathausRoleplay.openQueue.contains(player.getName())) {
+                            if (npcId.equals(RoleplayID.TOWNHALL_RECEPTION.id())) this.rathausRoleplay.openReceptionByNpc(player);
+                            else if (npcId.equals(RoleplayID.TOWNHALL_TAXES.id())) {
+                                if (this.rathausRoleplay.runningDatesData.get(this.rathausRoleplay.cachedAdministrationData.get(5)).equals(player.getName())) {
+                                    this.openCassandra(player, this.rathausRoleplay.cachedDateData.get(player.getName()));
+                                }
                             }
                         }
                     }

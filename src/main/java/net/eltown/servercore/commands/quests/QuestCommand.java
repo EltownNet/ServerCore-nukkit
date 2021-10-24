@@ -246,7 +246,7 @@ public class QuestCommand extends PluginCommand<ServerCore> {
                         final String finalLink = link;
                         this.getPlugin().getQuestAPI().getQuest(nameId, quest -> {
                             if (quest == null) {
-                                this.getPlugin().getTinyRabbit().send(Queue.QUESTS_RECEIVE, QuestCalls.REQUEST_CREATE_QUEST.name(), nameId, displayName, description, finalData, String.valueOf(required), String.valueOf(expire * 60 * 60 * 1000), rewardData, finalLink);
+                                this.getPlugin().getQuestAPI().createQuest(nameId, displayName, description, finalData, required, (expire * 60 * 60 * 1000), rewardData, finalLink);
                                 player.sendMessage("Die Quest wurde soeben erstellt! [" + nameId + "]");
                             } else player.sendMessage("Fehler beim Erstellen: Diese QuestID wird bereits verwendet.");
                         });

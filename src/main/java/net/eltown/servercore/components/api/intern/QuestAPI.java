@@ -81,6 +81,13 @@ public class QuestAPI {
         this.instance.getTinyRabbit().send(Queue.QUESTS_RECEIVE, QuestCalls.REQUEST_UPDATE_QUEST.name(), questNameId, displayName, description, data, String.valueOf(required), String.valueOf(expire), rewardData, link);
     }
 
+    public void createQuest(final String questNameId, final String displayName, final String description, final String data, final int required, final long expire, final String rewardData, final String link) {
+        this.cachedQuests.remove(questNameId);
+        this.cachedQuests.put(questNameId, new Quest(questNameId, displayName, description, data, required, expire, rewardData, link));
+
+        this.instance.getTinyRabbit().send(Queue.QUESTS_RECEIVE, QuestCalls.REQUEST_CREATE_QUEST.name(), questNameId, displayName, description, data, String.valueOf(required), String.valueOf(expire), rewardData, link);
+    }
+
     public boolean playerIsInQuest(final String player, final String questNameId) {
         this.checkIfQuestIsExpired(player);
         final QuestPlayer.QuestPlayerData questPlayerData = this.getQuestPlayerDataFromQuestId(player, questNameId);
@@ -106,13 +113,13 @@ public class QuestAPI {
             this.instance.getTinyRabbit().send(Queue.QUESTS_RECEIVE, QuestCalls.REQUEST_UPDATE_PLAYER_DATA.name(), player, questPlayerData.getQuestNameId(), String.valueOf(questPlayerData.getCurrent()));
         });
 
-        final Quest quest = this.cachedQuests.get(questNameId);
+        this.getQuest(questNameId, quest -> {
+            final List<QuestPlayer.QuestPlayerData> playerData = this.cachedQuestPlayer.get(player).getQuestPlayerData();
+            playerData.add(new QuestPlayer.QuestPlayerData(quest.getNameId(), (System.currentTimeMillis() + quest.getExpire()), quest.getRequired(), 0));
+            this.cachedQuestPlayer.get(player).setQuestPlayerData(playerData);
 
-        final List<QuestPlayer.QuestPlayerData> playerData = this.cachedQuestPlayer.get(player).getQuestPlayerData();
-        playerData.add(new QuestPlayer.QuestPlayerData(quest.getNameId(), (System.currentTimeMillis() + quest.getExpire()), quest.getRequired(), 0));
-        this.cachedQuestPlayer.get(player).setQuestPlayerData(playerData);
-
-        this.instance.getTinyRabbit().send(Queue.QUESTS_RECEIVE, QuestCalls.REQUEST_SET_PLAYER_QUEST.name(), player, questNameId);
+            this.instance.getTinyRabbit().send(Queue.QUESTS_RECEIVE, QuestCalls.REQUEST_SET_PLAYER_QUEST.name(), player, questNameId);
+        });
     }
 
     public void removeQuestFromPlayer(final String player, final String questNameId) {
@@ -138,8 +145,6 @@ public class QuestAPI {
     public void checkForQuestEnding(final Player player, final String questNameId, final QuestPlayer.QuestPlayerData questPlayerData) {
         this.getQuest(questNameId, quest -> {
             if (quest.getRequired() <= questPlayerData.getCurrent()) {
-                this.instance.getServer().getPluginManager().callEvent(new QuestCompleteEvent(player, quest, questPlayerData));
-
                 player.sendMessage(" ");
                 player.sendMessage(Language.get("quest.completed", quest.getDisplayName()));
                 this.instance.playSound(player, Sound.RANDOM_LEVELUP);
@@ -178,6 +183,7 @@ public class QuestAPI {
                 });
                 player.sendMessage(" ");
 
+                this.instance.getServer().getPluginManager().callEvent(new QuestCompleteEvent(player, quest, questPlayerData));
                 this.instance.getTinyRabbit().send(Queue.QUESTS_RECEIVE, QuestCalls.REQUEST_UPDATE_PLAYER_DATA.name(), player.getName(), questPlayerData.getQuestNameId(), String.valueOf(questPlayerData.getCurrent()));
             }
         });
@@ -186,7 +192,7 @@ public class QuestAPI {
     public QuestPlayer.QuestPlayerData getQuestPlayerDataFromQuestId(final String player, final String questNameId) {
         final AtomicReference<QuestPlayer.QuestPlayerData> questPlayerData = new AtomicReference<>();
 
-        if (this.cachedQuestPlayer.get(player).getQuestPlayerData() == null || this.cachedQuestPlayer.get(player).getQuestPlayerData().isEmpty()) return null;
+        if (this.cachedQuestPlayer.get(player) == null || this.cachedQuestPlayer.get(player).getQuestPlayerData().isEmpty()) return null;
 
         this.cachedQuestPlayer.get(player).getQuestPlayerData().forEach(e -> {
             if (e.getQuestNameId().equals(questNameId)) questPlayerData.set(e);
