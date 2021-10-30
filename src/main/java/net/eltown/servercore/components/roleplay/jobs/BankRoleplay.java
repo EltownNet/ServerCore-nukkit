@@ -15,12 +15,17 @@ import lombok.RequiredArgsConstructor;
 import net.eltown.economy.Economy;
 import net.eltown.economy.components.bank.data.BankAccount;
 import net.eltown.servercore.ServerCore;
+import net.eltown.servercore.components.data.bank.BankCalls;
 import net.eltown.servercore.components.entities.ModelEntity;
 import net.eltown.servercore.components.forms.custom.CustomForm;
 import net.eltown.servercore.components.forms.modal.ModalForm;
 import net.eltown.servercore.components.forms.simple.SimpleForm;
 import net.eltown.servercore.components.language.Language;
 import net.eltown.servercore.components.roleplay.RoleplayID;
+import net.eltown.servercore.components.tinyrabbit.Queue;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class BankRoleplay {
 
@@ -138,6 +143,7 @@ public class BankRoleplay {
         final SimpleForm form = new SimpleForm.Builder("§7» §8Banker Chris", "")
                 .addButton(new ElementButton("§8» §fNeues Konto eröffnen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/banker/create_account.png")), this::openCreateBankAccount)
                 .addButton(new ElementButton("§8» §fBankkonto Beratung", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/banker/manage-account.png")), this::openBankManagerService)
+                .addButton(new ElementButton("§8» §fBankkarte verloren", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/job/banker/forgot-password.png")), this::openNewBankCard)
                 .build();
         form.send(player);
     }
@@ -265,6 +271,41 @@ public class BankRoleplay {
                 })
                 .build();
         form.send(player);
+    }
+
+    public void openNewBankCard(final Player player) {
+        this.serverCore.getTinyRabbit().sendAndReceive(delivery -> {
+            switch (BankCalls.valueOf(delivery.getKey().toUpperCase())) {
+                case CALLBACK_BANKACCOUNTS_BY_PLAYER:
+                    final List<String> list = Arrays.asList(delivery.getData()[1].split("#"));
+
+                    final CustomForm form = new CustomForm.Builder("§7» §8Bankkarte verloren")
+                            .addElement(new ElementDropdown("Bitte wähle eines deiner Konten aus, um eine neue Bankkarte zu beantragen.", list))
+                            .onSubmit((g, h) -> {
+                                final String account = h.getDropdownResponse(0).getElementContent();
+                                final ModalForm form1 = new ModalForm.Builder("§7» §8Neue Bankkarte", "§fMöchtest du für das Konto §9" + account + " §feine neue Bankkarte beanspruchen?" +
+                                        "\n\n§fVerwaltungsgebühr: §a$20\n§fBankkarte: §a$35\n\n§f§lZu zahlen: §r§a$55", "§8» §aBeanspruchen", "§8» §cZurück")
+                                        .onYes(e -> Economy.getAPI().getMoney(player, money -> {
+                                            if (money >= 55) {
+                                                Economy.getAPI().reduceMoney(player, 55);
+                                                this.giveBankCard(player, account);
+                                                Economy.getBankAPI().insertBankLog(account, "Neue Karte eingerichtet", "§7" + player.getName() + " hat für dieses Konto eine neue Karte einrichten lassen.");
+                                                player.sendMessage(Language.get("roleplay.bank.card.received"));
+                                                this.serverCore.playSound(player, Sound.NOTE_PLING);
+                                            } else {
+                                                player.sendMessage(Language.get("roleplay.bank.no.money"));
+                                                this.serverCore.playSound(player, Sound.NOTE_BASS);
+                                            }
+                                        }))
+                                        .onNo(this::openBankManager)
+                                        .build();
+                                form1.send(player);
+                            })
+                            .build();
+                    form.send(player);
+                    break;
+            }
+        }, Queue.BANK_CALLBACK, BankCalls.REQUEST_BANKACCOUNTS_BY_PLAYER.name(), player.getName());
     }
 
     public void giveBankCard(final Player player, final String account) {
