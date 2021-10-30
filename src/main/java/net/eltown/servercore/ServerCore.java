@@ -151,7 +151,10 @@ public class ServerCore extends PluginBase {
 
         this.getServer().getCommandMap().register("servercore", new NpcCommand(this));
 
+        this.getServer().getCommandMap().register("servercore", new CbCommand(this));
+        this.getServer().getCommandMap().register("servercore", new FwCommand(this));
         this.getServer().getCommandMap().register("servercore", new HomeCommand(this));
+        this.getServer().getCommandMap().register("servercore", new NtCommand(this));
         this.getServer().getCommandMap().register("servercore", new TeleportCommand(this));
         this.getServer().getCommandMap().register("servercore", new WarpCommand(this));
         this.getServer().getCommandMap().register("servercore", new TpaCommand(this));
