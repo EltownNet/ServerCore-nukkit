@@ -156,6 +156,7 @@ roleplay.shop.item.inventory.full: "&7Bitte schaffe in deinem Inventar platz, da
 roleplay.shop.item.invalid.amount: "&7Bitte gebe eine gültige Anzahl an."
 roleplay.shop.item.inventory.invalid: "&7Du hast das ausgewählte Item nicht mit der angegebenen Anzahl in deinem Inventar."
 roleplay.shop.item.sold: "&7Du hast &a[0]x &7das Item &a[1] &7für &a$[2] &7verkauft."
+roleplay.shop.item.no.sell: "&7Dieses Item kann nicht mehr verkauft werden, da der Kaufpreis zu niedrig ist."
 roleplay.blacksmith.enchantment.bought: "&7Du hast das Item in deiner Hand mit &a[0] &7(&aLevel [1]&7) verzaubert für &a$[2]&7."
 roleplay.blacksmith.enchantment.not.enough.money: "&7Du hast zu wenig Geld, um dir diese Verzauberung kaufen zu können."
 roleplay.blacksmith.enchantment.invalid.tool: "&7Diese Verzauberung funktioniert nicht in Verbindung mit dem Item in deiner Hand."

@@ -90,64 +90,70 @@ public class ShopRoleplay {
                     .build();
             customForm.send(player);
         });
-        simpleForm.addButton(new ElementButton("§8» §cVerkaufen\n§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)) + " §8pro Item"), o -> {
-            final int count = this.countInventoryItems(player, id);
-            final CustomForm customForm = new CustomForm.Builder("§7» §8" + Item.get(id[0], id[1]).getName())
-                    .addElement(new ElementInput("Bitte gebe an, wie viel du von diesem Item §cverkaufen §fmöchtest.", "64", "64"))
-                    .addElement(new ElementToggle("Alle Items dieser Art aus meinem Inventar verkaufen: §7" + count, false))
-                    .onSubmit((g, h) -> {
-                        try {
-                            final boolean b = h.getToggleResponse(1);
-                            if (count <= 0) throw new Exception("Invalid item amount");
-                            if (b) {
-                                Economy.getShopAPI().getCurrentPrice(id, count, finalPrice -> {
-                                    final ModalForm modalForm = new ModalForm.Builder("§7» §8Verkaufsbestätigung", "Möchtest du §9" + count + "x " + Item.get(id[0], id[1]).getName() + " §ffür"
-                                            + " §a$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(finalPrice)) + " §fverkaufen?", "§7» §aVerkaufen", "§7» §cAbbrechen")
-                                            .onYes(l -> {
-                                                final Item item = Item.get(id[0], id[1], count);
-                                                player.getInventory().removeItem(item);
-                                                Economy.getAPI().addMoney(player, this.getSellPrice(finalPrice));
-                                                Economy.getShopAPI().sendSold(id, count);
-                                                player.sendMessage(Language.get("roleplay.shop.item.sold", count, Item.get(id[0], id[1], count).getName(), Economy.getAPI().getMoneyFormat().format(this.getSellPrice(finalPrice))));
-                                                this.playSound(player, Sound.UI_STONECUTTER_TAKE_RESULT);
-                                            })
-                                            .onNo(l -> this.playSound(l, Sound.NOTE_BASS))
-                                            .build();
-                                    modalForm.send(player);
-                                });
-                            } else {
-                                final int i = Integer.parseInt(h.getInputResponse(0));
-                                if (i <= 0) throw new Exception("Invalid item amount");
+        if (price < 0.05) {
+            simpleForm.addButton(new ElementButton("§8» §cVerkaufen\n§fKein Verkauf"), o -> {
+                player.sendMessage(Language.get("roleplay.shop.item.no.sell"));
+            });
+        } else {
+            simpleForm.addButton(new ElementButton("§8» §cVerkaufen\n§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)) + " §8pro Item"), o -> {
+                final int count = this.countInventoryItems(player, id);
+                final CustomForm customForm = new CustomForm.Builder("§7» §8" + Item.get(id[0], id[1]).getName())
+                        .addElement(new ElementInput("Bitte gebe an, wie viel du von diesem Item §cverkaufen §fmöchtest.", "64", "64"))
+                        .addElement(new ElementToggle("Alle Items dieser Art aus meinem Inventar verkaufen: §7" + count, false))
+                        .onSubmit((g, h) -> {
+                            try {
+                                final boolean b = h.getToggleResponse(1);
+                                if (count <= 0) throw new Exception("Invalid item amount");
+                                if (b) {
+                                    Economy.getShopAPI().getCurrentPrice(id, count, finalPrice -> {
+                                        final ModalForm modalForm = new ModalForm.Builder("§7» §8Verkaufsbestätigung", "Möchtest du §9" + count + "x " + Item.get(id[0], id[1]).getName() + " §ffür"
+                                                + " §a$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(finalPrice)) + " §fverkaufen?", "§7» §aVerkaufen", "§7» §cAbbrechen")
+                                                .onYes(l -> {
+                                                    final Item item = Item.get(id[0], id[1], count);
+                                                    player.getInventory().removeItem(item);
+                                                    Economy.getAPI().addMoney(player, this.getSellPrice(finalPrice));
+                                                    Economy.getShopAPI().sendSold(id, count);
+                                                    player.sendMessage(Language.get("roleplay.shop.item.sold", count, Item.get(id[0], id[1], count).getName(), Economy.getAPI().getMoneyFormat().format(this.getSellPrice(finalPrice))));
+                                                    this.playSound(player, Sound.UI_STONECUTTER_TAKE_RESULT);
+                                                })
+                                                .onNo(l -> this.playSound(l, Sound.NOTE_BASS))
+                                                .build();
+                                        modalForm.send(player);
+                                    });
+                                } else {
+                                    final int i = Integer.parseInt(h.getInputResponse(0));
+                                    if (i <= 0) throw new Exception("Invalid item amount");
 
-                                Economy.getShopAPI().getCurrentPrice(id, i, finalPrice -> {
-                                    final ModalForm modalForm = new ModalForm.Builder("§7» §8Verkaufsbestätigung", "Möchtest du §9" + i + "x " + Item.get(id[0], id[1]).getName() + " §ffür"
-                                            + " §a$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(finalPrice)) + " §fverkaufen?", "§7» §aVerkaufen", "§7» §cAbbrechen")
-                                            .onYes(l -> {
-                                                if (count < i) {
-                                                    player.sendMessage(Language.get("roleplay.shop.item.inventory.invalid"));
-                                                    this.playSound(player, Sound.NOTE_BASS);
-                                                    return;
-                                                }
-                                                final Item item = Item.get(id[0], id[1], i);
-                                                player.getInventory().removeItem(item);
-                                                Economy.getAPI().addMoney(player, this.getSellPrice(finalPrice));
-                                                Economy.getShopAPI().sendSold(id, i);
-                                                player.sendMessage(Language.get("roleplay.shop.item.sold", i, Item.get(id[0], id[1], i).getName(), Economy.getAPI().getMoneyFormat().format(this.getSellPrice(finalPrice))));
-                                                this.playSound(player, Sound.UI_STONECUTTER_TAKE_RESULT);
-                                            })
-                                            .onNo(l -> this.playSound(l, Sound.NOTE_BASS))
-                                            .build();
-                                    modalForm.send(player);
-                                });
+                                    Economy.getShopAPI().getCurrentPrice(id, i, finalPrice -> {
+                                        final ModalForm modalForm = new ModalForm.Builder("§7» §8Verkaufsbestätigung", "Möchtest du §9" + i + "x " + Item.get(id[0], id[1]).getName() + " §ffür"
+                                                + " §a$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(finalPrice)) + " §fverkaufen?", "§7» §aVerkaufen", "§7» §cAbbrechen")
+                                                .onYes(l -> {
+                                                    if (count < i) {
+                                                        player.sendMessage(Language.get("roleplay.shop.item.inventory.invalid"));
+                                                        this.playSound(player, Sound.NOTE_BASS);
+                                                        return;
+                                                    }
+                                                    final Item item = Item.get(id[0], id[1], i);
+                                                    player.getInventory().removeItem(item);
+                                                    Economy.getAPI().addMoney(player, this.getSellPrice(finalPrice));
+                                                    Economy.getShopAPI().sendSold(id, i);
+                                                    player.sendMessage(Language.get("roleplay.shop.item.sold", i, Item.get(id[0], id[1], i).getName(), Economy.getAPI().getMoneyFormat().format(this.getSellPrice(finalPrice))));
+                                                    this.playSound(player, Sound.UI_STONECUTTER_TAKE_RESULT);
+                                                })
+                                                .onNo(l -> this.playSound(l, Sound.NOTE_BASS))
+                                                .build();
+                                        modalForm.send(player);
+                                    });
+                                }
+                            } catch (final Exception e) {
+                                player.sendMessage(Language.get("roleplay.shop.item.invalid.amount"));
+                                this.playSound(player, Sound.NOTE_BASS);
                             }
-                        } catch (final Exception e) {
-                            player.sendMessage(Language.get("roleplay.shop.item.invalid.amount"));
-                            this.playSound(player, Sound.NOTE_BASS);
-                        }
-                    })
-                    .build();
-            customForm.send(player);
-        });
+                        })
+                        .build();
+                customForm.send(player);
+            });
+        }
         if (player.isOp()) {
             simpleForm.addButton(new ElementButton("§8» §9Preis bearbeiten"), e -> {
                 final CustomForm form = new CustomForm.Builder("§7» §8" + Item.get(id[0], id[1]).getName())
@@ -215,9 +221,15 @@ public class ShopRoleplay {
         final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Holzfäller Darick", "§7Wähle eines der aufgelisteten Items aus, welches du kaufen möchtest.");
         this.woodShop.forEach(id -> {
             Economy.getShopAPI().getCurrentPrice(id, 1, price -> {
-                form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§a§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §r§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)), new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
-                    this.openItemShop(e, id, price);
-                });
+                if (price < 0.05) {
+                    form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§a§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §fKein Verkauf", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
+                        this.openItemShop(e, id, price);
+                    });
+                } else {
+                    form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§a§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §r§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)), new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
+                        this.openItemShop(e, id, price);
+                    });
+                }
             });
         });
         form.build().send(player);
@@ -260,9 +272,15 @@ public class ShopRoleplay {
         final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Minenarbeiter Patrick", "§7Wähle eines der aufgelisteten Items aus, welches du kaufen möchtest.");
         this.miningShop.forEach(id -> {
             Economy.getShopAPI().getCurrentPrice(id, 1, price -> {
-                form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§b§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §r§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)), new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
-                    this.openItemShop(e, id, price);
-                });
+                if (price < 0.05) {
+                    form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§b§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §fKein Verkauf", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
+                        this.openItemShop(e, id, price);
+                    });
+                } else {
+                    form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§b§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §r§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)), new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
+                        this.openItemShop(e, id, price);
+                    });
+                }
             });
         });
         form.build().send(player);
@@ -306,9 +324,15 @@ public class ShopRoleplay {
         final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Reisende Maya", "§7Wähle eines der aufgelisteten Items aus, welches du kaufen möchtest.");
         this.exploringShop.forEach(id -> {
             Economy.getShopAPI().getCurrentPrice(id, 1, price -> {
-                form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§e§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §r§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)), new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
-                    this.openItemShop(e, id, price);
-                });
+                if (price < 0.05) {
+                    form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§e§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §fKein Verkauf", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
+                        this.openItemShop(e, id, price);
+                    });
+                } else {
+                    form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§e§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §r§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)), new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
+                        this.openItemShop(e, id, price);
+                    });
+                }
             });
         });
         form.build().send(player);
@@ -352,9 +376,15 @@ public class ShopRoleplay {
         final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Netherexpertin Lilly", "§7Wähle eines der aufgelisteten Items aus, welches du kaufen möchtest.");
         this.netherShop.forEach(id -> {
             Economy.getShopAPI().getCurrentPrice(id, 1, price -> {
-                form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§4§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §r§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)), new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
-                    this.openItemShop(e, id, price);
-                });
+                if (price < 0.05) {
+                    form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§4§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §fKein Verkauf", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
+                        this.openItemShop(e, id, price);
+                    });
+                } else {
+                    form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§4§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §r§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)), new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
+                        this.openItemShop(e, id, price);
+                    });
+                }
             });
         });
         form.build().send(player);
@@ -399,9 +429,15 @@ public class ShopRoleplay {
         final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Monsterjägerin Amanda", "§7Wähle eines der aufgelisteten Items aus, welches du kaufen möchtest.");
         this.mobdropShop.forEach(id -> {
             Economy.getShopAPI().getCurrentPrice(id, 1, price -> {
-                form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§5§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §r§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)), new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
-                    this.openItemShop(e, id, price);
-                });
+                if (price < 0.05) {
+                    form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§5§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §fKein Verkauf", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
+                        this.openItemShop(e, id, price);
+                    });
+                } else {
+                    form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§5§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §r§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)), new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
+                        this.openItemShop(e, id, price);
+                    });
+                }
             });
         });
         form.build().send(player);
@@ -443,9 +479,15 @@ public class ShopRoleplay {
         final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Bäuerin Sofi", "§7Wähle eines der aufgelisteten Items aus, welches du kaufen möchtest.");
         this.farmerShop.forEach(id -> {
             Economy.getShopAPI().getCurrentPrice(id, 1, price -> {
-                form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§3§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §r§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)), new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
-                    this.openItemShop(e, id, price);
-                });
+                if (price < 0.05) {
+                    form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§3§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §fKein Verkauf", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
+                        this.openItemShop(e, id, price);
+                    });
+                } else {
+                    form.addButton(new ElementButton(Item.get(id[0], id[1]).getName() + "\n§3§l1x   §r§a+ §r§f$" + Economy.getAPI().getMoneyFormat().format(price) + " §8| §c- §r§f$" + Economy.getAPI().getMoneyFormat().format(this.getSellPrice(price)), new ElementButtonImageData("url", "http://45.138.50.23:3000/img/shopitems/" + id[0] + "-" + id[1] + ".png")), e -> {
+                        this.openItemShop(e, id, price);
+                    });
+                }
             });
         });
         form.build().send(player);

@@ -59,7 +59,7 @@ public class FeatureRoleplay {
             new ChainMessage("Einlösen macht Spaß!", 2),
             new ChainMessage("Gutscheeeiiinnnneeee!", 2),
             new ChainMessage("Du kannst Gutscheine auch verschenken.", 2),
-            new ChainMessage("Komm täglich zu mir, um Belohungen zu erhalten!", 2)
+            new ChainMessage("Komm täglich zu mir, um Belohnungen zu erhalten!", 2)
     ));
 
     public void openRewardByNpc(final Player player) {
