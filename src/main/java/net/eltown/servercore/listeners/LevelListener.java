@@ -8,10 +8,13 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.player.PlayerFishEvent;
+import cn.nukkit.item.Item;
+import cn.nukkit.item.enchantment.Enchantment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.eltown.servercore.ServerCore;
+import net.eltown.servercore.components.enchantments.CustomEnchantment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +39,6 @@ public class LevelListener implements Listener {
             new ExperienceBlock(BlockID.REDSTONE_ORE, 0, 3.2),
             new ExperienceBlock(BlockID.DIAMOND_ORE, 0, 8.5),
             new ExperienceBlock(BlockID.GOLD_ORE, 0, 4.3),
-            new ExperienceBlock(BlockID.EMERALD_ORE, 0, 6.5),
             new ExperienceBlock(BlockID.ANCIENT_DERBRIS, 0, 20),
             new ExperienceBlock(BlockID.GLOWSTONE, 0, 1.9),
             new ExperienceBlock(BlockID.WARPED_STEM, 0, 1.5),
@@ -48,11 +50,21 @@ public class LevelListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void on(final BlockBreakEvent event) {
         final Block block = event.getBlock();
+        final Item item = event.getPlayer().getInventory().getItemInHand();
         if (!SpawnProtectionListener.isInRadius(event.getPlayer())) {
             if (!event.getBlock().getLocation().getLevel().getName().equals("plots")) {
                 if (!this.placed.contains(block)) {
                     this.blocks.stream().filter(e -> e.id == block.getId() && e.meta == block.getDamage()).findFirst().ifPresent((experienceBlock) -> {
-                        this.instance.getLevelAPI().addExperience(event.getPlayer(), experienceBlock.getExperience());
+                        if (item.hasEnchantment(CustomEnchantment.EnchantmentID.EXPERIENCE.id())) {
+                            final Enchantment enchantment = item.getEnchantment(CustomEnchantment.EnchantmentID.EXPERIENCE.id());
+                            double experience = experienceBlock.getExperience();
+                            if (enchantment.getLevel() == 1) experience = experience * 1.25;
+                            else if (enchantment.getLevel() == 2) experience = experience * 1.60;
+                            else if (enchantment.getLevel() == 3) experience = experience * 2;
+                            this.instance.getLevelAPI().addExperience(event.getPlayer(), experience);
+                        } else {
+                            this.instance.getLevelAPI().addExperience(event.getPlayer(), experienceBlock.getExperience());
+                        }
                     });
                 }
             }

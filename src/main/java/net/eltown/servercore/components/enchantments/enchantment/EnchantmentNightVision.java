@@ -30,7 +30,7 @@ public class EnchantmentNightVision extends Enchantment implements Listener {
 
             // Equip
             if (event.getNewItem().hasEnchantment(CustomEnchantment.EnchantmentID.NIGHT_VISION.id())) {
-                player.addEffect(Effect.getEffect(Effect.NIGHT_VISION).setVisible(false).setDuration(Integer.MAX_VALUE));
+                player.addEffect(Effect.getEffect(Effect.NIGHT_VISION).setVisible(false).setDuration(Integer.MAX_VALUE).setAmplifier(1));
             }
         }
     }

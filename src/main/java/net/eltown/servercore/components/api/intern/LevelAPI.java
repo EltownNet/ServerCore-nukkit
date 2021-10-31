@@ -3,6 +3,7 @@ package net.eltown.servercore.components.api.intern;
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import lombok.RequiredArgsConstructor;
+import net.eltown.economy.Economy;
 import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.data.giftkeys.GiftkeyCalls;
 import net.eltown.servercore.components.data.level.Level;
@@ -33,7 +34,7 @@ public class LevelAPI {
         final DisplayEntry levelEntry = scoreboardDisplay.addLine("   §f" + this.instance.getLevelAPI().getLevel(player.getName()).getLevel() + " §8[" + this.instance.getLevelAPI().getLevelDisplay(player) + "§8]  ", 5);
         ScoreboardAPI.cachedDisplayEntries.put(player.getName() + "/level", levelEntry);
 
-        player.sendActionBar("§a+ §2" + experience + "XP");
+        player.sendActionBar("§a+ §2" + Economy.getAPI().getMoneyFormat().format(experience) + "XP");
 
         this.checkForLevelUp(player);
     }

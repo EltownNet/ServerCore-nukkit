@@ -55,9 +55,11 @@ public class CustomEnchantment {
 
         enchantments[EnchantmentID.DRILL.id] = new EnchantmentDrill();
         this.enchantmentId.put(EnchantmentID.DRILL.id, EnchantmentID.DRILL);
+        serverCore.getServer().getPluginManager().registerEvents(new EnchantmentDrill(), serverCore);
 
-        enchantments[EnchantmentID.EMERALD_FARMER.id] = new EnchantmentEmeraldFarmer();
+        enchantments[EnchantmentID.EMERALD_FARMER.id] = new EnchantmentEmeraldFarmer(serverCore);
         this.enchantmentId.put(EnchantmentID.EMERALD_FARMER.id, EnchantmentID.EMERALD_FARMER);
+        serverCore.getServer().getPluginManager().registerEvents(new EnchantmentEmeraldFarmer(serverCore), serverCore);
 
         enchantments[EnchantmentID.EXPERIENCE.id] = new EnchantmentExperience();
         this.enchantmentId.put(EnchantmentID.EXPERIENCE.id, EnchantmentID.EXPERIENCE);
@@ -82,6 +84,7 @@ public class CustomEnchantment {
 
         enchantments[EnchantmentID.VEIN_MINING.id] = new EnchantmentVeinMining();
         this.enchantmentId.put(EnchantmentID.VEIN_MINING.id, EnchantmentID.VEIN_MINING);
+        serverCore.getServer().getPluginManager().registerEvents(new EnchantmentVeinMining(), serverCore);
 
         try {
             final Field[] arrayOfField;
