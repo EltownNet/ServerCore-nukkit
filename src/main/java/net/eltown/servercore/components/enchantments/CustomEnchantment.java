@@ -71,9 +71,11 @@ public class CustomEnchantment {
 
         enchantments[EnchantmentID.NIGHT_VISION.id] = new EnchantmentNightVision();
         this.enchantmentId.put(EnchantmentID.NIGHT_VISION.id, EnchantmentID.NIGHT_VISION);
+        serverCore.getServer().getPluginManager().registerEvents(new EnchantmentNightVision(), serverCore);
 
         enchantments[EnchantmentID.RUNNER.id] = new EnchantmentRunner();
         this.enchantmentId.put(EnchantmentID.RUNNER.id, EnchantmentID.RUNNER);
+        serverCore.getServer().getPluginManager().registerEvents(new EnchantmentRunner(), serverCore);
 
         enchantments[EnchantmentID.THERMAL_PROTECTION.id] = new EnchantmentThermalProtection();
         this.enchantmentId.put(EnchantmentID.THERMAL_PROTECTION.id, EnchantmentID.THERMAL_PROTECTION);
