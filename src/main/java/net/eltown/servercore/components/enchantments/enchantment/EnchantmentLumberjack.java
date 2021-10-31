@@ -40,35 +40,37 @@ public class EnchantmentLumberjack extends Enchantment implements Listener {
 
     @EventHandler
     public void on(final BlockBreakEvent event) {
-        final LinkedList<Block> blocks = new LinkedList<>();
+        if (event.getPlayer().getInventory().getItemInHand().hasEnchantment(this.getId())) {
+            final LinkedList<Block> blocks = new LinkedList<>();
 
-        final Block block = event.getBlock();
-        if (isWood[block.getId()]) {
-            // Above + TreeCheck
-            int offset = 1;
+            final Block block = event.getBlock();
+            if (isWood[block.getId()]) {
+                // Above + TreeCheck
+                int offset = 1;
 
-            while (isWood[this.getOffset(block, offset).getId()]) {
-                blocks.add(this.getOffset(block, offset));
-                offset++;
-            }
-
-            if (blocks.size() > 1 && this.isTree(block.getLevel(), blocks.get(blocks.size() - 1))) {
-                offset = -1;
-
-                // Below
                 while (isWood[this.getOffset(block, offset).getId()]) {
                     blocks.add(this.getOffset(block, offset));
-                    offset--;
+                    offset++;
                 }
 
-                final AtomicInteger count = new AtomicInteger(0);
+                if (blocks.size() > 1 && this.isTree(block.getLevel(), blocks.get(blocks.size() - 1))) {
+                    offset = -1;
 
-                blocks.forEach((chop) -> {
-                    Server.getInstance().getScheduler().scheduleDelayedTask(() -> {
-                        chop.getLevel().setBlock(chop.getLocation(), Block.get(BlockID.AIR));
-                        chop.getLevel().dropItem(chop.getLocation(), Item.get(chop.getId(), chop.getDamage(), 1));
-                    }, 2 * count.addAndGet(1));
-                });
+                    // Below
+                    while (isWood[this.getOffset(block, offset).getId()]) {
+                        blocks.add(this.getOffset(block, offset));
+                        offset--;
+                    }
+
+                    final AtomicInteger count = new AtomicInteger(0);
+
+                    blocks.forEach((chop) -> {
+                        Server.getInstance().getScheduler().scheduleDelayedTask(() -> {
+                            chop.getLevel().setBlock(chop.getLocation(), Block.get(BlockID.AIR));
+                            chop.getLevel().dropItem(chop.getLocation(), Item.get(chop.getId(), chop.getDamage(), 1));
+                        }, 2 * count.addAndGet(1));
+                    });
+                }
             }
         }
     }

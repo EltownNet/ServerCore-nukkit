@@ -529,22 +529,22 @@ public class ShopRoleplay {
     }
 
     private final List<double[]> blacksmithEnchantments = new ArrayList<>(Arrays.asList(
-            new double[]{128, 1, 499.95}, new double[]{129, 1, 199.95}, new double[]{130, 1, 199.95}, new double[]{131, 1, 699.95}, new double[]{132, 1, 1399.95},
-            new double[]{133, 1, 99.95}, new double[]{134, 1, 199.95}, new double[]{135, 1, 399.95}, new double[]{136, 1, 99.95}, new double[]{137, 1, 999.95}
+            new double[]{128, 1, 699.95}, new double[]{129, 1, 199.95}, new double[]{130, 1, 199.95}, new double[]{132, 1, 2399.95},
+            new double[]{133, 1, 249.95}, new double[]{134, 1, 599.95}, new double[]{135, 1, 499.95}, new double[]{136, 1, 799.95}, new double[]{137, 1, 999.95}
     ));
 
     public void openBlacksmithShop(final Player player) {
-        final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Schmied Ben", "§8» §fBen §8| §7Aktuell biete ich nur Reparaturen an. Aber bald auch spezielle Verzauberungen, die es nur bei mir gibt!");
-        /*form.addButton(new ElementButton("§7» §fBen's spezielle\n§fVerzauberungen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/enchanted_book.png")), e -> {
-            final SimpleForm.Builder enchantmentForm = new SimpleForm.Builder("§7» §8Meine Verzauberungen", "§7Wähle eines der aufgelisteten Verzauberungen aus, um fortzufahren.");
+        final SimpleForm.Builder form = new SimpleForm.Builder("§7» §8Schmied Ben", "§8» §fBen §8| §7Aktuell biete ich Reparaturen und bestimmte Verzauberungen an. Schau dich gerne bei mir um, es lohnt sich!");
+        form.addButton(new ElementButton("§7» §fBen's spezielle\n§fVerzauberungen", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/enchanted_book.png")), e -> {
+            final SimpleForm.Builder enchantmentForm = new SimpleForm.Builder("§7» §8Meine Verzauberungen", "§8» §fBen §8| §7Informiere dich gut über meine Verzauberungen bei §8» §fMein Angebot§7, damit nichts schief läuft. §2Ich empfehle, ein recht hohes Verzauberungslevel zu kaufen, da man immer den vollen Preis zahlen muss.");
             this.blacksmithEnchantments.forEach(c -> {
                 final EnchantmentID enchantmentID = this.serverCore.getCustomEnchantment().enchantmentId.get((int) c[0]);
-                enchantmentForm.addButton(new ElementButton("§8" + enchantmentID.enchantment() + "\n§9Level: §f" + (int) c[1] + " §8| §f$" + c[2]), k -> {
+                enchantmentForm.addButton(new ElementButton("§8" + enchantmentID.enchantment() + "\n§fAb: §9$" + Economy.getAPI().getMoneyFormat().format(c[2])), k -> {
 
                     final Enchantment enchantment = Enchantment.getEnchantment((int) c[0]);
                     if (enchantment.getMaxLevel() == 1) {
                         final ModalForm buyModal = new ModalForm.Builder("§7» §8Kaufbestätigung", "Möchtest du das Item in deiner Hand wirklich mit §9" + enchantmentID.enchantment() + "§f (§9Level " + (int) c[1] + "§f) verzaubern?" +
-                                "\n\nDie Kosten dafür betragen §a$" + c[2] + "§f.", "§8» §aKaufen", "§8» §cAbbrechen")
+                                "\n\nDie Kosten dafür betragen §a$" + Economy.getAPI().getMoneyFormat().format(c[2]) + "§f.", "§8» §aKaufen", "§8» §cAbbrechen")
                                 .onYes(g -> {
                                     final Item item = player.getInventory().getItemInHand();
                                     if (this.checkCanEnchant(item, enchantment)) {
@@ -552,7 +552,7 @@ public class ShopRoleplay {
                                             if (money >= c[2]) {
                                                 Economy.getAPI().reduceMoney(player, c[2]);
                                                 this.serverCore.getCustomEnchantment().enchantItem(player, enchantmentID, 1);
-                                                player.sendMessage(Language.get("roleplay.blacksmith.enchantment.bought", enchantmentID.enchantment(), (int) c[1], c[2]));
+                                                player.sendMessage(Language.get("roleplay.blacksmith.enchantment.bought", enchantmentID.enchantment(), (int) c[1], Economy.getAPI().getMoneyFormat().format(c[2])));
                                                 this.playSound(player, Sound.RANDOM_ANVIL_USE);
                                             } else {
                                                 player.sendMessage(Language.get("roleplay.blacksmith.enchantment.not.enough.money"));
@@ -571,7 +571,7 @@ public class ShopRoleplay {
                         buyModal.send(player);
                     } else {
                         final CustomForm selectForm = new CustomForm.Builder("§7» §8Verzauberungslevel wählen")
-                                .addElement(new ElementLabel("§7Bei dieser Verzauberung kannst du ein Level wählen. Die Kosten für das erste Level betragen §a$" + c[2] + "§7.\n" +
+                                .addElement(new ElementLabel("§7Bei dieser Verzauberung kannst du ein Level wählen. Die Kosten für das erste Level betragen §a$" + Economy.getAPI().getMoneyFormat().format(c[2]) + "§7.\n" +
                                         "Die Level werden mit dem genannten Preis multipliziert."))
                                 .addElement(new ElementSlider("Level", 1, enchantment.getMaxLevel(), 1, 1))
                                 .onSubmit((g, h) -> {
@@ -612,22 +612,34 @@ public class ShopRoleplay {
             enchantmentForm.build().send(player);
         });
         form.addButton(new ElementButton("§7» §fMein Angebot", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/paper.png")), e -> {
+            final String builder = "§8» §fBen §8| §7Hier findest du alles, was du zu meinen Verzauberungen wissen musst!\n\n\n" +
+                    "§8» §aHolzfäller\n§7Diese Verzauberung kann einen Baum viel schneller abholzen als eine normale Axt!\n§8» §2Passendes Item: §7Axt\n§8» §cNachteile: §7Weniger XP-Punkte\n\n" +
+                    "§8» §bWärmeschutz\n§7Mit dem Wärmeschutz wird dir in der Wüste nicht mehr warm! Diese Verzauberung muss auf alle vier Rüstungsteile verzaubert werden.\n§8» §2Passende Items: §7Rüstungsteile\n§8» §cNachteile: §7Muss auf alle Rüstungsteile\n\n" +
+                    "§8» §bKälteschutz\n§7Der Kälteschutz bringt genügend Wärme mit sich, damit du im kalten Schnee nicht frierst! Diese Verzauberung muss auf alle vier Rüstungsteile verzaubert werden.\n§8» §2Passende Items: §7Rüstungsteile\n§8» §cNachteile: §7Muss auf alle Rüstungsteile\n\n" +
+                    "§8» §bBohrer\n§7Mit dem Bohrer kannst du in einem 3x3-Feld Steine und Nethersteine abbauen. Damit ist das Suchen von Erzen deutlich einfacher!\n§8» §2Passendes Item: §7Spitzhacke\n§8» §cNachteile: §7Kann nur Steine und Netherstein abbauen\n\n" +
+                    "§8» §aSmaragdfarmer\n§7Nur mit dieser Verzauberung kannst du Smaragde abbauen. Diese sind sehr wertvoll und geben dir viel XP-Punkte.\n§8» §2Passendes Item: §7Spitzhacke\n\n" +
+                    "§8» §eErfahrung §7(Level 1-3)\n§7Mit Erfahrung Level 1 erhälst du bei Erzen 25% mehr XP-Punkte, mit Level 2 60% mehr und mit Level 3 doppelt so viel.\n§8» §2Passendes Item: §7Spitzhacke\n§8» §cNachteile: §7Kann nicht bei Smaragden angewendet werden\n\n" +
+                    "§8» §eNachtsicht\n§7Verzaubere dieses Item auf deinen Helm, um auch in der Nacht gut sehen zu können!\n§8» §2Passendes Item: §7Helm\n\n" +
+                    "§8» §aLäufer\n§7Mit dieser Verzauberung bist du sicherlich schneller als der schnellste Mensch der Welt!\n§8» §2Passendes Item: §7Stiefel\n\n" +
+                    "§8» §bAderabbau §7(Level 1-4)\n§7Baue Rohstoffadern mit nur wenigen Klicks ab. Je höher das Level ist, desto mehr kann eine Ader mit einem Klick abgebaut werden.\n§8» §2Passendes Item: §7Spitzhacke\n§8» §cNachteile: §7Weniger XP-Punkte\n\n";
 
-        });*/
+            final SimpleForm specialOffer = new SimpleForm.Builder("§7» §8Mein Angebot", builder)
+                    .addButton(new ElementButton("§8» §cZurück"), this::openBlacksmithShop)
+                    .build();
+            specialOffer.send(player);
+        });
         form.addButton(new ElementButton("§7» §fReparatur Service", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/anvil.png")), e -> {
             final Item item = e.getInventory().getItemInHand();
             if (item.isArmor() || item.isTool() || item.isShears()) {
                 if (item.getDamage() != 0) {
                     final double costs = (item.getDamage() * 1.30) + 60;
                     final ModalForm modalForm = new ModalForm.Builder("§7» §8Item reparieren", "§fLasse das Item in deiner Hand hier reparieren." +
-                            "\n\n§fGrundgebühr: §a$60\n§fSchadensbehebung: §a$" + Economy.getAPI().getMoneyFormat().format(item.getDamage() * 1.30) + "\n§fBenötigte XP-Level: §a5" +
-                            "\n\n§f§lZu zahlen: §r§a$" + Economy.getAPI().getMoneyFormat().format(costs) + " §fund §a5 XP-Level",
+                            "\n\n§fGrundgebühr: §a$60\n§fSchadensbehebung: §a$" + Economy.getAPI().getMoneyFormat().format(item.getDamage() * 1.30) +
+                            "\n\n§f§lZu zahlen: §r§a$" + Economy.getAPI().getMoneyFormat().format(costs),
                             "§7» §aJetzt reparieren", "§7» §cAbbrechen")
                             .onYes(h -> {
-                                if (h.getExperienceLevel() >= 5) {
                                     Economy.getAPI().getMoney(h, money -> {
                                         if (money >= costs) {
-                                            h.setExperience(h.getExperience(), h.getExperienceLevel() - 5);
                                             Economy.getAPI().reduceMoney(h, costs);
                                             item.setDamage(0);
                                             h.getInventory().setItemInHand(item);
@@ -638,10 +650,6 @@ public class ShopRoleplay {
                                             this.playSound(h, Sound.NOTE_BASS);
                                         }
                                     });
-                                } else {
-                                    h.sendMessage(Language.get("roleplay.blacksmith.repair.not.enough.xp"));
-                                    this.playSound(h, Sound.NOTE_BASS);
-                                }
                             })
                             .onNo(this::openBlacksmithShop)
                             .build();

@@ -23,17 +23,24 @@ public class EnchantmentVeinMining extends Enchantment implements Listener {
         return this.name;
     }
 
+    @Override
+    public int getMaxLevel() {
+        return 4;
+    }
+
     @EventHandler
     public void on(final BlockBreakEvent event) {
         final Player player = event.getPlayer();
         final Item item = player.getInventory().getItemInHand();
         final Block block = event.getBlock();
         if (item.hasEnchantment(this.getId()) && (this.oreToDropItem(block).getId() != BlockID.AIR)) {
-            this.checkAndBreak(player, block, event.getDrops());
+            final Enchantment enchantment = item.getEnchantment(this.getId());
+            int maxOres = enchantment.getLevel() == this.getMaxLevel() ? 100 : enchantment.getLevel();
+            this.checkAndBreak(player, block, event.getDrops(), maxOres, 0);
         }
     }
 
-    private void checkAndBreak(final Player player, final Block block, final Item[] drops) {
+    private void checkAndBreak(final Player player, final Block block, final Item[] drops, final int maxOres, int oresBroken) {
         final Block north = block.north();
         final Block east = block.east();
         final Block south = block.south();
@@ -41,46 +48,53 @@ public class EnchantmentVeinMining extends Enchantment implements Listener {
         final Block down = block.down();
         final Block up = block.up();
 
+        if (oresBroken >= maxOres) return;
         if (block.getId() == BlockID.AIR) return;
 
         if (north.getId() == block.getId()) {
+            oresBroken++;
             north.getLevel().setBlock(north.getLocation(), Block.get(BlockID.AIR));
-            this.checkAndBreak(player, north, drops);
+            this.checkAndBreak(player, north, drops, maxOres, oresBroken);
             for (final Item drop : drops) {
                 north.getLevel().dropItem(north.getLocation(), drop);
             }
         }
         if (east.getId() == block.getId()) {
+            oresBroken++;
             east.getLevel().setBlock(east.getLocation(), Block.get(BlockID.AIR));
-            this.checkAndBreak(player, east, drops);
+            this.checkAndBreak(player, east, drops, maxOres, oresBroken);
             for (final Item drop : drops) {
                 east.getLevel().dropItem(east.getLocation(), drop);
             }
         }
         if (south.getId() == block.getId()) {
+            oresBroken++;
             south.getLevel().setBlock(south.getLocation(), Block.get(BlockID.AIR));
-            this.checkAndBreak(player, south, drops);
+            this.checkAndBreak(player, south, drops, maxOres, oresBroken);
             for (final Item drop : drops) {
                 south.getLevel().dropItem(south.getLocation(), drop);
             }
         }
         if (west.getId() == block.getId()) {
+            oresBroken++;
             west.getLevel().setBlock(west.getLocation(), Block.get(BlockID.AIR));
-            this.checkAndBreak(player, west, drops);
+            this.checkAndBreak(player, west, drops, maxOres, oresBroken);
             for (final Item drop : drops) {
                 west.getLevel().dropItem(west.getLocation(), drop);
             }
         }
         if (down.getId() == block.getId()) {
+            oresBroken++;
             down.getLevel().setBlock(down.getLocation(), Block.get(BlockID.AIR));
-            this.checkAndBreak(player, down, drops);
+            this.checkAndBreak(player, down, drops, maxOres, oresBroken);
             for (final Item drop : drops) {
                 down.getLevel().dropItem(down.getLocation(), drop);
             }
         }
         if (up.getId() == block.getId()) {
+            oresBroken++;
             up.getLevel().setBlock(up.getLocation(), Block.get(BlockID.AIR));
-            this.checkAndBreak(player, up, drops);
+            this.checkAndBreak(player, up, drops, maxOres, oresBroken);
             for (final Item drop : drops) {
                 up.getLevel().dropItem(up.getLocation(), drop);
             }
