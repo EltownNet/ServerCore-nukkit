@@ -529,8 +529,8 @@ public class ShopRoleplay {
     }
 
     private final List<double[]> blacksmithEnchantments = new ArrayList<>(Arrays.asList(
-            new double[]{128, 1, 699.95}, new double[]{129, 1, 199.95}, new double[]{130, 1, 199.95}, new double[]{132, 1, 2399.95},
-            new double[]{133, 1, 249.95}, new double[]{134, 1, 599.95}, new double[]{135, 1, 499.95}, new double[]{136, 1, 799.95}, new double[]{137, 1, 999.95}
+            new double[]{128, 1, 699.95, 4}, new double[]{129, 1, 199.95, 0}, new double[]{130, 1, 199.95, 0}, new double[]{132, 1, 2399.95, 8},
+            new double[]{133, 1, 249.95, 7}, new double[]{134, 1, 599.95, 6}, new double[]{135, 1, 499.95, 0}, new double[]{136, 1, 799.95, 0}, new double[]{137, 1, 999.95, 12}
     ));
 
     public void openBlacksmithShop(final Player player) {
@@ -539,7 +539,14 @@ public class ShopRoleplay {
             final SimpleForm.Builder enchantmentForm = new SimpleForm.Builder("§7» §8Meine Verzauberungen", "§8» §fBen §8| §7Informiere dich gut über meine Verzauberungen bei §8» §fMein Angebot§7, damit nichts schief läuft. §2Ich empfehle, ein recht hohes Verzauberungslevel zu kaufen, da man immer den vollen Preis zahlen muss.");
             this.blacksmithEnchantments.forEach(c -> {
                 final EnchantmentID enchantmentID = this.serverCore.getCustomEnchantment().enchantmentId.get((int) c[0]);
-                enchantmentForm.addButton(new ElementButton("§8" + enchantmentID.enchantment() + "\n§fAb: §9$" + Economy.getAPI().getMoneyFormat().format(c[2])), k -> {
+                final String s = c[3] > 0 ? "§8" + enchantmentID.enchantment() + "\n§fLevel: §9" + (int) c[3] + " §8| §fAb: §9$" + Economy.getAPI().getMoneyFormat().format(c[2]) : "§8" + enchantmentID.enchantment() + "\n§fAb: §9$" + Economy.getAPI().getMoneyFormat().format(c[2]);
+
+                enchantmentForm.addButton(new ElementButton(s), k -> {
+                    if (!(this.serverCore.getLevelAPI().getLevel(player.getName()).getLevel() >= c[3])) {
+                        player.sendMessage(Language.get("roleplay.blacksmith.enchantment.invalid.level", (int) c[3]));
+                        this.playSound(player, Sound.NOTE_BASS);
+                        return;
+                    }
 
                     final Enchantment enchantment = Enchantment.getEnchantment((int) c[0]);
                     if (enchantment.getMaxLevel() == 1) {
@@ -634,13 +641,15 @@ public class ShopRoleplay {
                 if (item.getDamage() != 0) {
                     final double costs = (item.getDamage() * 1.30) + 60;
                     final ModalForm modalForm = new ModalForm.Builder("§7» §8Item reparieren", "§fLasse das Item in deiner Hand hier reparieren." +
-                            "\n\n§fGrundgebühr: §a$60\n§fSchadensbehebung: §a$" + Economy.getAPI().getMoneyFormat().format(item.getDamage() * 1.30) +
-                            "\n\n§f§lZu zahlen: §r§a$" + Economy.getAPI().getMoneyFormat().format(costs),
+                            "\n\n§fGrundgebühr: §a$60\n§fSchadensbehebung: §a$" + Economy.getAPI().getMoneyFormat().format(item.getDamage() * 1.30) + "\n§fBenötigte XP-Level: §a10" +
+                            "\n\n§f§lZu zahlen: §r§a$" + Economy.getAPI().getMoneyFormat().format(costs) + " §fund §a10 XP-Level",
                             "§7» §aJetzt reparieren", "§7» §cAbbrechen")
                             .onYes(h -> {
+                                if (h.getExperienceLevel() >= 10) {
                                     Economy.getAPI().getMoney(h, money -> {
                                         if (money >= costs) {
                                             Economy.getAPI().reduceMoney(h, costs);
+                                            h.setExperience(h.getExperience(), h.getExperienceLevel() - 10);
                                             item.setDamage(0);
                                             h.getInventory().setItemInHand(item);
                                             h.sendMessage(Language.get("roleplay.blacksmith.repair.repaired", Economy.getAPI().getMoneyFormat().format(costs)));
@@ -650,6 +659,10 @@ public class ShopRoleplay {
                                             this.playSound(h, Sound.NOTE_BASS);
                                         }
                                     });
+                                } else {
+                                    h.sendMessage(Language.get("roleplay.blacksmith.repair.not.enough.xp"));
+                                    this.playSound(h, Sound.NOTE_BASS);
+                                }
                             })
                             .onNo(this::openBlacksmithShop)
                             .build();

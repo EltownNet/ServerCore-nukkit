@@ -165,6 +165,7 @@ roleplay.blacksmith.repair.not.enough.money: "&7Du hast zu wenig Geld, um dieses
 roleplay.blacksmith.repair.not.enough.xp: "&7Du hast zu wenig XP-Level, um dieses Item reparieren zu lassen."
 roleplay.blacksmith.repair.invalid.damage: "&7Dieses Item muss nicht repariert werden."
 roleplay.blacksmith.repair.invalid.item: "&7Dieses Item kann nicht repariert werden."
+roleplay.blacksmith.enchantment.invalid.level: "&7Du hast ein zu niedriges Level für diese Verzauberung. Benötigtes Level: &eLevel [0]"
 roleplay.bank.account.created: "&7Dein Bankkonto wurde soeben erstellt. Das Passwort des Kontos lautet &a[0]&7."
 roleplay.bank.no.money: "Du hast zu wenig Geld dabei, um dies machen zu können."
 roleplay.bank.invalid.password: "Das Passwort des Kontos ist nicht korrekt."

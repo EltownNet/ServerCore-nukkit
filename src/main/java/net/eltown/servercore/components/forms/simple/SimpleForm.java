@@ -34,7 +34,10 @@ public class SimpleForm {
         FormHandler.simplePending.put(player.getName(), this);
 
         player.showFormWindow(form);
-        Server.getInstance().getScheduler().scheduleDelayedTask(() -> player.sendExperience(player.getExperience()), 20);
+        Server.getInstance().getScheduler().scheduleDelayedTask(() -> {
+            player.sendExperience(player.getExperience());
+            player.sendExperienceLevel(player.getExperienceLevel());
+        }, 20);
     }
 
     public void setClosed(Player player) {
