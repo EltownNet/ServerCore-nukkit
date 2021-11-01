@@ -43,6 +43,12 @@
                 ${basedir}/lib/Economy-1.0.0-SNAPSHOT.jar
             </systemPath>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

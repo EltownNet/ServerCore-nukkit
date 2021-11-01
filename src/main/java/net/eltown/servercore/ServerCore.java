@@ -5,6 +5,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.level.Sound;
 import cn.nukkit.network.protocol.PlaySoundPacket;
 import cn.nukkit.plugin.PluginBase;
+import com.google.common.net.HttpHeaders;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.eltown.servercore.commands.administrative.*;
@@ -12,6 +13,7 @@ import net.eltown.servercore.commands.defaults.PluginsCommand;
 import net.eltown.servercore.commands.defaults.SpawnCommand;
 import net.eltown.servercore.commands.feature.ChestshopCommand;
 import net.eltown.servercore.commands.feature.StartCommand;
+import net.eltown.servercore.commands.feature.VoteCommand;
 import net.eltown.servercore.commands.giftkeys.GiftkeyCommand;
 import net.eltown.servercore.commands.giftkeys.RedeemCommand;
 import net.eltown.servercore.commands.holograms.HologramCommand;
@@ -36,11 +38,20 @@ import net.eltown.servercore.components.roleplay.rathaus.RathausRoleplay;
 import net.eltown.servercore.components.roleplay.shops.ShopRoleplay;
 import net.eltown.servercore.components.tinyrabbit.TinyRabbit;
 import net.eltown.servercore.listeners.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 @Getter
 public class ServerCore extends PluginBase {
@@ -138,6 +149,7 @@ public class ServerCore extends PluginBase {
 
         this.getServer().getCommandMap().register("servercore", new ChestshopCommand(this));
         this.getServer().getCommandMap().register("servercore", new StartCommand(this));
+        this.getServer().getCommandMap().register("servercore", new VoteCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new GiftkeyCommand(this));
         this.getServer().getCommandMap().register("servercore", new RedeemCommand(this));
@@ -306,6 +318,44 @@ public class ServerCore extends PluginBase {
         packet.volume = volume;
         packet.pitch = pitch;
         player.dataPacket(packet);
+    }
+
+    private final String getURL = "https://minecraftpocket-servers.com/api/?object=votes&element=claim&key=1UdYRD3CmGvbFu6A8Qs4qtyQZW2vsxV6WK&username=";
+    private final String setURL = "https://minecraftpocket-servers.com/api/?action=post&object=votes&element=claim&key=1UdYRD3CmGvbFu6A8Qs4qtyQZW2vsxV6WK&username=";
+
+    public void getVote(final String player, final Consumer<String> callback) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                final CloseableHttpClient httpClient = HttpClients.createDefault();
+                final HttpGet request = new HttpGet(this.getURL + player);
+
+                request.addHeader(HttpHeaders.USER_AGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9) Gecko/2008052906 Firefox/3.0");
+
+                CloseableHttpResponse response = httpClient.execute(request);
+                final String code = new BufferedReader(new InputStreamReader(response.getEntity().getContent())).readLine();
+                callback.accept(code);
+
+                httpClient.close();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+    }
+
+    public void setVoted(final String player) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                final CloseableHttpClient httpClient = HttpClients.createDefault();
+
+                final HttpPost send = new HttpPost(this.setURL + player);
+                send.addHeader(HttpHeaders.USER_AGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9) Gecko/2008052906 Firefox/3.0");
+                httpClient.execute(send);
+
+                httpClient.close();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
     }
 
 }
