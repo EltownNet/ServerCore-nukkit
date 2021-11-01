@@ -37,6 +37,7 @@ public class EnchantmentEmeraldFarmer extends Enchantment implements Listener {
                     this.serverCore.getLevelAPI().addExperience(player, 30);
                 }
             } else {
+                player.sendActionBar("§fDamit du dies abbauen kannst, benötigst du die Verzauberung §9Smaragdfarmer§f.");
                 event.setCancelled(true);
             }
         }
