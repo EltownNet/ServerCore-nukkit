@@ -42,6 +42,7 @@ public class VoteCommand extends PluginCommand<ServerCore> {
                                     case CALLBACK_NULL:
                                         player.sendMessage(Language.get("vote.successful.voted", delivery.getData()[1]));
                                         this.getPlugin().playSound(player, Sound.RANDOM_LEVELUP);
+                                        this.getPlugin().setVoted(player.getName());
 
                                         this.getPlugin().getTinyRabbit().send(Queue.CORE_RECEIVE, CoreCalls.REQUEST_BROADCAST_PROXY_MESSAGE.name(), Language.get("vote.vote.broadcast", player.getName()));
                                         break;
