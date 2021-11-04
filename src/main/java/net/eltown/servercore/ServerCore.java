@@ -327,7 +327,7 @@ public class ServerCore extends PluginBase {
         CompletableFuture.runAsync(() -> {
             try {
                 final CloseableHttpClient httpClient = HttpClients.createDefault();
-                final HttpGet request = new HttpGet(this.getURL + player);
+                final HttpGet request = new HttpGet(this.getURL + player.replace(" ", "%20"));
 
                 request.addHeader(HttpHeaders.USER_AGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9) Gecko/2008052906 Firefox/3.0");
 
@@ -347,7 +347,7 @@ public class ServerCore extends PluginBase {
             try {
                 final CloseableHttpClient httpClient = HttpClients.createDefault();
 
-                final HttpPost send = new HttpPost(this.setURL + player);
+                final HttpPost send = new HttpPost(this.setURL + player.replace(" ", "%20"));
                 send.addHeader(HttpHeaders.USER_AGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9) Gecko/2008052906 Firefox/3.0");
                 httpClient.execute(send);
 
