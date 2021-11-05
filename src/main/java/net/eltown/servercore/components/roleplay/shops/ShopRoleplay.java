@@ -150,19 +150,32 @@ public class ShopRoleplay {
         });
         if (player.isOp()) {
             simpleForm.addButton(new ElementButton("§8» §9Preis bearbeiten"), e -> {
-                final CustomForm form = new CustomForm.Builder("§7» §8" + Item.get(id[0], id[1]).getName())
-                        .addElement(new ElementInput("Bitte gebe den neuen Preis für dieses Item an.", "5.95", Economy.getAPI().getMoneyFormat().format(buy)))
-                        .onSubmit((g, h) -> {
-                            try {
-                                final double newPrice = Double.parseDouble(h.getInputResponse(0).replace(",", "."));
-                                Economy.getShopAPI().setPrice(id, newPrice);
-                                player.sendMessage("§fDer Preis für das Item §9" + Item.get(id[0], id[1]).getName() + " §fwurde auf §9$" + Economy.getAPI().getMoneyFormat().format(newPrice) + " §fgesetzt.");
-                            } catch (final Exception exception) {
-                                player.sendMessage("Bitte gebe einen gültigen Preis an.");
-                            }
-                        })
-                        .build();
-                form.send(player);
+                this.serverCore.getTinyRabbit().sendAndReceive(delivery -> {
+                    if (delivery.getKey().equalsIgnoreCase("REQUEST_MIN_BUY_SELL")) {
+                        final double minBuy = Double.parseDouble(delivery.getData()[1]);
+                        final double minSell = Double.parseDouble(delivery.getData()[2]);
+
+                        final CustomForm form = new CustomForm.Builder("§7» §8" + Item.get(id[0], id[1]).getName())
+                                .addElement(new ElementInput("Bitte gebe den neuen Preis für dieses Item an.", "5.95", Economy.getAPI().getMoneyFormat().format(buy)))
+                                .addElement(new ElementInput("Bitte gebe den neuen minimalen Kaufpreis an.", "5.95", Economy.getAPI().getMoneyFormat().format(minBuy)))
+                                .addElement(new ElementInput("Bitte gebe den neuen minimalen Verkaufspreis an.", "5.95", Economy.getAPI().getMoneyFormat().format(minSell)))
+                                .onSubmit((g, h) -> {
+                                    try {
+                                        final double newPrice = Double.parseDouble(h.getInputResponse(0).replace(",", "."));
+                                        final double newMinBuy = Double.parseDouble(h.getInputResponse(1).replace(",", "."));
+                                        final double newMinSell = Double.parseDouble(h.getInputResponse(2).replace(",", "."));
+                                        if (buy != newPrice) Economy.getShopAPI().setPrice(id, newPrice);
+                                        if (minBuy != newMinBuy) this.serverCore.getTinyRabbit().send("api.shops.receive", "UPDATE_MIN_BUY", id[0] + "", id[1] + "", newMinBuy + "");
+                                        if (minSell != newMinSell) this.serverCore.getTinyRabbit().send("api.shops.receive", "UPDATE_MIN_SELL", id[0] + "", id[1] + "", newMinSell + "");
+                                        player.sendMessage("§fDie Einstellungen wurden gespeichert. [newPrice: " + newPrice + "; newMinBuy: " + newMinBuy + "; newMinSell: " + newMinSell + "]");
+                                    } catch (final Exception exception) {
+                                        player.sendMessage("Bitte gebe gültige Daten an.");
+                                    }
+                                })
+                                .build();
+                        form.send(player);
+                    }
+                }, "api.shops.callback", "REQUEST_MIN_BUY_SELL", "" + id[0], "" + id[1]);
             });
         }
         simpleForm.build().send(player);
