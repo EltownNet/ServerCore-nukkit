@@ -40,7 +40,9 @@ public class EnchantmentLumberjack extends Enchantment implements Listener {
 
     @EventHandler
     public void on(final BlockBreakEvent event) {
-        if (event.getPlayer().getInventory().getItemInHand().hasEnchantment(this.getId())) {
+        final Item item = event.getPlayer().getInventory().getItemInHand();
+
+        if (item.hasEnchantment(this.getId())) {
             final LinkedList<Block> blocks = new LinkedList<>();
 
             final Block block = event.getBlock();
@@ -62,14 +64,14 @@ public class EnchantmentLumberjack extends Enchantment implements Listener {
                         offset--;
                     }
 
-                    final AtomicInteger count = new AtomicInteger(0);
+                    event.getItem().setDamage(item.getDamage() + blocks.size());
+                    event.getPlayer().getInventory().setItemInHand(event.getItem());
 
                     blocks.forEach((chop) -> {
-                        Server.getInstance().getScheduler().scheduleDelayedTask(() -> {
-                            chop.getLevel().setBlock(chop.getLocation(), Block.get(BlockID.AIR));
-                            chop.getLevel().dropItem(chop.getLocation(), Item.get(chop.getId(), chop.getDamage(), 1));
-                        }, 2 * count.addAndGet(1));
+                        chop.getLevel().setBlock(chop.getLocation(), Block.get(BlockID.AIR));
+                        chop.getLevel().dropItem(chop.getLocation(), Item.get(chop.getId(), chop.getDamage(), 1));
                     });
+
                 }
             }
         }
