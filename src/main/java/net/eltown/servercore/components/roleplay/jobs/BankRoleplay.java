@@ -277,6 +277,7 @@ public class BankRoleplay {
         this.serverCore.getTinyRabbit().sendAndReceive(delivery -> {
             switch (BankCalls.valueOf(delivery.getKey().toUpperCase())) {
                 case CALLBACK_BANKACCOUNTS_BY_PLAYER:
+                    if (delivery.getData()[1].equals("null")) return;
                     final List<String> list = Arrays.asList(delivery.getData()[1].split("#"));
 
                     final CustomForm form = new CustomForm.Builder("§7» §8Bankkarte verloren")
