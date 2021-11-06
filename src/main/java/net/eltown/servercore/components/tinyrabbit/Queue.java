@@ -24,5 +24,9 @@ public class Queue {
     public static final String QUESTS_RECEIVE = "api.quests.receive";
     public static final String QUESTS_CALLBACK = "api.quests.callback";
     public static final String BANK_CALLBACK = "api.bank.callback";
+    public static final String FRIEND_RECEIVE = "api.friends.receive";
+    public static final String FRIEND_CALLBACK = "api.friends.callback";
+    public static final String SETTINGS_RECEIVE = "api.settings.receive";
+    public static final String SETTINGS_CALLBACK = "api.settings.callback";
 
 }

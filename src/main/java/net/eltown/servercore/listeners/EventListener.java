@@ -15,6 +15,7 @@ import net.eltown.economy.Economy;
 import net.eltown.economy.components.economy.event.MoneyChangeEvent;
 import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.api.intern.ScoreboardAPI;
+import net.eltown.servercore.components.data.friends.FriendCalls;
 import net.eltown.servercore.components.data.groupmanager.GroupCalls;
 import net.eltown.servercore.components.data.level.Level;
 import net.eltown.servercore.components.data.level.LevelCalls;
@@ -143,6 +144,11 @@ public class EventListener implements Listener {
                     ScoreboardAPI.cachedDisplayEntries.put(player.getName() + "/economy", economyEntry);
                     ScoreboardAPI.cachedDisplayEntries.put(player.getName() + "/level", levelEntry);
                 });
+
+                /*
+                 * Friends
+                 */
+                this.instance.getTinyRabbit().send(Queue.FRIEND_RECEIVE, FriendCalls.REQUEST_CREATE_FRIEND_DATA.name(), player.getName());
 
                 /*
                  * Quests

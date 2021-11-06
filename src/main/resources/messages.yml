@@ -222,3 +222,8 @@ vote.successful.voted: "&2Du hast erfolgreich für unseren Server abgestimmt. Vi
 vote.already.voted: "&7Du hast heute bereits schon abgestimmt."
 vote.do.not.spam: "&7Bitte warte einen Moment, bevor du diesen Befehl erneut ausführst."
 vote.vote.broadcast: "&2[0] &fhat soeben gevotet und tolle Belohnungen erhalten! &8[&0/vote&8]"
+
+friend.invalid.input: "&7Fehlerhafte Angaben: Bitte überprüfe diese."
+friend.already.friends: "&7Du bist bereits mit &0[0] &7befreundet."
+friend.friendship.created: "&2Du bist nun mit &0[0] &2befreundet."
+friend.request.created: "&2Du hast &0[0] &2eine Freundschaftsanfrage gesendet."

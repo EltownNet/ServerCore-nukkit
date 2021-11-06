@@ -12,8 +12,10 @@ import net.eltown.servercore.commands.administrative.*;
 import net.eltown.servercore.commands.defaults.PluginsCommand;
 import net.eltown.servercore.commands.defaults.SpawnCommand;
 import net.eltown.servercore.commands.feature.ChestshopCommand;
+import net.eltown.servercore.commands.feature.SettingsCommand;
 import net.eltown.servercore.commands.feature.StartCommand;
 import net.eltown.servercore.commands.feature.VoteCommand;
+import net.eltown.servercore.commands.friends.FriendCommand;
 import net.eltown.servercore.commands.giftkeys.GiftkeyCommand;
 import net.eltown.servercore.commands.giftkeys.RedeemCommand;
 import net.eltown.servercore.commands.holograms.HologramCommand;
@@ -148,8 +150,11 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new SpawnCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new ChestshopCommand(this));
+        this.getServer().getCommandMap().register("servercore", new SettingsCommand(this));
         this.getServer().getCommandMap().register("servercore", new StartCommand(this));
         this.getServer().getCommandMap().register("servercore", new VoteCommand(this));
+
+        this.getServer().getCommandMap().register("servercore", new FriendCommand(this));
 
         this.getServer().getCommandMap().register("servercore", new GiftkeyCommand(this));
         this.getServer().getCommandMap().register("servercore", new RedeemCommand(this));
