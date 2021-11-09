@@ -603,9 +603,9 @@ public class ShopRoleplay {
             final Item item = e.getInventory().getItemInHand();
             if (item.isArmor() || item.isTool() || item.isShears()) {
                 if (item.getDamage() != 0) {
-                    final double costs = (item.getDamage() * 1.30) + 60;
+                    final double costs = (item.getDamage() * .29) + 60;
                     final ModalForm modalForm = new ModalForm.Builder("§7» §8Item reparieren", "§fLasse das Item in deiner Hand hier reparieren." +
-                            "\n\n§fGrundgebühr: §a$60\n§fSchadensbehebung: §a$" + Economy.getAPI().getMoneyFormat().format(item.getDamage() * 1.30) + "\n§fBenötigte XP-Level: §a10" +
+                            "\n\n§fGrundgebühr: §a$60\n§fSchadensbehebung: §a$" + Economy.getAPI().getMoneyFormat().format(item.getDamage() * .29) + "\n§fBenötigte XP-Level: §a10" +
                             "\n\n§f§lZu zahlen: §r§a$" + Economy.getAPI().getMoneyFormat().format(costs) + " §fund §a10 XP-Level",
                             "§7» §aJetzt reparieren", "§7» §cAbbrechen")
                             .onYes(h -> {
