@@ -9,6 +9,7 @@ import com.google.common.net.HttpHeaders;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.eltown.servercore.commands.administrative.*;
+import net.eltown.servercore.commands.defaults.FixCommand;
 import net.eltown.servercore.commands.defaults.PluginsCommand;
 import net.eltown.servercore.commands.defaults.SpawnCommand;
 import net.eltown.servercore.commands.feature.ChestshopCommand;
@@ -181,6 +182,8 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new TicketCommand(this));
         if (this.serverName.equals("server-2") || this.serverName.equals("server-3"))
             this.getServer().getCommandMap().register("servercore", new SetSpawnProtectionCommand(this));
+
+        this.getServer().getCommandMap().register("servercore", new FixCommand(this));
 
         this.hologramAPI = new HologramAPI(this);
         this.levelAPI = new LevelAPI(this);
