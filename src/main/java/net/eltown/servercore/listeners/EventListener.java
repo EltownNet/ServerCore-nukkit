@@ -22,6 +22,8 @@ import net.eltown.servercore.components.data.level.LevelCalls;
 import net.eltown.servercore.components.data.quests.Quest;
 import net.eltown.servercore.components.data.quests.QuestCalls;
 import net.eltown.servercore.components.data.quests.QuestPlayer;
+import net.eltown.servercore.components.data.settings.AccountSettings;
+import net.eltown.servercore.components.data.settings.SettingsCalls;
 import net.eltown.servercore.components.data.teleportation.TeleportationCalls;
 import net.eltown.servercore.components.event.QuestCompleteEvent;
 import net.eltown.servercore.components.forms.simple.SimpleForm;
@@ -144,6 +146,24 @@ public class EventListener implements Listener {
                     ScoreboardAPI.cachedDisplayEntries.put(player.getName() + "/economy", economyEntry);
                     ScoreboardAPI.cachedDisplayEntries.put(player.getName() + "/level", levelEntry);
                 });
+
+                /*
+                 * Settings
+                 */
+                this.instance.getTinyRabbit().sendAndReceive(delivery -> {
+                    switch (SettingsCalls.valueOf(delivery.getKey().toUpperCase())) {
+                        case CALLBACK_SETTINGS:
+                            if (!delivery.getData()[1].equals("null")) {
+                                final Map<String, String> map = new HashMap<>();
+                                final List<String> list = Arrays.asList(delivery.getData()[1].split(">:<"));
+                                list.forEach(e -> {
+                                    map.put(e.split(":")[0], e.split(":")[1]);
+                                });
+                                this.instance.getSettingsAPI().cachedSettings.put(player.getName(), new AccountSettings(player.getName(), map));
+                            } else this.instance.getSettingsAPI().cachedSettings.put(player.getName(), new AccountSettings(player.getName(), new HashMap<>()));
+                            break;
+                    }
+                }, Queue.SETTINGS_CALLBACK, SettingsCalls.REQUEST_SETTINGS.name(), player.getName());
 
                 /*
                  * Friends
@@ -449,6 +469,10 @@ public class EventListener implements Listener {
             final Level level = this.instance.getLevelAPI().getLevel(player.getName());
             this.instance.getTinyRabbit().send(Queue.LEVEL_RECEIVE, LevelCalls.REQUEST_UPDATE_TO_DATABASE.name(),
                     player.getName(), String.valueOf(level.getLevel()), String.valueOf(level.getExperience()));
+
+            if (this.instance.getSettingsAPI().hasChanges.contains(player.getName())) {
+                this.instance.getSettingsAPI().updateAll(player.getName());
+            }
         }
     }
 

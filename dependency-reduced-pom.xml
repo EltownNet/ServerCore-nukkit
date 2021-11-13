@@ -122,6 +122,13 @@
       <scope>system</scope>
       <systemPath>${basedir}/lib/Economy-1.0.0-SNAPSHOT.jar</systemPath>
     </dependency>
+    <dependency>
+      <groupId>net.eltown.quadplots</groupId>
+      <artifactId>QuadPlots</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/lib/QuadPlots-1.0.0-SNAPSHOT.jar</systemPath>
+    </dependency>
   </dependencies>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

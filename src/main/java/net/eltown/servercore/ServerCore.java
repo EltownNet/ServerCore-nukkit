@@ -70,6 +70,7 @@ public class ServerCore extends PluginBase {
     private ChestShopAPI chestShopAPI;
     private FurnaceAPI furnaceAPI;
     private QuestAPI questAPI;
+    private SettingsAPI settingsAPI;
 
     private CustomEnchantment customEnchantment;
 
@@ -192,6 +193,7 @@ public class ServerCore extends PluginBase {
         this.chestShopAPI = new ChestShopAPI(this);
         this.furnaceAPI = new FurnaceAPI(this);
         this.questAPI = new QuestAPI(this);
+        this.settingsAPI = new SettingsAPI(this);
 
         this.customEnchantment = new CustomEnchantment(this);
 

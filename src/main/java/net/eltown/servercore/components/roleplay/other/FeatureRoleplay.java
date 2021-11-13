@@ -130,7 +130,7 @@ public class FeatureRoleplay {
                         return;
                     }
 
-                    if (((calendarReward.get(Calendar.DAY_OF_YEAR) + 1) == calendarNow.get(Calendar.DAY_OF_YEAR)) && (calendarReward.get(Calendar.YEAR) == calendarNow.get(Calendar.YEAR)) && !(rewardPlayer.getDay() > 14)) {
+                    if (((calendarReward.get(Calendar.DAY_OF_YEAR) + 1) == calendarNow.get(Calendar.DAY_OF_YEAR)) && (calendarReward.get(Calendar.YEAR) == calendarNow.get(Calendar.YEAR)) && !(rewardPlayer.getDay() >= 14)) {
                         this.serverCore.getTinyRabbit().sendAndReceive(delivery1 -> {
                             switch (RewardCalls.valueOf(delivery1.getKey().toUpperCase())) {
                                 case CALLBACK_REWARDS:
@@ -168,7 +168,7 @@ public class FeatureRoleplay {
                                     break;
                             }
                         }, Queue.REWARDS_CALLBACK, RewardCalls.REQUEST_REWARDS.name(), String.valueOf(rewardPlayer.getDay() + 1));
-                    } else if (rewardPlayer.getDay() > 14) {
+                    } else if (rewardPlayer.getDay() >= 14) {
                         this.serverCore.getTinyRabbit().send(Queue.REWARDS_RECEIVE, RewardCalls.REQUEST_RESET_STREAK.name(), player.getName());
                         this.serverCore.getTinyRabbit().sendAndReceive(delivery1 -> {
                             switch (RewardCalls.valueOf(delivery1.getKey().toUpperCase())) {

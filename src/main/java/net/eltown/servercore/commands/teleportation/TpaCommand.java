@@ -48,7 +48,7 @@ public class TpaCommand extends PluginCommand<ServerCore> {
                                             break;
                                     }
                                 }, Queue.TELEPORTATION_CALLBACK, TeleportationCalls.REQUEST_SEND_TPA.name(), player.getName(), target);
-                            }
+                            } else player.sendMessage(Language.get("tpa.target.offline"));
                             break;
                     }
                 }), Queue.CORE_CALLBACK, CoreCalls.REQUEST_GET_ONLINE_PLAYERS.name());

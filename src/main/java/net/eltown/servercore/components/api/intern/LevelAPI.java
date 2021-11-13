@@ -90,6 +90,20 @@ public class LevelAPI {
     }
 
     public Level getLevel(final String player) {
+        if (!this.cachedData.containsKey(player)) {
+            this.instance.getTinyRabbit().sendAndReceive(delivery -> {
+                switch (LevelCalls.valueOf(delivery.getKey().toUpperCase())) {
+                    case CALLBACK_LEVEL:
+                        this.instance.getLevelAPI().cachedData.put(player, new Level(
+                                delivery.getData()[1],
+                                Integer.parseInt(delivery.getData()[2]),
+                                Double.parseDouble(delivery.getData()[3])
+                        ));
+                        break;
+                }
+            }, Queue.LEVEL_CALLBACK, LevelCalls.REQUEST_GET_LEVEL.name(), player);
+        }
+
         return this.cachedData.get(player);
     }
 
