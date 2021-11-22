@@ -238,3 +238,8 @@ friend.no.friendship: "&7Du bist nicht mit &0[0] &7befreundet."
 friend.settings.updated: "&7Deine Einstellungen wurden aktualisiert."
 friend.request.denied.other: "&0[0] &7hat deine Freundschaftsanfrage abgelehnt."
 friend.request.received: "&2Du hast eine Freundschaftsanfrage von &0[0] &2erhalten!"
+
+sign.usage: "Nutze: /sign <Nachricht>"
+sign.invalid.item: "Dieses Item kann nicht signiert werden."
+sign.already.signed: "Dieses Item ist bereits signiert."
+sign.item.signed: "&2Das Item wurde erfolgreich signiert."

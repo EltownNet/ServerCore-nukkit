@@ -12,6 +12,7 @@ import cn.nukkit.form.element.ElementInput;
 import cn.nukkit.form.element.ElementLabel;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
+import cn.nukkit.utils.Config;
 import lombok.RequiredArgsConstructor;
 import net.eltown.economy.Economy;
 import net.eltown.servercore.ServerCore;
@@ -45,10 +46,44 @@ import java.util.function.Consumer;
 public class FeatureRoleplay {
 
     private final ServerCore serverCore;
+    private final Config calendarConfig;
+
+    private final HashMap<String, List<Integer>> cachedCalendar = new HashMap<>();
+    private final HashMap<Integer, List<String>> cachedCalendarRewards = new HashMap<>();
 
     public FeatureRoleplay(final ServerCore serverCore) {
         this.serverCore = serverCore;
         serverCore.getServer().getPluginManager().registerEvents(new FeatureRoleplay.FeatureListener(this), serverCore);
+        this.calendarConfig = new Config(serverCore.getDataFolder() + "/components/adventskalender.yml", Config.YAML);
+
+        for (final String d : this.calendarConfig.getSection("data").getKeys(false)) {
+            this.cachedCalendar.put(d, this.calendarConfig.getIntegerList("data." + d));
+        }
+
+        this.cachedCalendarRewards.put(1, new ArrayList<>(Arrays.asList("money;50", "item;168:0:32:not", "item;357:0:16:not")));
+        this.cachedCalendarRewards.put(2, new ArrayList<>(Arrays.asList("money;50", "item;403:0:1:CgAACQQAZW5jaAoBAAAAAgMAbHZsAgACAgBpZCQAAAA=")));
+        this.cachedCalendarRewards.put(3, new ArrayList<>(Arrays.asList("money;50", "item;169:0:32:not")));
+        this.cachedCalendarRewards.put(4, new ArrayList<>(Arrays.asList("money;50", "item;35:0:32:not", "item;357:0:16:not")));
+        this.cachedCalendarRewards.put(5, new ArrayList<>(Arrays.asList("money;50", "xp;250", "item;266:0:16:not", "item;265:0:32:not")));
+        this.cachedCalendarRewards.put(6, new ArrayList<>(Arrays.asList("money;50", "xp;250", "item;264:0:8:not", "item;368:0:16:not", "item;369:0:1:CgAACQQAZW5jaAoBAAAAAgMAbHZsAQACAgBpZAwAAAMKAFJlcGFpckNvc3QAAAAACgcAZGlzcGxheQkEAExvcmUIBAAAAB4Awqc4LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tQQDCp3LCpzBJdGVtIHNpZ25pZXJ0IHZvbiDCpzJKdXN0aW5MTERWIMKnMGFtIMKnMjIxLjExLjIxIDE1OjU0wqcwLjQAwqdywqc3wqdlRGllIFNwZWt1bGF0aXVzc3RhbmdlOiBSaWVjaHQgdW5kIFNjaG1lY2t0IR4Awqc4LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCAQATmFtZRQAwqdlU3Bla3VsYXRpdXNzdGFuZ2UAAA==")));
+        this.cachedCalendarRewards.put(7, new ArrayList<>(Arrays.asList("money;50", "item;46:0:32:not")));
+        this.cachedCalendarRewards.put(8, new ArrayList<>(Arrays.asList("money;50", "item;47:0:16:not")));
+        this.cachedCalendarRewards.put(9, new ArrayList<>(Arrays.asList("money;50", "item;384:0:32:not", "item;357:0:16:not")));
+        this.cachedCalendarRewards.put(10, new ArrayList<>(Arrays.asList("money;50", "item;315:0:1:CgAACQQAZW5jaAoEAAAAAgMAbHZsBAACAgBpZAEAAAIDAGx2bAMAAgIAaWQAAAACAwBsdmwDAAICAGlkEQAAAgMAbHZsAgACAgBpZAUAAAMKAFJlcGFpckNvc3QAAAAACgcAZGlzcGxheQgEAE5hbWUZAMKncsKnNsKnbFdlaWhuYWNodHNtYW50ZWwAAA==")));
+        this.cachedCalendarRewards.put(11, new ArrayList<>(Arrays.asList("money;50", "item;736:0:20:not")));
+        this.cachedCalendarRewards.put(12, new ArrayList<>(Arrays.asList("money;50", "xp;250", "item;80:0:64:not", "item;174:0:32:not", "item;-11:0:32:not")));
+        this.cachedCalendarRewards.put(13, new ArrayList<>(Arrays.asList("money;50", "item;421:0:1:not")));
+        this.cachedCalendarRewards.put(14, new ArrayList<>(Arrays.asList("money;50", "item;46:0:32:not", "item;357:0:16:not")));
+        this.cachedCalendarRewards.put(15, new ArrayList<>(Arrays.asList("money;50", "item;257:0:1:CgAACQQAZW5jaAoDAAAAAgMAbHZsAgACAgBpZBIAAAIDAGx2bAIAAgIAaWQPAAACAwBsdmwCAAICAGlkEQAAAwoAUmVwYWlyQ29zdAAAAAAKBwBkaXNwbGF5CAQATmFtZRgAwqdywqc1wqdsV2VpaG5hY2h0c2hhY2tlAAA=")));
+        this.cachedCalendarRewards.put(16, new ArrayList<>(Arrays.asList("money;50", "item;384:0:32:not")));
+        this.cachedCalendarRewards.put(17, new ArrayList<>(Arrays.asList("money;50", "item;736:0:20:not")));
+        this.cachedCalendarRewards.put(18, new ArrayList<>(Arrays.asList("money;50", "item;216:0:16:not", "item;357:0:16:not")));
+        this.cachedCalendarRewards.put(19, new ArrayList<>(Arrays.asList("money;50", "xp;250", "item;264:0:6:not", "item;-220:0:10:not")));
+        this.cachedCalendarRewards.put(20, new ArrayList<>(Arrays.asList("money;50", "item;47:0:16:not")));
+        this.cachedCalendarRewards.put(21, new ArrayList<>(Arrays.asList("money;50", "item;46:0:32:not")));
+        this.cachedCalendarRewards.put(22, new ArrayList<>(Arrays.asList("money;50", "item;121:0:8:not", "item;357:0:16:not")));
+        this.cachedCalendarRewards.put(23, new ArrayList<>(Arrays.asList("money;50", "item;384:0:32:not")));
+        this.cachedCalendarRewards.put(24, new ArrayList<>(Arrays.asList("money;50", "xp;500", "item;752:0:2:not", "item;357:0:16:not")));
     }
 
     private final List<String> openQueue = new ArrayList<>();
@@ -267,6 +302,68 @@ public class FeatureRoleplay {
                     break;
             }
         }, Queue.GIFTKEYS_CALLBACK, GiftkeyCalls.REQUEST_USER_CODES.name(), player.getName());
+
+        form.addButton(new ElementButton("§8» §4Advents§fkalender", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/rewards/adventskalender.png")), e -> {
+            final Calendar calendarNow = new GregorianCalendar();
+            calendarNow.setTime(new Date(System.currentTimeMillis()));
+            calendarNow.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+
+            if (calendarNow.get(Calendar.DAY_OF_MONTH) >= 25) {
+                player.sendMessage("§8» §fCore §8| §7Alle Türchen des Adventskalenders sind verschlossen.");
+                return;
+            }
+
+            if (calendarNow.get(Calendar.MONTH) == Calendar.DECEMBER) {
+                final SimpleForm.Builder calendar = new SimpleForm.Builder("§7» §4Advents§fkalender", "§8» §fKlicke eines der Türchen an, um deine heutige Adventbelohnung zu erhalten!\n§7Heute ist Türchen §9" + calendarNow.get(Calendar.DAY_OF_MONTH) + " §7dran.\n\n§8[§c!§8] §cStelle sicher, dass du genug Plätze in deinem Inventar frei hast.");
+                if (!this.cachedCalendar.containsKey(player.getName())) this.cachedCalendar.put(player.getName(), new ArrayList<>());
+                for (int i = 1; i < 25; i++) {
+                    final int day = i;
+                    final String status = calendarNow.get(Calendar.DAY_OF_MONTH) == day ? !this.cachedCalendar.get(player.getName()).contains(day) ? "§2§lÖffnen" : "" : "";
+                    calendar.addButton(new ElementButton("§8» §4Türchen   §f§l" + day + "\n" + status), g -> {
+                        if (calendarNow.get(Calendar.DAY_OF_MONTH) == day) {
+                            if (!this.cachedCalendar.get(player.getName()).contains(day)) {
+                                this.cachedCalendarRewards.get(day).forEach(reward -> {
+                                    final String[] data = reward.split(";");
+                                    switch (data[0]) {
+                                        case "xp":
+                                            this.serverCore.getLevelAPI().addExperience(player, Double.parseDouble(data[1]));
+                                            player.sendMessage("§8» §fCore §8| §7Du hast §d" + Double.parseDouble(data[1]) + " XP-Punkte §7erhalten.");
+                                            break;
+                                        case "money":
+                                            Economy.getAPI().addMoney(player, Double.parseDouble(data[1]));
+                                            player.sendMessage("§8» §fCore §8| §7Du hast §a$" + Double.parseDouble(data[1]) + " §7erhalten.");
+                                            break;
+                                        case "item":
+                                            final Item item = SyncAPI.ItemAPI.pureItemFromStringWithCount(data[1]);
+                                            player.getInventory().addItem(item);
+                                            player.sendMessage("§8» §fCore §8| §7Du hast §9" + item.getCount() + "x §7das Item §9" + item.getName() + " §7erhalten.");
+                                            break;
+                                    }
+                                });
+                                player.sendMessage("§8» §fCore §8| §2Du hast das §0" + day + ". Türchen §2geöffnet!");
+                                this.serverCore.playSound(player, Sound.RANDOM_LEVELUP);
+
+                                final List<Integer> days = this.cachedCalendar.get(player.getName());
+                                days.add(day);
+                                this.calendarConfig.set("data." + player.getName(), days);
+                                this.calendarConfig.save();
+                                this.calendarConfig.reload();
+
+                                if (day == 24 && this.cachedCalendar.get(player.getName()).size() == 24) {
+                                    final Item item = SyncAPI.ItemAPI.pureItemFromStringWithCount("-206:0:1:CgAAAwoAUmVwYWlyQ29zdAAAAAAKBwBkaXNwbGF5CQQATG9yZQgEAAAAHgDCpzgtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0+AMKncsKnMEl0ZW0gc2lnbmllcnQgdm9uIMKnMkphbkxMRFYgwqcwYW0gwqcyMjEuMTEuMjEgMTA6MzPCpzAuNADCp3LCpzfCpzZOdW4ga2FubiBlbmRsaWNoIGRlciBXZWlobmFjaHRzbWFubiBrb21tZW4hHgDCpzgtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0IBABOYW1lIQDCp3LCp2PCp2xXZWlobmFjaHRzZ2xvY2tlIMKncjIwMjEAAA==");
+                                    player.getInventory().addItem(item);
+                                    player.sendMessage("§8» §fCore §8| §2Du hast ein §0Spezial-Item §2erhalten, da du alle Türchen geöffnet hast!");
+                                }
+
+                                if (day == 24) player.sendMessage("§8» §fCore §8| §cFrohe Weihnachten!");
+                            } else player.sendMessage("§8» §fCore §8| §7Dieses Türchen hast du bereits geöffnet.");
+                        } else player.sendMessage("§8» §fCore §8| §7Dieses Türchen ist verschlossen.");
+                    });
+                }
+                calendar.addButton(new ElementButton("§8» §cZurück", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/back.png")), this::openReward);
+                calendar.build().send(player);
+            } else player.sendMessage("§8» §fCore §8| §7Dieses Feature ist nur im Dezember verfügbar.");
+        });
 
         form.build().send(player);
     }
