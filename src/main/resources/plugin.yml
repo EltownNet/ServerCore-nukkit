@@ -2,8 +2,8 @@ name: ServerCore
 version: 1.0.0-SNAPSHOT
 api: 1.0.0
 authors:
-  - Mundschutziii
-  - Proxma
+  - JanLLDV
+  - JustinLLDV
 main: net.eltown.servercore.ServerCore
 description: Kernfunktionen für Eltown
 depend:
