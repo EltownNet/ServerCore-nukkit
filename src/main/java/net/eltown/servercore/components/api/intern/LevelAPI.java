@@ -73,6 +73,8 @@ public class LevelAPI {
                         player.getInventory().addItem(item);
                     } else if (rewardData[0].startsWith("permission")) {
                         this.instance.getGroupAPI().addPlayerPermission(player.getName(), rewardData[1]);
+                    } else if (rewardData[0].startsWith("crate")) {
+                        this.instance.getCrateAPI().addCrate(player.getName(), rewardData[1], Integer.parseInt(rewardData[2]));
                     }
                     break;
             }

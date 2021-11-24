@@ -39,7 +39,7 @@ public class GiftkeyCommand extends PluginCommand<ServerCore> {
                 .addElement(new ElementStepSlider("Bitte wähle aus, wie viel Inhalt ein Key haben soll.", Arrays.asList("1", "2", "3", "4", "5"), 1))
                 .onSubmit((i, o) -> {
                     final CustomForm.Builder form1 = new CustomForm.Builder("§7» §8Giftkey erstellen");
-                    form1.addElement(new ElementLabel("Reward-Formate:\n§7item;<slot>\n§7money;amount\nlevelxp;amount\nrank;name;timeunit;time"));
+                    form1.addElement(new ElementLabel("Reward-Formate:\n§7item;<slot>\n§7money;amount\nlevelxp;amount\nrank;name;timeunit;time\ncrate;type;amount"));
                     form1.addElement(new ElementSlider("Bitte gebe an, wie viele Spieler diesen Key einlösen können.", 1, 250, 1, 1));
                     form1.addElement(new ElementInput("Gebe optional an, für welche Spieler dieser Gutschein vorbemerkt werden soll.", "EltownUser123;LolUser9283;ABCspieler"));
 

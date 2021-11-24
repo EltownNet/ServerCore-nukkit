@@ -47,7 +47,7 @@ public class VoteCommand extends PluginCommand<ServerCore> {
                                         this.getPlugin().getTinyRabbit().send(Queue.CORE_RECEIVE, CoreCalls.REQUEST_BROADCAST_PROXY_MESSAGE.name(), Language.get("vote.vote.broadcast", player.getName()));
                                         break;
                                 }
-                            }, Queue.GIFTKEYS_CALLBACK, GiftkeyCalls.REQUEST_CREATE_KEY.name(), String.valueOf(1), "levelxp;200>:<money;50", player.getName());
+                            }, Queue.GIFTKEYS_CALLBACK, GiftkeyCalls.REQUEST_CREATE_KEY.name(), String.valueOf(1), "levelxp;200>:<money;25>:<crate;common;2", player.getName());
                             break;
                         case "2":
                             player.sendMessage(Language.get("vote.already.voted"));

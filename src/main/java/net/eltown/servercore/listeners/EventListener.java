@@ -15,6 +15,7 @@ import net.eltown.economy.Economy;
 import net.eltown.economy.components.economy.event.MoneyChangeEvent;
 import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.api.intern.ScoreboardAPI;
+import net.eltown.servercore.components.data.crates.CratesCalls;
 import net.eltown.servercore.components.data.friends.FriendCalls;
 import net.eltown.servercore.components.data.groupmanager.GroupCalls;
 import net.eltown.servercore.components.data.level.Level;
@@ -169,6 +170,12 @@ public class EventListener implements Listener {
                  * Friends
                  */
                 this.instance.getTinyRabbit().send(Queue.FRIEND_RECEIVE, FriendCalls.REQUEST_CREATE_FRIEND_DATA.name(), player.getName());
+
+                /*
+                 * Crates
+                 */
+                this.instance.getTinyRabbit().send(Queue.CRATES_RECEIVE, CratesCalls.REQUEST_CREATE_PLAYER_DATA.name(), player.getName());
+                player.getLevel().addParticle(this.instance.getFeatureRoleplay().crateHologram);
 
                 /*
                  * Quests

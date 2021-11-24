@@ -179,6 +179,10 @@ public class QuestAPI {
                             this.instance.getGroupAPI().addPlayerPermission(player.getName(), reward[1]);
                             player.sendMessage(Language.get("quest.reward.permission", reward[2]));
                             break;
+                        case "crate":
+                            this.instance.getCrateAPI().addCrate(player.getName(), reward[1], Integer.parseInt(reward[2]));
+                            player.sendMessage(Language.get("quest.reward.crate", this.instance.getFeatureRoleplay().convertToDisplay(reward[1]), Integer.parseInt(reward[2])));
+                            break;
                     }
                 });
                 player.sendMessage(" ");

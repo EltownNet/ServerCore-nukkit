@@ -9,6 +9,7 @@ import com.google.common.net.HttpHeaders;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.eltown.servercore.commands.administrative.*;
+import net.eltown.servercore.commands.crates.CrateCommand;
 import net.eltown.servercore.commands.defaults.FixCommand;
 import net.eltown.servercore.commands.defaults.PluginsCommand;
 import net.eltown.servercore.commands.defaults.SpawnCommand;
@@ -68,6 +69,7 @@ public class ServerCore extends PluginBase {
     private FurnaceAPI furnaceAPI;
     private QuestAPI questAPI;
     private SettingsAPI settingsAPI;
+    private CrateAPI crateAPI;
 
     private CustomEnchantment customEnchantment;
 
@@ -146,6 +148,8 @@ public class ServerCore extends PluginBase {
         this.getServer().getCommandMap().register("servercore", new ModelCommand(this));
         this.getServer().getCommandMap().register("servercore", new PrintitemCommand(this));
 
+        this.getServer().getCommandMap().register("servercore", new CrateCommand(this));
+
         this.getServer().getCommandMap().register("servercore", new PluginsCommand(this));
         this.getServer().getCommandMap().register("servercore", new SpawnCommand(this));
 
@@ -193,6 +197,7 @@ public class ServerCore extends PluginBase {
         this.furnaceAPI = new FurnaceAPI(this);
         this.questAPI = new QuestAPI(this);
         this.settingsAPI = new SettingsAPI(this);
+        this.crateAPI = new CrateAPI(this);
 
         this.customEnchantment = new CustomEnchantment(this);
 

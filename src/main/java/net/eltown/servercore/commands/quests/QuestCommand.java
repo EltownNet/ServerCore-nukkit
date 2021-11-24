@@ -110,7 +110,7 @@ public class QuestCommand extends PluginCommand<ServerCore> {
                                 .addElement(new ElementInput("§8» §fBitte gebe an, wie hoch der benötigte Wert liegen soll, bis die Quest erledigt ist. (Z. B.: Baue §c15 §fBlöcke ab.)", "15", String.valueOf(quest.getRequired())))
                                 .addElement(new ElementInput("§8» §fBitte gebe an, wie lange ein Spieler für diese Quest Zeit hat. (In Stunden)", "3", String.valueOf(quest.getExpire() / 1000 / 60 / 60)))
                                 .addElement(new ElementLabel("§8» §fBitte gebe die Belohnungen an, die in der Quest beinhaltet sind."))
-                                .addElement(new ElementInput("Allgemeines Trennzeichen: -#-\n\n§7- xp#<amount>\n§7- money#<amount>\n§7- item#<itemSlot>\n§7- gutschein#<gutscheinData>\n§7- permission#<key>#<description>\n", "xp#200", quest.getRewardData()))
+                                .addElement(new ElementInput("Allgemeines Trennzeichen: -#-\n\n§7- xp#<amount>\n§7- money#<amount>\n§7- item#<itemSlot>\n§7- gutschein#<gutscheinData>\n§7- permission#<key>#<description>\n§7- crate#<type>#<amount>\n", "xp#200", quest.getRewardData()))
                                 .addElement(new ElementToggle("§8» §fQuest-Reward-Items aktualisieren.", false))
                                 .addElement(new ElementInput("§8» §fSoll diese Quest mit einem QuestNPC verlinkt werden? Wenn nicht, gebe 'null' an.", "Lola", quest.getLink()))
                                 .onSubmit((g, h) -> {
@@ -193,7 +193,7 @@ public class QuestCommand extends PluginCommand<ServerCore> {
                 .addElement(new ElementInput("§8» §fBitte gebe an, wie hoch der benötigte Wert liegen soll, bis die Quest erledigt ist. (Z. B.: Baue §c15 §fBlöcke ab.)", "15"))
                 .addElement(new ElementInput("§8» §fBitte gebe an, wie lange ein Spieler für diese Quest Zeit hat. (In Stunden)", "3"))
                 .addElement(new ElementLabel("§8» §fBitte gebe die Belohnungen an, die in der Quest beinhaltet sind."))
-                .addElement(new ElementInput("Allgemeines Trennzeichen: -#-\n\n§7- xp#<amount>\n§7- money#<amount>\n§7- item#<itemSlot>\n§7- gutschein#<gutscheinData>\n§7- permission#<key>#<description>\n", "xp#200"))
+                .addElement(new ElementInput("Allgemeines Trennzeichen: -#-\n\n§7- xp#<amount>\n§7- money#<amount>\n§7- item#<itemSlot>\n§7- gutschein#<gutscheinData>\n§7- permission#<key>#<description>\n§7- crate#<type>#<amount>\n", "xp#200"))
                 .addElement(new ElementInput("§8» §fSoll diese Quest mit einem QuestNPC verlinkt werden? Wenn nicht, gebe 'null' an.", "Lola"))
                 .onSubmit((g, h) -> {
                     try {

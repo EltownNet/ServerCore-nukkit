@@ -11,6 +11,7 @@ public class ServerCoreAPI {
     private static ChestShopAPI chestShopAPI;
     private static QuestAPI questAPI;
     private static SettingsAPI settingsAPI;
+    private static CrateAPI crateAPI;
 
     public ServerCoreAPI(final ServerCore serverCore) {
         hologramAPI = serverCore.getHologramAPI();
@@ -19,6 +20,7 @@ public class ServerCoreAPI {
         chestShopAPI = serverCore.getChestShopAPI();
         questAPI = serverCore.getQuestAPI();
         settingsAPI = serverCore.getSettingsAPI();
+        crateAPI = serverCore.getCrateAPI();
     }
 
     public static HologramAPI getHologramAPI() {
@@ -43,5 +45,9 @@ public class ServerCoreAPI {
 
     public static SettingsAPI getSettingsAPI() {
         return settingsAPI;
+    }
+
+    public static CrateAPI getCrateAPI() {
+        return crateAPI;
     }
 }
