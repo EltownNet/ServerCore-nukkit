@@ -16,9 +16,11 @@ import cn.nukkit.scheduler.Task;
 import net.eltown.economy.Economy;
 import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.api.intern.SyncAPI;
+import net.eltown.servercore.components.data.CoreCalls;
 import net.eltown.servercore.components.data.crates.Raffle;
 import net.eltown.servercore.components.data.crates.data.CrateReward;
 import net.eltown.servercore.components.language.Language;
+import net.eltown.servercore.components.tinyrabbit.Queue;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -48,13 +50,11 @@ public class RaffleTask extends Task {
             final CrateReward reward = this.raffle.getFinalReward();
 
             this.hologram.setTitle(reward.getDisplayName());
-            this.serverCore.getServer().getDefaultLevel().addParticle(this.hologram);
             this.player.getLevel().addSound(this.hologram.add(0), Sound.RANDOM_CLICK);
 
             Server.getInstance().getScheduler().scheduleDelayedTask(() -> {
                 this.hologram.setTitle("§2§l> §r" + reward.getDisplayName() + " §r§2§l<");
-                this.serverCore.getServer().getDefaultLevel().addParticle(this.hologram);
-                this.player.getLevel().addSound(this.hologram.add(0), Sound.FIREWORK_LAUNCH);
+                this.player.getLevel().addSound(this.hologram.add(0), Sound.NOTE_PLING, 1, 3);
                 Server.getInstance().getScheduler().scheduleDelayedTask(() -> {
                     final CompoundTag nbt = Entity.getDefaultNBT(this.hologram.add(0));
                     nbt.putCompound("FireworkItem", NBTIO.putItemHelper(SyncAPI.ItemAPI.pureItemFromStringWithCount("401:0:1:CgAACgkARmlyZXdvcmtzAQYARmxpZ2h0AQkKAEV4cGxvc2lvbnMKAQAAAAcMAEZpcmV3b3JrRmFkZQAAAAAHDQBGaXJld29ya0NvbG9yAQAAAAUBDABGaXJld29ya1R5cGUAAQ0ARmlyZXdvcmtUcmFpbAABDwBGaXJld29ya0ZsaWNrZXIAAAAA")));
@@ -72,6 +72,11 @@ public class RaffleTask extends Task {
                     this.player.getLevel().addLevelSoundEvent(this.hologram.add(0), LevelSoundEventPacket.SOUND_LARGE_BLAST, -1, 72);
                     Server.broadcastPacket(this.serverCore.getServer().getOnlinePlayers().values(), pk);
                 }, 20, true);
+
+                if (reward.getChance() <= 20) {
+                    this.serverCore.getTinyRabbit().send(Queue.CORE_RECEIVE, CoreCalls.REQUEST_BROADCAST_PROXY_MESSAGE.name(), Language.get("crate.reward.broadcast", this.player.getName(), reward.getDisplayName(), this.serverCore.getFeatureRoleplay().convertToDisplay(reward.getCrate())));
+                    this.player.getLevel().addSound(this.hologram.add(0), Sound.RANDOM_LEVELUP, 1, 3);
+                }
 
                 final String[] rewardData = reward.getData().split(";");
                 switch (rewardData[0]) {
@@ -97,14 +102,12 @@ public class RaffleTask extends Task {
                 Server.getInstance().getScheduler().scheduleDelayedTask(() -> {
                     this.hologram.setTitle("§5§lGlückstruhe");
                     this.serverCore.getFeatureRoleplay().crateInUse = false;
-                    this.serverCore.getServer().getDefaultLevel().addParticle(this.hologram);
                 }, 80, true);
             }, (add * 25) / 20, true);
             return;
         }
 
         this.hologram.setTitle(display);
-        this.serverCore.getServer().getDefaultLevel().addParticle(this.hologram);
         this.player.getLevel().addSound(this.hologram.add(0), Sound.RANDOM_CLICK);
 
         this.done++;
