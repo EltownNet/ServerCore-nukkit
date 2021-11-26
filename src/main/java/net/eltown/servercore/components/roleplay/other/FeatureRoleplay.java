@@ -493,6 +493,12 @@ public class FeatureRoleplay {
                                                                 }
                                                             }), Queue.GROUPS, GroupCalls.REQUEST_SET_GROUP.name(), player.getName(), rank, "SYSTEM/GIFTKEY", String.valueOf(duration));
                                                             break;
+                                                        case "crate":
+                                                            final String crate = raw[1];
+                                                            final int i = Integer.parseInt(raw[2]);
+                                                            this.serverCore.getCrateAPI().addCrate(player.getName(), crate, i);
+                                                            player.sendMessage(Language.get("giftkey.reward.crate", this.serverCore.getFeatureRoleplay().convertToDisplay(crate), i));
+                                                            break;
                                                         default:
                                                             player.sendMessage("Fehler: RedeemCommand :: " + raw[0]);
                                                             break;
@@ -959,11 +965,9 @@ public class FeatureRoleplay {
         public void on(final PlayerInteractEvent event) {
             final Player player = event.getPlayer();
             final Block block = event.getBlock();
-            if (block.getX() == 59 && block.getY() == 68 && block.getZ() == 77 && /*block.getLevel().getName().equals("plots") &&*/ block.getId() == BlockID.ENDER_CHEST) {
-                if (player.isOp()) {
-                    this.featureRoleplay.openCrate(player);
-                    event.setCancelled(true);
-                }
+            if (block.getX() == 59 && block.getY() == 68 && block.getZ() == 77 && block.getLevel().getName().equals("plots") && block.getId() == BlockID.ENDER_CHEST) {
+                this.featureRoleplay.openCrate(player);
+                event.setCancelled(true);
             }
         }
 
