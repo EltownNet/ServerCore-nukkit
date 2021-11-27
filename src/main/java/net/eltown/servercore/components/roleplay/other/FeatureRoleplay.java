@@ -1,5 +1,6 @@
 package net.eltown.servercore.components.roleplay.other;
 
+import cn.nukkit.AdventureSettings;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
@@ -815,6 +816,139 @@ public class FeatureRoleplay {
         });
     }
 
+    private final List<ChainMessage> brianTalks = new ArrayList<>(Arrays.asList(
+            new ChainMessage("Hallo... §a%p§7! Was... kann ich für dich tun?", 3),
+            new ChainMessage("Nicht jeder kann Magie anwenden!", 2),
+            new ChainMessage("Verärgere niemals einen Magier!", 2),
+            new ChainMessage("Meine Magie... ist nichts für schwache Nerven!", 2)
+    ));
+
+    public void openBrianByNpc(final Player player) {
+        this.smallTalk(this.brianTalks, RoleplayID.FEATURE_BRIAN.id(), player, message -> {
+            if (message == null) {
+                this.openBrian(player);
+            } else {
+                new ChainExecution.Builder()
+                        .append(0, () -> {
+                            player.sendMessage("§8» §fBrian §8| §7" + message.getMessage().replace("%p", player.getName()));
+                        })
+                        .append(message.getSeconds(), () -> {
+                            this.openBrian(player);
+                            this.openQueue.remove(player.getName());
+                        })
+                        .build().start();
+            }
+        });
+    }
+
+    public void openBrian(final Player player) {
+        final StringBuilder builder = new StringBuilder("§8» §fBrian §8| §7Suche dir eine meiner Dienstleistungen aus und profitiere davon gegen einen günstigen Preis!");
+
+        if (this.brianFly.containsKey(player.getName())) {
+            builder.append("\n\n§8» §5Die Magie des Fliegens §7endet in: ").append("§f").append(this.serverCore.getRemainingTimeFuture(this.brianFly.get(player.getName())));
+        }
+
+        final SimpleForm form = new SimpleForm.Builder("§7» §8Lehrling Brian", builder.toString())
+                .addButton(new ElementButton("§8» §5Die Magie des Fliegens", new ElementButtonImageData("url", "http://45.138.50.23:3000/img/ui/wizard/fly-display.png")), e -> {
+                    final CustomForm form1 = new CustomForm.Builder("§7» §8Zahlungsart wählen")
+                            .addElement(new ElementStepSlider("§8» §fBrian §8| §7Auf welche Art und Weise möchtest du mir entgegenkommen? Das hier ist kein Betrug...", Arrays.asList(
+                                    "\n\n§8» §f" + player.getName() + " §8| §7Wie wäre es, wenn ich dir §9$150 §7gebe für §910 Minuten§7?",
+                                    "\n\n§8» §f" + player.getName() + " §8| §924 Kohleblöcke §7finde ich sehr fair für §910 Minuten§7.",
+                                    "\n\n§8» §f" + player.getName() + " §8| §9$320 §7für §930 Minuten §7ist doch fair, oder?",
+                                    "\n\n§8» §f" + player.getName() + " §8| §7Was hälst du von §913 Diamanten§7 für §930 Minuten§7?",
+                                    "\n\n§8» §f" + player.getName() + " §8| §7Ich gebe dir §9$580 §7für §960 Minuten§7!",
+                                    "\n\n§8» §f" + player.getName() + " §8| §922 Diamanten §7sind für §960 Minuten §7angemessen."
+                            )))
+                            .onSubmit((g, h) -> {
+                                if (this.brianFly.containsKey(player.getName())) {
+                                    this.serverCore.playSound(player, Sound.NOTE_BASS);
+                                    player.sendMessage(Language.get("feature.brian.wait", this.convertToDisplayBrian("fly")));
+                                    return;
+                                }
+                                switch (h.getStepSliderResponse(0).getElementID()) {
+                                    case 0:
+                                        this.openBuyBrianMoney(player, "fly", 10, 150);
+                                        break;
+                                    case 1:
+                                        this.openBuyBrianItem(player, "fly", 10, "173:0:24:not");
+                                        break;
+                                    case 2:
+                                        this.openBuyBrianMoney(player, "fly", 30, 320);
+                                        break;
+                                    case 3:
+                                        this.openBuyBrianItem(player, "fly", 30, "264:0:13:not");
+                                        break;
+                                    case 4:
+                                        this.openBuyBrianMoney(player, "fly", 60, 580);
+                                        break;
+                                    case 5:
+                                        this.openBuyBrianItem(player, "fly", 60, "264:0:22:not");
+                                        break;
+                                }
+                            })
+                            .build();
+                    form1.send(player);
+                })
+                .build();
+        form.send(player);
+    }
+
+    public HashMap<String, Long> brianFly = new HashMap<>();
+
+    public void openBuyBrianMoney(final Player player, final String type, final int minutes, final double price) {
+        final ModalForm modalForm = new ModalForm.Builder("§7» §8Kaufbestätigung", "§8» §fBrian §8| §7Also möchtest du nun für §9" + minutes + " Minuten " + this.convertToDisplayBrian(type) + " §r§7für §9$" + Economy.getAPI().getMoneyFormat().format(price) + " §7kaufen?\n\n§7Meine Magie aktiviert sich sofort und ist nur auf dem CityBuild vorhanden!",
+                "§8» §aJetzt kaufen", "§8» §cAbbrechen")
+                .onYes(e -> {
+                    Economy.getAPI().getMoney(player, money -> {
+                        if (money >= price) {
+                            Economy.getAPI().reduceMoney(player, price);
+                            this.brianFly.put(player.getName(), System.currentTimeMillis() + (minutes * 60000L));
+                            player.getAdventureSettings().set(AdventureSettings.Type.ALLOW_FLIGHT, true);
+                            player.getAdventureSettings().update();
+                            this.serverCore.playSound(player, Sound.RANDOM_LEVELUP, 1, 3);
+                            player.sendMessage(Language.get("feature.brian.bought.money", this.convertToDisplayBrian(type), minutes, Economy.getAPI().getMoneyFormat().format(price)));
+                        } else {
+                            this.serverCore.playSound(player, Sound.NOTE_BASS);
+                            player.sendMessage(Language.get("feature.brian.no.money"));
+                        }
+                    });
+                })
+                .onNo(this::openBrian)
+                .build();
+        modalForm.send(player);
+    }
+
+    public void openBuyBrianItem(final Player player, final String type, final int minutes, final String itemData) {
+        final Item item = SyncAPI.ItemAPI.pureItemFromStringWithCount(itemData);
+        final ModalForm modalForm = new ModalForm.Builder("§7» §8Kaufbestätigung", "§8» §fBrian §8| §7Also möchtest du nun für §9" + minutes + " Minuten " + this.convertToDisplayBrian(type) + " §r§7für §9" + item.getCount() + "x " + item.getName() + " §7kaufen?\n\n§7Meine Magie aktiviert sich sofort und ist nur auf dem CityBuild vorhanden!",
+                "§8» §aJetzt kaufen", "§8» §cAbbrechen")
+                .onYes(e -> {
+                    if (this.countInventoryItems(player, item) >= item.getCount()) {
+                        player.getInventory().removeItem(item);
+                        this.brianFly.put(player.getName(), System.currentTimeMillis() + (minutes * 60000L));
+                        player.getAdventureSettings().set(AdventureSettings.Type.ALLOW_FLIGHT, true);
+                        player.getAdventureSettings().update();
+                        this.serverCore.playSound(player, Sound.RANDOM_LEVELUP, 1, 3);
+                        player.sendMessage(Language.get("feature.brian.bought.item", this.convertToDisplayBrian(type), minutes, item.getName(), item.getCount()));
+                    } else {
+                        this.serverCore.playSound(player, Sound.NOTE_BASS);
+                        player.sendMessage(Language.get("feature.brian.no.item"));
+                    }
+                })
+                .onNo(this::openBrian)
+                .build();
+        modalForm.send(player);
+    }
+
+    public String convertToDisplayBrian(final String type) {
+        switch (type) {
+            case "fly":
+                return "§5Die Magie des Fliegens";
+            default:
+                return "null";
+        }
+    }
+
     private final List<ChainMessage> ainaraTalks = new ArrayList<>(Arrays.asList(
             new ChainMessage("Hi, §a%p§7! Naa, wie geht es dir?", 3),
             new ChainMessage("Danke, dass du mir bei meinen Aufgaben hilfst.", 2),
@@ -937,6 +1071,7 @@ public class FeatureRoleplay {
                         if (npcId.equals(RoleplayID.FEATURE_LOLA.id())) this.featureRoleplay.openRewardByNpc(player);
                         else if (npcId.equals(RoleplayID.FEATURE_AINARA.id())) this.featureRoleplay.openAinaraByNpc(player);
                         else if (npcId.equals(RoleplayID.FEATURE_JOHN.id())) this.featureRoleplay.openJohnByNpc(player);
+                        else if (npcId.equals(RoleplayID.FEATURE_BRIAN.id())) this.featureRoleplay.openBrianByNpc(player);
                     }
                 }
             }
@@ -955,6 +1090,7 @@ public class FeatureRoleplay {
                             if (npcId.equals(RoleplayID.FEATURE_LOLA.id())) this.featureRoleplay.openRewardByNpc(player);
                             else if (npcId.equals(RoleplayID.FEATURE_AINARA.id())) this.featureRoleplay.openAinaraByNpc(player);
                             else if (npcId.equals(RoleplayID.FEATURE_JOHN.id())) this.featureRoleplay.openJohnByNpc(player);
+                            else if (npcId.equals(RoleplayID.FEATURE_BRIAN.id())) this.featureRoleplay.openBrianByNpc(player);
                         }
                     }
                 }

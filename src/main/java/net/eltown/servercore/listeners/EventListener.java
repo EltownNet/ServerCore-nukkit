@@ -1,5 +1,6 @@
 package net.eltown.servercore.listeners;
 
+import cn.nukkit.AdventureSettings;
 import cn.nukkit.Player;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
@@ -204,6 +205,14 @@ public class EventListener implements Listener {
                         e.printStackTrace();
                     }
                 }, Queue.QUESTS_CALLBACK, QuestCalls.REQUEST_PLAYER_DATA.name(), player.getName());
+
+                /*
+                 * Wizard
+                 */
+                if (this.instance.getFeatureRoleplay().brianFly.containsKey(player.getName())) {
+                    player.getAdventureSettings().set(AdventureSettings.Type.ALLOW_FLIGHT, true);
+                    player.getAdventureSettings().update();
+                }
 
                 if (needsIntroduction.contains(player.getName()) || inIntroduction.contains(player.getName())) {
                     Economy.getAPI().setMoney(player, 0);

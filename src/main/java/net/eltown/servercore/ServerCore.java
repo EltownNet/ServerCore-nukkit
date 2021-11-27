@@ -37,6 +37,7 @@ import net.eltown.servercore.components.roleplay.jobs.JobRoleplay;
 import net.eltown.servercore.components.roleplay.other.FeatureRoleplay;
 import net.eltown.servercore.components.roleplay.rathaus.RathausRoleplay;
 import net.eltown.servercore.components.roleplay.shops.ShopRoleplay;
+import net.eltown.servercore.components.tasks.BrianTask;
 import net.eltown.servercore.components.tinyrabbit.TinyRabbit;
 import net.eltown.servercore.listeners.*;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -207,6 +208,8 @@ public class ServerCore extends PluginBase {
         if (this.getServerName().equals("server-1")) this.rathausRoleplay = new RathausRoleplay(this);
         this.featureRoleplay = new FeatureRoleplay(this);
         this.cryptoRoleplay = new CryptoRoleplay(this);
+
+        if (this.getServerName().equals("server-1")) this.getServer().getScheduler().scheduleRepeatingTask(new BrianTask(this), 40, true);
 
         new ServerCoreAPI(this);
     }

@@ -184,6 +184,12 @@ roleplay.bank.settings.invalid.password: "&7Fehler beim Übernehmen der Einstell
 roleplay.job.cook.item.inventory.full: "&7Bitte schaffe in deinem Inventar platz, um das Gericht bestellen zu können."
 roleplay.job.cook.item.bought: "&7Du hast das Gericht für &a$[0] &7bestellt."
 roleplay.job.cook.item.not.enough.money: "&7Du hast zu wenig Geld, um dieses Gericht bestellen zu können."
+feature.brian.bought.money: "&7Du hast [0] &7für &9[1] Minuten &7gekauft."
+feature.brian.no.money: "&7Du hast zu wenig Geld, um diese Magie dir kaufen zu können."
+feature.brian.bought.item: "&7Du hast [0] &7für &9[1] Minuten &7gekauft."
+feature.brian.no.item: "&7Du hast zu wenig von den benötigten Items, um dir diese Magie kaufen zu können."
+feature.brian.fly.expired: "&5Die Magie des Fliegens &7ist soeben ausgelaufen."
+feature.brian.wait: "&7Bitte warte, bis [0] &r&7abgelaufen ist."
 
 chestshop.created: "Du hast erfolgreich einen ChestShop erstellt."
 chestshop.create.invalid.item: "Dieses Item kann nicht in einem ChestShop verkauft werden."
