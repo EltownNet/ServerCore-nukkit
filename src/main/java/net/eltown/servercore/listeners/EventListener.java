@@ -214,6 +214,12 @@ public class EventListener implements Listener {
                     player.getAdventureSettings().update();
                 }
 
+                /*
+                 * Holograms
+                 */
+                this.instance.getHologramAPI().updateAllHolograms();
+                this.instance.getHologramAPI().updateSpecialHolograms(player);
+
                 if (needsIntroduction.contains(player.getName()) || inIntroduction.contains(player.getName())) {
                     Economy.getAPI().setMoney(player, 0);
                     player.getInventory().clearAll();

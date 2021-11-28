@@ -20,6 +20,7 @@ public enum RoleplayID {
     FEATURE_LOLA("servercore:lola"),
     FEATURE_JOHN("servercore:john"),
     FEATURE_AINARA("servercore:ainara"),
+    FEATURE_MIKE("servercore:mike"),
     FEATURE_BRIAN("servercore:brian"),
 
     ;

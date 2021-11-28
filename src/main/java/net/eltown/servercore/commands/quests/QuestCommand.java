@@ -101,8 +101,8 @@ public class QuestCommand extends PluginCommand<ServerCore> {
                             player.sendMessage("Fehler beim Aufrufen: Diese QuestID existiert nicht.");
                             return;
                         }
-                        final CustomForm form = new CustomForm.Builder("§7» §8Neue Quest erstellen")
-                                .addElement(new ElementInput("§8» §fBitte erstelle einen Anzeigenamen der Quest.", "Anzeigename", quest.getDisplayName()))
+                        final CustomForm form = new CustomForm.Builder("§7» §8Quest bearbeiten")
+                                .addElement(new ElementInput("§8» §fAnzeigename der Quest", "Anzeigename", quest.getDisplayName()))
                                 .addElement(new ElementInput("§8» §fBeschreibe, was in dieser Quest zu tun ist.", "Beschreibung", quest.getDescription()))
                                 .addElement(new ElementLabel("§8» §fBitte gebe die Aufgabe an, die in der Quest gemacht werden soll."))
                                 .addElement(new ElementInput("§7- bring#§ctoggleItemTrue\n§7- collect#§ctoggleItemTrue\n§7- place#§ctoggleItemTrue\n§7- explore (Gesetzte Positionen)\n§7- craft#§ctoggleItemTrue\n§7- execute#<command>\n", "Data", quest.getData()))

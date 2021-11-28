@@ -957,7 +957,7 @@ public class FeatureRoleplay {
     ));
 
     public void openAinaraByNpc(final Player player) {
-        this.smallTalk(this.ainaraTalks, RoleplayID.FEATURE_LOLA.id(), player, message -> {
+        this.smallTalk(this.ainaraTalks, RoleplayID.FEATURE_AINARA.id(), player, message -> {
             if (message == null) {
                 this.openAinara(player);
             } else {
@@ -980,10 +980,42 @@ public class FeatureRoleplay {
         });
     }
 
+    private final List<ChainMessage> mikeTalks = new ArrayList<>(Arrays.asList(
+            new ChainMessage("Hallo, §a%p§7! Gut, dass du da bist!", 3),
+            new ChainMessage("Ich habe immer so viel zu tun...", 2),
+            new ChainMessage("Ich zahle sehr gut! Es lohnt sich, meine Aufgaben zu erledigen.", 3),
+            new ChainMessage("Zum Glück gibt es Leute, die meine Arbeit machen!", 3)
+    ));
+
+    public void openMikeByNpc(final Player player) {
+        this.smallTalk(this.mikeTalks, RoleplayID.FEATURE_MIKE.id(), player, message -> {
+            if (message == null) {
+                this.openMike(player);
+            } else {
+                new ChainExecution.Builder()
+                        .append(0, () -> {
+                            player.sendMessage("§8» §fMike §8| §7" + message.getMessage().replace("%p", player.getName()));
+                        })
+                        .append(message.getSeconds(), () -> {
+                            this.openMike(player);
+                            this.openQueue.remove(player.getName());
+                        })
+                        .build().start();
+            }
+        });
+    }
+
+    public void openMike(final Player player) {
+        this.serverCore.getQuestAPI().getRandomQuestByLink("Mike", player.getName(), quest -> {
+            this.openQuestNPC(player, quest, "§8» §fMike", " §8| §7Erledige meine Aufgabe, um eine oder mehrere tolle Belohnungen zu erhalten! Ich wäre dir sehr dankbar, denn bei mir ist aktuell viel los...");
+        });
+    }
+
     public void openQuestNPC(final Player player, final Quest quest, final String npcPrefix, final String npcText) {
         boolean b = true;
         if (!this.serverCore.getQuestAPI().playerIsInQuest(player.getName(), quest.getNameId())) {
             this.serverCore.getQuestAPI().setQuestOnPlayer(player.getName(), quest.getNameId());
+            this.serverCore.getHologramAPI().updateSpecialHolograms(player);
             b = false;
         }
         final QuestPlayer.QuestPlayerData questPlayerData = this.serverCore.getQuestAPI().getQuestPlayerDataFromQuestId(player.getName(), quest.getNameId());
@@ -1072,6 +1104,7 @@ public class FeatureRoleplay {
                         else if (npcId.equals(RoleplayID.FEATURE_AINARA.id())) this.featureRoleplay.openAinaraByNpc(player);
                         else if (npcId.equals(RoleplayID.FEATURE_JOHN.id())) this.featureRoleplay.openJohnByNpc(player);
                         else if (npcId.equals(RoleplayID.FEATURE_BRIAN.id())) this.featureRoleplay.openBrianByNpc(player);
+                        else if (npcId.equals(RoleplayID.FEATURE_MIKE.id()) && player.isOp()) this.featureRoleplay.openMikeByNpc(player);
                     }
                 }
             }
@@ -1091,6 +1124,7 @@ public class FeatureRoleplay {
                             else if (npcId.equals(RoleplayID.FEATURE_AINARA.id())) this.featureRoleplay.openAinaraByNpc(player);
                             else if (npcId.equals(RoleplayID.FEATURE_JOHN.id())) this.featureRoleplay.openJohnByNpc(player);
                             else if (npcId.equals(RoleplayID.FEATURE_BRIAN.id())) this.featureRoleplay.openBrianByNpc(player);
+                            else if (npcId.equals(RoleplayID.FEATURE_MIKE.id()) && player.isOp()) this.featureRoleplay.openMikeByNpc(player);
                         }
                     }
                 }

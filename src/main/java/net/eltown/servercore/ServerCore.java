@@ -38,6 +38,7 @@ import net.eltown.servercore.components.roleplay.other.FeatureRoleplay;
 import net.eltown.servercore.components.roleplay.rathaus.RathausRoleplay;
 import net.eltown.servercore.components.roleplay.shops.ShopRoleplay;
 import net.eltown.servercore.components.tasks.BrianTask;
+import net.eltown.servercore.components.tasks.HologramTask;
 import net.eltown.servercore.components.tinyrabbit.TinyRabbit;
 import net.eltown.servercore.listeners.*;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -115,7 +116,6 @@ public class ServerCore extends PluginBase {
         this.getServer().getPluginManager().registerEvents(new EventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new NpcListener(this), this);
         this.getServer().getPluginManager().registerEvents(new ChairListener(), this);
-        this.getServer().getPluginManager().registerEvents(new HologramListener(this), this);
         this.getServer().getPluginManager().registerEvents(new LevelListener(this), this);
         this.getServer().getPluginManager().registerEvents(new ModelListener(this), this);
         this.getServer().getPluginManager().registerEvents(new ChestShopListener(this), this);
@@ -210,6 +210,7 @@ public class ServerCore extends PluginBase {
         this.cryptoRoleplay = new CryptoRoleplay(this);
 
         if (this.getServerName().equals("server-1")) this.getServer().getScheduler().scheduleRepeatingTask(new BrianTask(this), 40, true);
+        if (this.getServerName().equals("server-1")) this.getServer().getScheduler().scheduleRepeatingTask(new HologramTask(this), 1200, true);
 
         new ServerCoreAPI(this);
     }

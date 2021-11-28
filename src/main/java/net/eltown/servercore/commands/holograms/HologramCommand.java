@@ -32,21 +32,23 @@ public class HologramCommand extends PluginCommand<ServerCore> {
 
     private void openMain(final Player player) {
         final SimpleForm form = new SimpleForm.Builder("§7» §8Hologramme", "")
-                .addButton(new ElementButton("§7» §fHologramm erstellen"), this::createHologram)
-                .addButton(new ElementButton("§7» §fHologramm bearbeiten"), this::hologramSettings)
+                .addButton(new ElementButton("§8» §fHologramm erstellen"), this::createHologram)
+                .addButton(new ElementButton("§8» §fHologramm bearbeiten"), this::hologramSettings)
                 .build();
         form.send(player);
     }
 
     private void createHologram(final Player player) {
         final CustomForm form = new CustomForm.Builder("§7» §8Hologramm erstellen")
-                .addElement(new ElementStepSlider("Bitte wähle aus, wie viele Zeilen das Hologramm haben soll.", Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"), 2))
+                .addElement(new ElementSlider("Bitte wähle aus, wie viele Zeilen das Hologramm haben soll", 0, 12, 1, 0))
                 .onSubmit((i, o) -> {
                     final CustomForm.Builder form1 = new CustomForm.Builder("§7» §8Hologramm erstellen");
                     form1.addElement(new ElementInput("Bitte gebe dem Hologramm einen einmaligen Namen.", "Name"));
-                    form1.addElement(new ElementInput("Bitte gebe dem Hologramm einen Titel und (eine) Zeile(n).", "Titel"));
-                    for (int x = 0; x < Integer.parseInt(o.getStepSliderResponse(0).getElementContent()); x++) {
-                        form1.addElement(new ElementInput("", "Zeile " + (x + 1)));
+                    form1.addElement(new ElementInput("Bitte gebe dem Hologramm einen Titel und fülle die Zeilen aus.", "Titel"));
+                    if (o.getSliderResponse(0) != 0) {
+                        for (int x = 0; x < o.getSliderResponse(0); x++) {
+                            form1.addElement(new ElementInput("", "Zeile " + (x + 1)));
+                        }
                     }
                     form1.onSubmit((g, h) -> {
                         final String name = h.getInputResponse(0);
@@ -57,8 +59,10 @@ public class HologramCommand extends PluginCommand<ServerCore> {
                         }
 
                         final LinkedList<String> lines = new LinkedList<>();
-                        for (int x = 0; x < Integer.parseInt(o.getStepSliderResponse(0).getElementContent()); x++) {
-                            lines.add((x + 1) + ">:<" + h.getInputResponse(2 + x));
+                        if (o.getSliderResponse(0) != 0) {
+                            for (int x = 0; x < o.getSliderResponse(0); x++) {
+                                lines.add(h.getInputResponse(2 + x));
+                            }
                         }
                         this.getPlugin().getHologramAPI().createHologram(player, name, h.getInputResponse(1), lines);
                         player.sendMessage(Language.get("holograms.created", name));
@@ -75,13 +79,13 @@ public class HologramCommand extends PluginCommand<ServerCore> {
             player.sendMessage(Language.get("holograms.no.holograms"));
             return;
         }
-        final CustomForm form = new CustomForm.Builder("§7» §8Hologramm bearbeiten")
+        final CustomForm form = new CustomForm.Builder("§8» §fHologramm bearbeiten")
                 .addElement(new ElementDropdown("Bitte wähle ein Hologramm aus, welches du bearbeiten möchtest.", new ArrayList<>(this.getPlugin().getHologramAPI().particles.keySet())))
                 .onSubmit((g, h) -> {
                     final String name = h.getDropdownResponse(0).getElementContent();
 
-                    final SimpleForm form1 = new SimpleForm.Builder("§7» §8Hologramm bearbeiten", "")
-                            .addButton(new ElementButton("§7» §fZeile hinzufügen"), d -> {
+                    final SimpleForm form1 = new SimpleForm.Builder("§7» §8Hologramm bearbeiten", "§8» §fHologramm: §9" + name)
+                            .addButton(new ElementButton("§8» §fZeile hinzufügen"), d -> {
                                 final CustomForm form2 = new CustomForm.Builder("§7» §8Zeile hinzufügen")
                                         .addElement(new ElementInput("Bitte gebe der neuen Zeile einen Text.", "Neue Zeile"))
                                         .onSubmit((b, n) -> {
@@ -94,11 +98,27 @@ public class HologramCommand extends PluginCommand<ServerCore> {
                                         .build();
                                 form2.send(g);
                             })
-                            .addButton(new ElementButton("§7» §fLetzte Zeile entfernen"), d -> {
-                                this.getPlugin().getHologramAPI().removeLastLine(name);
-                                player.sendMessage(Language.get("holograms.line.removed"));
+                            .addButton(new ElementButton("§8» §fZeile entfernen"), d -> {
+                                final CustomForm form2 = new CustomForm.Builder("§7» §8Zeile entfernen")
+                                        .addElement(new ElementSlider("Welche Zeile soll entfernt werden?", 1, this.getPlugin().getHologramAPI().getHologramLines(name), 1, 1))
+                                        .onSubmit((b, n) -> {
+                                            this.getPlugin().getHologramAPI().removeLine(name, (int) n.getSliderResponse(0));
+                                            player.sendMessage(Language.get("holograms.line.removed"));
+                                        })
+                                        .build();
+                                form2.send(g);
                             })
-                            .addButton(new ElementButton("§7» §fErweitert"), d -> {
+                            .addButton(new ElementButton("§8» §fTitel ändern"), d -> {
+                                final CustomForm form2 = new CustomForm.Builder("§7» §8Titel ändern")
+                                        .addElement(new ElementInput("Gebe einen neuen Titel an.", "Titel", this.getPlugin().getHologramAPI().particles.get(name).getTitle()))
+                                        .onSubmit((b, n) -> {
+                                            this.getPlugin().getHologramAPI().setTitle(name, n.getInputResponse(0));
+                                            player.sendMessage(Language.get("holograms.title.edited"));
+                                        })
+                                        .build();
+                                form2.send(g);
+                            })
+                            .addButton(new ElementButton("§8» §fErweitert"), d -> {
                                 final CustomForm form2 = new CustomForm.Builder("§7» §8Erweitert")
                                         .addElement(new ElementToggle("Soll die Position des Hologramms auf deine aktualisiert werden?", false))
                                         .addElement(new ElementToggle("Soll das Hologramm endgültig gelöscht werden?", false))
