@@ -9,7 +9,7 @@ public class FixCommand extends PluginCommand<ServerCore> {
 
     public FixCommand(final ServerCore plugin) {
         super("fix", plugin);
-        this.setDescription("Behebe lästige Chunk-Fehler.");
+        this.setDescription("Behebe lästige Anzeigefehler.");
     }
 
     @Override
@@ -19,7 +19,9 @@ public class FixCommand extends PluginCommand<ServerCore> {
             player.getLevel().getChunks().values().forEach(ch -> {
                if (ch.isGenerated() && ch.isLoaded()) player.unloadChunk(ch.getX(), ch.getZ());
             });
-            player.sendMessage("§8» §fCore §8| §7Deine Chunks wurden neugeladen.");
+            this.getPlugin().getHologramAPI().updateAllHolograms(player);
+            this.getPlugin().getHologramAPI().updateSpecialHolograms(player);
+            player.sendMessage("§8» §fCore §8| §7Chunks & Hologramme wurden neugeladen.");
         }
 
         return true;

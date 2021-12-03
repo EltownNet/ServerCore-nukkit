@@ -187,4 +187,14 @@ public class HologramAPI {
         });
     }
 
+    public void updateAllHolograms(final Player player) {
+        this.serverCore.getServer().getOnlinePlayers().values().forEach(e -> {
+            this.particles.forEach((n, p) -> {
+                if (!this.noUpdate.contains(n)) {
+                    e.getLevel().addParticle(p, player);
+                }
+            });
+        });
+    }
+
 }

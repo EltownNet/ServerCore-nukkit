@@ -17,7 +17,6 @@ import cn.nukkit.level.Location;
 import cn.nukkit.level.Sound;
 import cn.nukkit.level.particle.FloatingTextParticle;
 import cn.nukkit.utils.Config;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.eltown.economy.Economy;
 import net.eltown.servercore.ServerCore;
@@ -987,7 +986,16 @@ public class FeatureRoleplay {
             new ChainMessage("Zum Glück gibt es Leute, die meine Arbeit machen!", 3)
     ));
 
+    private final Cooldown clickCooldown = new Cooldown(3000);
+
     public void openMikeByNpc(final Player player) {
+        if (!(this.serverCore.getLevelAPI().getLevel(player.getName()).getLevel() >= 6)) {
+            if (!this.clickCooldown.hasCooldown(player.getName())) {
+                this.serverCore.playSound(player, Sound.NOTE_BASS);
+                player.sendMessage("§8» §fMike §8| §7Hallo! Meine Aufgaben kann ich nur erfahrenen Spielern anvertrauen... Komm wieder, wenn du §9Level 6 §7erreicht hast.");
+            }
+            return;
+        }
         this.smallTalk(this.mikeTalks, RoleplayID.FEATURE_MIKE.id(), player, message -> {
             if (message == null) {
                 this.openMike(player);
@@ -1104,7 +1112,7 @@ public class FeatureRoleplay {
                         else if (npcId.equals(RoleplayID.FEATURE_AINARA.id())) this.featureRoleplay.openAinaraByNpc(player);
                         else if (npcId.equals(RoleplayID.FEATURE_JOHN.id())) this.featureRoleplay.openJohnByNpc(player);
                         else if (npcId.equals(RoleplayID.FEATURE_BRIAN.id())) this.featureRoleplay.openBrianByNpc(player);
-                        else if (npcId.equals(RoleplayID.FEATURE_MIKE.id()) && player.isOp()) this.featureRoleplay.openMikeByNpc(player);
+                        else if (npcId.equals(RoleplayID.FEATURE_MIKE.id())) this.featureRoleplay.openMikeByNpc(player);
                     }
                 }
             }
@@ -1124,7 +1132,7 @@ public class FeatureRoleplay {
                             else if (npcId.equals(RoleplayID.FEATURE_AINARA.id())) this.featureRoleplay.openAinaraByNpc(player);
                             else if (npcId.equals(RoleplayID.FEATURE_JOHN.id())) this.featureRoleplay.openJohnByNpc(player);
                             else if (npcId.equals(RoleplayID.FEATURE_BRIAN.id())) this.featureRoleplay.openBrianByNpc(player);
-                            else if (npcId.equals(RoleplayID.FEATURE_MIKE.id()) && player.isOp()) this.featureRoleplay.openMikeByNpc(player);
+                            else if (npcId.equals(RoleplayID.FEATURE_MIKE.id())) this.featureRoleplay.openMikeByNpc(player);
                         }
                     }
                 }

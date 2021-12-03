@@ -16,12 +16,18 @@ public enum RoleplayID {
 
     TOWNHALL_RECEPTION("servercore:townhall_reception"),
     TOWNHALL_TAXES("servercore:cassandra"),
+    TOWNHALL_BUILDING("servercore:jack"),
+    TOWNHALL_COURT("servercore:court"),
+    TOWNHALL_ARCHIVE("servercore:archive"),
 
     FEATURE_LOLA("servercore:lola"),
     FEATURE_JOHN("servercore:john"),
     FEATURE_AINARA("servercore:ainara"),
     FEATURE_MIKE("servercore:mike"),
     FEATURE_BRIAN("servercore:brian"),
+    FEATURE_ROB("servercore:rob"),
+    FEATURE_ANNA("servercore:anna"),
+    FEATURE_CARLA("servercore:carla"),
 
     ;
 
