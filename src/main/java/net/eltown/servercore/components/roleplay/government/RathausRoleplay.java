@@ -139,7 +139,7 @@ public class RathausRoleplay {
                                         Economy.getAPI().getMoney(player, money -> {
                                             if (money >= nextShopLicense.getLicense().money()) {
                                                 Economy.getAPI().reduceMoney(player, nextShopLicense.getLicense().money());
-                                                this.serverCore.getChestShopAPI().setLicense(player.getName(), nextShopLicense.getLicense(), 0);
+                                                this.serverCore.getChestShopAPI().setLicense(player.getName(), nextShopLicense.getLicense());
                                                 this.serverCore.playSound(player, Sound.RANDOM_LEVELUP, 1, 3);
                                                 player.sendMessage("§8» §f" + agency.getName() + " §8| §7Sehr gut! Sie haben die Lizenz nun gekauft. Sie können direkt die Vorteile der Lizenz nutzen.");
                                             } else {
@@ -225,13 +225,13 @@ public class RathausRoleplay {
         final ShopLicense shopLicense = this.serverCore.getChestShopAPI().getPlayerLicense(player);
         switch (shopLicense.getLicense()) {
             case STANDARD:
-                return new ShopLicense(player, ShopLicense.ShopLicenseType.SMALL_BUSINESS);
+                return new ShopLicense(player, ShopLicense.ShopLicenseType.SMALL_BUSINESS, shopLicense.getAdditionalShops());
             case SMALL_BUSINESS:
-                return new ShopLicense(player, ShopLicense.ShopLicenseType.BUSINESS);
+                return new ShopLicense(player, ShopLicense.ShopLicenseType.BUSINESS, shopLicense.getAdditionalShops());
             case BUSINESS:
-                return new ShopLicense(player, ShopLicense.ShopLicenseType.BIG_BUSINESS);
+                return new ShopLicense(player, ShopLicense.ShopLicenseType.BIG_BUSINESS, shopLicense.getAdditionalShops());
             case BIG_BUSINESS:
-                return new ShopLicense(player, ShopLicense.ShopLicenseType.COMPANY);
+                return new ShopLicense(player, ShopLicense.ShopLicenseType.COMPANY, shopLicense.getAdditionalShops());
             default:
                 return null;
         }

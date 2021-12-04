@@ -541,7 +541,7 @@ public class ChestShopListener implements Listener {
                             final ModalForm form = new ModalForm.Builder("§7» §8ChestShop entfernen", "§cMöchtest du wirklich deinen ChestShop entfernen? Diese Aktion kann nicht rückgängig gemacht werden!",
                                     "§8» §aEntfernen", "§8» §cAbbrechen")
                                     .onYes(h -> {
-                                        this.serverCore.getChestShopAPI().removeChestShop(e.getSignLocation(), e.getOwner(), e.getId());
+                                        this.serverCore.getChestShopAPI().removeChestShop(e.getSignLocation(), e.getId());
                                         player.sendMessage(Language.get("chestshop.break.sign"));
                                     })
                                     .onNo(h -> {

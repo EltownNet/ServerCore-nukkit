@@ -1,6 +1,5 @@
 package net.eltown.servercore.components.enchantments.enchantment;
 
-import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockID;
 import cn.nukkit.event.EventHandler;
@@ -11,12 +10,15 @@ import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.item.enchantment.EnchantmentType;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
+import net.eltown.servercore.ServerCore;
 import net.eltown.servercore.components.enchantments.CustomEnchantment;
+import net.eltown.servercore.listeners.SpawnProtectionListener;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class EnchantmentLumberjack extends Enchantment implements Listener {
+
+    private final ServerCore serverCore;
 
     private static boolean[] isWood = new boolean[2048];
     private static boolean[] isLeaf = new boolean[2048];
@@ -29,8 +31,9 @@ public class EnchantmentLumberjack extends Enchantment implements Listener {
         isLeaf[BlockID.LEAVE2] = true;
     }
 
-    public EnchantmentLumberjack() {
+    public EnchantmentLumberjack(final ServerCore serverCore) {
         super(CustomEnchantment.EnchantmentID.LUMBERJACK.id(), CustomEnchantment.EnchantmentID.LUMBERJACK.enchantment(), Rarity.COMMON, EnchantmentType.DIGGER);
+        this.serverCore = serverCore;
     }
 
     @Override
@@ -40,9 +43,16 @@ public class EnchantmentLumberjack extends Enchantment implements Listener {
 
     @EventHandler
     public void on(final BlockBreakEvent event) {
+        if (this.serverCore.getServerName().equals("server-1")) return;
+
         final Item item = event.getPlayer().getInventory().getItemInHand();
 
         if (item.hasEnchantment(this.getId())) {
+            if (SpawnProtectionListener.isInRadius(event.getBlock())) {
+                event.setCancelled(true);
+                return;
+            }
+
             final LinkedList<Block> blocks = new LinkedList<>();
 
             final Block block = event.getBlock();

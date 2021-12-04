@@ -151,6 +151,8 @@ public class HologramAPI {
     }
 
     public void updateSpecialHolograms(final Player player) {
+        if (!this.serverCore.getServerName().equals("server-1")) return;
+
         final Set<FullQuestPlayer> quests = this.serverCore.getQuestAPI().getActivePlayerQuests(player.getName());
         this.serverCore.getQuestAPI().checkIfQuestIsExpired(player.getName());
 

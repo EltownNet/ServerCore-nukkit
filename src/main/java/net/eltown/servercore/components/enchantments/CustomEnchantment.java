@@ -64,9 +64,9 @@ public class CustomEnchantment {
         enchantments[EnchantmentID.EXPERIENCE.id] = new EnchantmentExperience();
         this.enchantmentId.put(EnchantmentID.EXPERIENCE.id, EnchantmentID.EXPERIENCE);
 
-        enchantments[EnchantmentID.LUMBERJACK.id] = new EnchantmentLumberjack();
+        enchantments[EnchantmentID.LUMBERJACK.id] = new EnchantmentLumberjack(serverCore);
         this.enchantmentId.put(EnchantmentID.LUMBERJACK.id, EnchantmentID.LUMBERJACK);
-        serverCore.getServer().getPluginManager().registerEvents(new EnchantmentLumberjack(), serverCore);
+        serverCore.getServer().getPluginManager().registerEvents(new EnchantmentLumberjack(serverCore), serverCore);
 
         enchantments[EnchantmentID.MAGNET.id] = new EnchantmentMagnet();
         this.enchantmentId.put(EnchantmentID.MAGNET.id, EnchantmentID.MAGNET);

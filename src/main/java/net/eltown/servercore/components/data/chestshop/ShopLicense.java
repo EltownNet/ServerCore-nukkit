@@ -11,6 +11,7 @@ public class ShopLicense {
 
     private final String owner;
     private ShopLicenseType license;
+    private int additionalShops;
 
     public enum ShopLicenseType {
 

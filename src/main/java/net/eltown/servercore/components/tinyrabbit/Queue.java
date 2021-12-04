@@ -30,5 +30,7 @@ public class Queue {
     public static final String SETTINGS_CALLBACK = "api.settings.callback";
     public static final String CRATES_RECEIVE = "api.crates.receive";
     public static final String CRATES_CALLBACK = "api.crates.callback";
+    public static final String CHESTSHOP_RECEIVE = "api.chestshops.receive";
+    public static final String CHESTSHOP_CALLBACK = "api.chestshops.callback";
 
 }

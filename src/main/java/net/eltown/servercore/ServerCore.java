@@ -117,7 +117,7 @@ public class ServerCore extends PluginBase {
         this.getServer().getPluginManager().registerEvents(new ChairListener(), this);
         this.getServer().getPluginManager().registerEvents(new LevelListener(this), this);
         this.getServer().getPluginManager().registerEvents(new ModelListener(this), this);
-        this.getServer().getPluginManager().registerEvents(new ChestShopListener(this), this);
+        if (this.serverName.equals("server-1")) this.getServer().getPluginManager().registerEvents(new ChestShopListener(this), this);
         this.getServer().getPluginManager().registerEvents(new FurnaceListener(this), this);
         this.getServer().getPluginManager().registerEvents(new QuestListener(this), this);
         if (this.serverName.equals("server-2") || this.serverName.equals("server-3"))
@@ -193,7 +193,7 @@ public class ServerCore extends PluginBase {
         this.levelAPI = new LevelAPI(this);
         this.syncAPI = new SyncAPI(this);
         this.groupAPI = new GroupAPI(this);
-        this.chestShopAPI = new ChestShopAPI(this);
+        if (this.serverName.equals("server-1")) this.chestShopAPI = new ChestShopAPI(this);
         this.furnaceAPI = new FurnaceAPI(this);
         this.questAPI = new QuestAPI(this);
         this.settingsAPI = new SettingsAPI(this);

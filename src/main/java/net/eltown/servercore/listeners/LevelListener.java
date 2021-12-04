@@ -51,7 +51,7 @@ public class LevelListener implements Listener {
     public void on(final BlockBreakEvent event) {
         final Block block = event.getBlock();
         final Item item = event.getPlayer().getInventory().getItemInHand();
-        if (!SpawnProtectionListener.isInRadius(event.getPlayer())) {
+        if (!SpawnProtectionListener.isInRadius(event.getPlayer()) && !SpawnProtectionListener.isInRadius(block.getLocation())) {
             if (!event.getBlock().getLocation().getLevel().getName().equals("plots")) {
                 if (!this.placed.contains(block)) {
                     this.blocks.stream().filter(e -> e.id == block.getId() && e.meta == block.getDamage()).findFirst().ifPresent((experienceBlock) -> {

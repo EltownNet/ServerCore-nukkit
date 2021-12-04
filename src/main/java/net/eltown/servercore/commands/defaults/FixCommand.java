@@ -3,6 +3,7 @@ package net.eltown.servercore.commands.defaults;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.PluginCommand;
+import cn.nukkit.level.Sound;
 import net.eltown.servercore.ServerCore;
 
 public class FixCommand extends PluginCommand<ServerCore> {
@@ -21,7 +22,10 @@ public class FixCommand extends PluginCommand<ServerCore> {
             });
             this.getPlugin().getHologramAPI().updateAllHolograms(player);
             this.getPlugin().getHologramAPI().updateSpecialHolograms(player);
-            player.sendMessage("§8» §fCore §8| §7Chunks & Hologramme wurden neugeladen.");
+            if (this.getPlugin().getServerName().equals("server-1")) player.getLevel().addParticle(this.getPlugin().getFeatureRoleplay().crateHologram, player);
+
+            this.getPlugin().playSound(player, Sound.MOB_VILLAGER_YES);
+            player.sendMessage("§8» §fCore §8| §7Mögliche Anzeigefehler sollten nun behoben sein.");
         }
 
         return true;
