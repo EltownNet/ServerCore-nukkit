@@ -70,26 +70,26 @@ public class FeatureRoleplay {
         this.cachedCalendarRewards.put(2, new ArrayList<>(Arrays.asList("money;50", "item;403:0:1:CgAACQQAZW5jaAoBAAAAAgMAbHZsAgACAgBpZCQAAAA=")));
         this.cachedCalendarRewards.put(3, new ArrayList<>(Arrays.asList("money;50", "item;169:0:32:not")));
         this.cachedCalendarRewards.put(4, new ArrayList<>(Arrays.asList("money;50", "item;35:0:32:not", "item;357:0:16:not")));
-        this.cachedCalendarRewards.put(5, new ArrayList<>(Arrays.asList("money;50", "xp;250", "item;266:0:16:not", "item;265:0:32:not")));
-        this.cachedCalendarRewards.put(6, new ArrayList<>(Arrays.asList("money;50", "xp;250", "item;264:0:8:not", "item;368:0:16:not", "item;369:0:1:CgAACQQAZW5jaAoBAAAAAgMAbHZsAQACAgBpZAwAAAMKAFJlcGFpckNvc3QAAAAACgcAZGlzcGxheQkEAExvcmUIBAAAAB4Awqc4LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tQQDCp3LCpzBJdGVtIHNpZ25pZXJ0IHZvbiDCpzJKdXN0aW5MTERWIMKnMGFtIMKnMjIxLjExLjIxIDE1OjU0wqcwLjQAwqdywqc3wqdlRGllIFNwZWt1bGF0aXVzc3RhbmdlOiBSaWVjaHQgdW5kIFNjaG1lY2t0IR4Awqc4LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCAQATmFtZRQAwqdlU3Bla3VsYXRpdXNzdGFuZ2UAAA==")));
+        this.cachedCalendarRewards.put(5, new ArrayList<>(Arrays.asList("money;50", "xp;250", "item;266:0:16:not", "item;265:0:32:not", "crate;epic;1")));
+        this.cachedCalendarRewards.put(6, new ArrayList<>(Arrays.asList("money;50", "xp;250", "item;264:0:8:not", "item;368:0:16:not", "crate;legendary;1", "item;369:0:1:CgAACQQAZW5jaAoBAAAAAgMAbHZsAQACAgBpZAwAAAMKAFJlcGFpckNvc3QAAAAACgcAZGlzcGxheQkEAExvcmUIBAAAAB4Awqc4LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tQQDCp3LCpzBJdGVtIHNpZ25pZXJ0IHZvbiDCpzJKdXN0aW5MTERWIMKnMGFtIMKnMjIxLjExLjIxIDE1OjU0wqcwLjQAwqdywqc3wqdlRGllIFNwZWt1bGF0aXVzc3RhbmdlOiBSaWVjaHQgdW5kIFNjaG1lY2t0IR4Awqc4LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCAQATmFtZRQAwqdlU3Bla3VsYXRpdXNzdGFuZ2UAAA==")));
         this.cachedCalendarRewards.put(7, new ArrayList<>(Arrays.asList("money;50", "item;46:0:32:not")));
-        this.cachedCalendarRewards.put(8, new ArrayList<>(Arrays.asList("money;50", "item;47:0:16:not")));
+        this.cachedCalendarRewards.put(8, new ArrayList<>(Arrays.asList("money;50", "item;47:0:16:not", "crate;epic;1")));
         this.cachedCalendarRewards.put(9, new ArrayList<>(Arrays.asList("money;50", "item;384:0:32:not", "item;357:0:16:not")));
         this.cachedCalendarRewards.put(10, new ArrayList<>(Arrays.asList("money;50", "item;315:0:1:CgAACQQAZW5jaAoEAAAAAgMAbHZsBAACAgBpZAEAAAIDAGx2bAMAAgIAaWQAAAACAwBsdmwDAAICAGlkEQAAAgMAbHZsAgACAgBpZAUAAAMKAFJlcGFpckNvc3QAAAAACgcAZGlzcGxheQgEAE5hbWUZAMKncsKnNsKnbFdlaWhuYWNodHNtYW50ZWwAAA==")));
-        this.cachedCalendarRewards.put(11, new ArrayList<>(Arrays.asList("money;50", "item;736:0:20:not")));
+        this.cachedCalendarRewards.put(11, new ArrayList<>(Arrays.asList("money;50", "item;736:0:20:not", "crate;uncommon;3")));
         this.cachedCalendarRewards.put(12, new ArrayList<>(Arrays.asList("money;50", "xp;250", "item;80:0:64:not", "item;174:0:32:not", "item;-11:0:32:not")));
-        this.cachedCalendarRewards.put(13, new ArrayList<>(Arrays.asList("money;50", "item;421:0:1:not")));
+        this.cachedCalendarRewards.put(13, new ArrayList<>(Arrays.asList("money;50", "item;421:0:1:not", "crate;epic;1")));
         this.cachedCalendarRewards.put(14, new ArrayList<>(Arrays.asList("money;50", "item;46:0:32:not", "item;357:0:16:not")));
-        this.cachedCalendarRewards.put(15, new ArrayList<>(Arrays.asList("money;50", "item;257:0:1:CgAACQQAZW5jaAoDAAAAAgMAbHZsAgACAgBpZBIAAAIDAGx2bAIAAgIAaWQPAAACAwBsdmwCAAICAGlkEQAAAwoAUmVwYWlyQ29zdAAAAAAKBwBkaXNwbGF5CAQATmFtZRgAwqdywqc1wqdsV2VpaG5hY2h0c2hhY2tlAAA=")));
+        this.cachedCalendarRewards.put(15, new ArrayList<>(Arrays.asList("money;50", "item;257:0:1:CgAACQQAZW5jaAoDAAAAAgMAbHZsAgACAgBpZBIAAAIDAGx2bAIAAgIAaWQPAAACAwBsdmwCAAICAGlkEQAAAwoAUmVwYWlyQ29zdAAAAAAKBwBkaXNwbGF5CAQATmFtZRgAwqdywqc1wqdsV2VpaG5hY2h0c2hhY2tlAAA=", "crate;uncommon;3")));
         this.cachedCalendarRewards.put(16, new ArrayList<>(Arrays.asList("money;50", "item;384:0:32:not")));
-        this.cachedCalendarRewards.put(17, new ArrayList<>(Arrays.asList("money;50", "item;736:0:20:not")));
+        this.cachedCalendarRewards.put(17, new ArrayList<>(Arrays.asList("money;50", "item;736:0:20:not", "crate;epic;1")));
         this.cachedCalendarRewards.put(18, new ArrayList<>(Arrays.asList("money;50", "item;216:0:16:not", "item;357:0:16:not")));
         this.cachedCalendarRewards.put(19, new ArrayList<>(Arrays.asList("money;50", "xp;250", "item;264:0:6:not", "item;-220:0:10:not")));
         this.cachedCalendarRewards.put(20, new ArrayList<>(Arrays.asList("money;50", "item;47:0:16:not")));
-        this.cachedCalendarRewards.put(21, new ArrayList<>(Arrays.asList("money;50", "item;46:0:32:not")));
+        this.cachedCalendarRewards.put(21, new ArrayList<>(Arrays.asList("money;50", "item;46:0:32:not", "crate;epic;1")));
         this.cachedCalendarRewards.put(22, new ArrayList<>(Arrays.asList("money;50", "item;121:0:8:not", "item;357:0:16:not")));
         this.cachedCalendarRewards.put(23, new ArrayList<>(Arrays.asList("money;50", "item;384:0:32:not")));
-        this.cachedCalendarRewards.put(24, new ArrayList<>(Arrays.asList("money;50", "xp;500", "item;752:0:2:not", "item;357:0:16:not")));
+        this.cachedCalendarRewards.put(24, new ArrayList<>(Arrays.asList("money;50", "xp;500", "item;752:0:2:not", "item;357:0:16:not", "crate;legendary;1")));
     }
 
     private final List<String> openQueue = new ArrayList<>();
@@ -319,14 +319,16 @@ public class FeatureRoleplay {
                 return;
             }
 
+            final List<Integer> mc117 = Arrays.asList(1, 2, 3, 4);
+
             if (calendarNow.get(Calendar.MONTH) == Calendar.DECEMBER) {
                 final SimpleForm.Builder calendar = new SimpleForm.Builder("§7» §4Advents§fkalender", "§8» §fKlicke eines der Türchen an, um deine heutige Adventbelohnung zu erhalten!\n§7Heute ist Türchen §9" + calendarNow.get(Calendar.DAY_OF_MONTH) + " §7dran.\n\n§8[§c!§8] §cStelle sicher, dass du genug Plätze in deinem Inventar frei hast.");
                 if (!this.cachedCalendar.containsKey(player.getName())) this.cachedCalendar.put(player.getName(), new ArrayList<>());
                 for (int i = 1; i < 25; i++) {
                     final int day = i;
-                    final String status = calendarNow.get(Calendar.DAY_OF_MONTH) == day ? !this.cachedCalendar.get(player.getName()).contains(day) ? "§2§lÖffnen" : "" : "";
+                    final String status = (calendarNow.get(Calendar.DAY_OF_MONTH) == day) || mc117.contains(day) ? !this.cachedCalendar.get(player.getName()).contains(day) ? "§2§lÖffnen" : "" : "";
                     calendar.addButton(new ElementButton("§8» §4Türchen   §f§l" + day + "\n" + status), g -> {
-                        if (calendarNow.get(Calendar.DAY_OF_MONTH) == day) {
+                        if (calendarNow.get(Calendar.DAY_OF_MONTH) == day || mc117.contains(day)) {
                             if (!this.cachedCalendar.get(player.getName()).contains(day)) {
                                 this.cachedCalendarRewards.get(day).forEach(reward -> {
                                     final String[] data = reward.split(";");
@@ -343,6 +345,10 @@ public class FeatureRoleplay {
                                             final Item item = SyncAPI.ItemAPI.pureItemFromStringWithCount(data[1]);
                                             player.getInventory().addItem(item);
                                             player.sendMessage("§8» §fCore §8| §7Du hast §9" + item.getCount() + "x §7das Item §9" + item.getName() + " §7erhalten.");
+                                            break;
+                                        case "crate":
+                                            this.serverCore.getCrateAPI().addCrate(player.getName(), data[1], Integer.parseInt(data[2]));
+                                            player.sendMessage("§8» §fCore §8| §7Du hast §5" + Integer.parseInt(data[2]) + "x §7die " + this.convertToDisplay(data[1]) + " §7erhalten!");
                                             break;
                                     }
                                 });
