@@ -38,32 +38,42 @@ public class BankRoleplay {
 
     public void openLogin(final Player player) {
         final Item item = player.getInventory().getItemInHand();
-        if (item.getId() == ItemID.PAPER && item.getNamedTag().getString("bank_account") != null) {
-            final String account = item.getNamedTag().getString("bank_account");
+        if (item.getId() == ItemID.PAPER) {
+            if (item.getNamedTag() != null) {
+                if (item.getNamedTag().getString("bank_account") != null) {
+                    final String account = item.getNamedTag().getString("bank_account");
 
-            Economy.getBankAPI().getAccount(account, bankAccount -> {
-                if (bankAccount != null) {
-                    final CustomForm form = new CustomForm.Builder("§7» §8Bankkonto-Login")
-                            .addElement(new ElementLabel("§fKonto: §9" + account + "\n§fName: §9" + bankAccount.getDisplayName()))
-                            .addElement(new ElementInput("§fBitte gebe das Passwort des Kontos an.", "Passwort"))
-                            .onSubmit((g, h) -> {
-                                final String password = h.getInputResponse(1);
+                    Economy.getBankAPI().getAccount(account, bankAccount -> {
+                        if (bankAccount != null) {
+                            final CustomForm form = new CustomForm.Builder("§7» §8Bankkonto-Login")
+                                    .addElement(new ElementLabel("§fKonto: §9" + account + "\n§fName: §9" + bankAccount.getDisplayName()))
+                                    .addElement(new ElementInput("§fBitte gebe das Passwort des Kontos an.", "Passwort"))
+                                    .onSubmit((g, h) -> {
+                                        final String password = h.getInputResponse(1);
 
-                                if (password.equals(bankAccount.getPassword())) {
-                                    this.openBankAccount(player, bankAccount.getAccount());
-                                    this.serverCore.playSound(player, Sound.NOTE_PLING);
-                                } else {
-                                    player.sendMessage(Language.get("roleplay.bank.invalid.password"));
-                                    this.serverCore.playSound(player, Sound.NOTE_BASS);
-                                }
-                            })
-                            .build();
-                    form.send(player);
+                                        if (password.equals(bankAccount.getPassword())) {
+                                            this.openBankAccount(player, bankAccount.getAccount());
+                                            this.serverCore.playSound(player, Sound.NOTE_PLING);
+                                        } else {
+                                            player.sendMessage(Language.get("roleplay.bank.invalid.password"));
+                                            this.serverCore.playSound(player, Sound.NOTE_BASS);
+                                        }
+                                    })
+                                    .build();
+                            form.send(player);
+                        } else {
+                            player.sendMessage(Language.get("roleplay.bank.invalid.account"));
+                            this.serverCore.playSound(player, Sound.NOTE_BASS);
+                        }
+                    });
                 } else {
                     player.sendMessage(Language.get("roleplay.bank.invalid.account"));
                     this.serverCore.playSound(player, Sound.NOTE_BASS);
                 }
-            });
+            } else {
+                player.sendMessage(Language.get("roleplay.bank.invalid.account"));
+                this.serverCore.playSound(player, Sound.NOTE_BASS);
+            }
         } else {
             player.sendMessage(Language.get("roleplay.bank.card.needed"));
             this.serverCore.playSound(player, Sound.NOTE_BASS);
